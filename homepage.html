@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage - Inventory Management System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* Override header to be minimal */
+    header {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 20px !important;
+      justify-content: flex-end !important;
+    }
+    header h1 { display: none; }
+    
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .welcome-container {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+    
+    .welcome-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+      letter-spacing: -1px;
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.2rem;
+      color: #555;
+      margin-top: 10px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.7);
+      padding: 8px 20px;
+      border-radius: 30px;
+      display: inline-block;
+      backdrop-filter: blur(5px);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .dashboard-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      height: 100%;
+      min-height: 380px;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+
+    .card-icon-wrapper {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .card-daily .card-icon-wrapper {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    .card-attendance .card-icon-wrapper {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .card-icon {
+      width: 80px;
+      height: 80px;
+      color: white;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      transition: transform 0.5s ease;
+    }
+    
+    .dashboard-card:hover .card-icon {
+      transform: scale(1.2) rotate(5deg);
+    }
+
+    .card-content {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: transparent;
+        text-align: center;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #2c3e50;
+    }
+
+    .card-desc {
+      font-size: 15px;
+      color: #666;
+      flex-grow: 1;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .card-action {
+      margin-top: auto;
+      color: #2752a7;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Dark Mode Card */
+    body.dark-mode .dashboard-card { background: rgba(30, 30, 30, 0.95); border-color: #444; }
+    body.dark-mode .card-title { color: #ecf0f1; }
+    body.dark-mode .card-desc { color: #b0bec5; }
+    body.dark-mode .card-action { color: #64b5f6; }
+    body.dark-mode .welcome-title { color: #ecf0f1; text-shadow: none; }
+    body.dark-mode .welcome-subtitle { color: #b0bec5; background: rgba(0,0,0,0.3); }
+    
+    .dashboard-card {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    }
+    .dashboard-card:nth-child(1) { animation-delay: 0.15s; }
+    .dashboard-card:nth-child(2) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body style="padding-left: 0;">
+
+  <header>
+    <h1>Homepage</h1>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="toggleTheme()" class="icon-btn" title="Toggle Theme" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button onclick="signOut()" class="icon-btn" title="Logout" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #e74c3c;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="welcome-container">
+      <h2 id="welcome-header" class="welcome-title">IMS Dashboard</h2>
+      <p class="welcome-subtitle">Select a module to proceed</p>
+    </div>
+      
+      <div class="dashboard-grid">
+        <div class="dashboard-card card-daily" onclick="window.location.href='daily_cycle_count.html'">
+          <div class="card-icon-wrapper">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Daily Counters</div>
+            <div class="card-desc">Manage daily cycle count assignments, shifts, and productivity targets.</div>
+            <div class="card-action">Open Module &rarr;</div>
+          </div>
+        </div>
+
+        <div class="dashboard-card card-attendance" onclick="window.location.href='all_ic_attendance.html'">
+          <div class="card-icon-wrapper">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">All IC Attendance</div>
+            <div class="card-desc">Manage attendance for all IC roles and other job descriptions.</div>
+            <div class="card-action">Open Module &rarr;</div>
+          </div>
+        </div>
+
+      </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    if(!sessionStorage.getItem('dms_auth_v1')) window.location.href = 'index.html';
+    const currentUser = sessionStorage.getItem('dms_auth_v1');
+    if(currentUser) {
+      document.getElementById('welcome-header').textContent = `Welcome, ${currentUser}`;
+    }
+  </script>
+</body>
+</html>

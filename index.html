@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- <meta name="viewport" content="width=device-width,initial-scale=1" />-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Inventory Management System</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+		<style>
+			#app-sidebar, header, main {
+				transition: all 0.3s ease;
+			}
+			/* Auth / Login Styles - Dark Theme matching Sidebar */
+			body.no-navbar header, body.no-navbar #app-sidebar { display: none !important; }
+			body.no-navbar { background: #2c3e50; }
+			#login-section.auth-overlay {
+				position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+				background: none;
+				backdrop-filter: blur(4px);
+				z-index: 9999;
+				display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh;
+				max-width: none; margin: 0; padding: 0;
+			}
+			.auth-box {
+				background: #1a252f; /* Sidebar color */
+				color: #ecf0f1;
+				padding: 2.5rem;
+				border-radius: 8px;
+				box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+				width: 100%; max-width: 420px;
+				border: 1px solid #2c3e50;
+				position: relative;
+				animation: fadeIn 0.3s ease;
+			}
+			@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+			.auth-logo { display: block; margin: 0 auto 1.5rem auto; max-height: 60px; width: auto; }
+			.auth-box h2 { text-align: center; margin-top: 0; color: #fff; margin-bottom: 1.5rem; font-size: 28px; }
+			.auth-title { font-size: 36px; font-weight: 600; color: #fff; text-align: center; margin-bottom: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+			.auth-box a { color: #3498db; }
+			.auth-box label { color: #bdc3c7; } /* Default label color */
+			.auth-box input, .auth-box select {
+				background: #151e26; border: 1px solid #34495e; color: #fff;
+			}
+			.auth-box input:focus { border-color: #3498db; outline: none; }
+			.auth-box .muted { color: #95a5a6; }
+			.hidden { display: none !important; }
+
+			/* Floating Label Animation */
+			#login-form, #register-form { gap: 0; }
+			.form-group {
+				position: relative;
+				margin-top: 1.5rem;
+			}
+			.form-group:first-of-type {
+				margin-top: 0.5rem;
+			}
+			.form-group input, .form-group select {
+				width: 100%;
+				padding: 10px;
+			}
+			.form-group label {
+				position: absolute;
+				top: 50%;
+				left: 10px;
+				transform: translateY(-50%);
+				color: #bdc3c7;
+				pointer-events: none;
+				transition: all 0.2s ease-out;
+				background: #1a252f;
+				padding: 0 5px;
+			}
+			.form-group input:focus + label,
+			.form-group input:not(:placeholder-shown) + label,
+			.form-group select:focus + label,
+			.form-group select:valid + label {
+				top: 0;
+				font-size: 12px;
+				color: #3498db;
+			}
+
+			/* Dark Mode Header */
+			body.dark-mode header {
+				background: #1a252f;
+				border-bottom: 1px solid #2c3e50;
+			}
+			body.dark-mode header h1 {
+				color: #ecf0f1;
+			}
+			/* Toast Notification */
+			.toast {
+				visibility: hidden;
+				min-width: 250px;
+				transform: translateX(-50%);
+				background-color: #2ecc71;
+				color: #fff;
+				text-align: center;
+				border-radius: 4px;
+				padding: 16px;
+				position: fixed;
+				z-index: 20000;
+				left: 50%;
+				top: 30px;
+				font-size: 16px;
+				box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+				opacity: 0;
+				transition: opacity 0.3s, top 0.3s;
+			}
+			.toast.show {
+				visibility: visible !important;
+				opacity: 1 !important;
+				top: 50px;
+			}
+			/* Icon Button Style */
+			.icon-btn {
+				padding: 8px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; color: #555;
+			}
+			.icon-btn:hover { background: #f0f0f0; }
+			.icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+			/* Mass Delete Button Specific */
+			#mass-delete-all-btn { background-color: #d9534f; color: white; border-color: #d43f3a; }
+			#mass-delete-all-btn:hover { background-color: #c9302c; }
+			#mass-delete-all-btn svg { stroke: white; }
+		</style>
+	</head>
+	<body class="no-navbar">
+		<!-- Main App Sidebar -->
+		<nav id="app-sidebar">
+			<div class="sidebar-brand">
+				<img src="Logo.jpg" alt="Logo" class="sidebar-logo" style="height:32px;width:auto;margin-right:8px">
+				<span class="brand-text">IMS</span>
+				<button id="main-sidebar-toggle" class="sidebar-toggle-btn" title="Toggle Sidebar">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+				</button>
+			</div>
+			<ul class="sidebar-menu">
+				<li>
+					<button onclick="window.location.href='homepage.html'" data-tooltip="Homepage">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+						<span class="menu-text">Homepage</span>
+					</button>
+				</li>
+				<li>
+        <button data-tooltip="Document Monitoring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span class="menu-text">Document Monitoring</span>
+        </button>
+        <ul class="sidebar-submenu" style="display:block">
+            <li><button class="active" onclick="window.location.href='index.html'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              IAAF Monitoring</button></li>
+						<li><button onclick="window.location.href='ir_monitoring.html'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              IR Monitoring</button></li>
+
+        </ul>
+      </li>
+				<li>
+					<button id="nav-inventory-btn" data-tooltip="Inventory Tracker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg><span class="menu-text">Inventory Tracker</span></button>
+					<ul class="sidebar-submenu">
+						<li><button onclick="window.location.href='cycle_count.html'">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.36-3.36L23 10"></path><path d="M20.49 15a9 9 0 0 1-14.36 3.36L1 14"></path></svg>
+							Cycle Count</button></li>
+						<li><button onclick="window.location.href='cycle_count_reports.html'">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+							Cycle Count Report</button></li>
+						<li><button onclick="window.location.href='cycle_count_completion.html'">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+							Cycle Count Completion</button></li>
+						<li><button onclick="window.location.href='cycle_count_schedule.html'">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+							Cycle Count Schedule</button></li>
+					</ul>
+				</li>
+				<li><button id="nav-settings-btn" onclick="window.location.href='settings.html'" data-tooltip="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span class="menu-text">Settings</span></button></li>
+			</ul>
+		</nav>
+		<header>
+			<h1>IAAF Monitoring</h1>
+
+				<div class="navbar" role="navigation">
+					<div class="nav-left">
+						<a href="documents_full.html" id="documents-full-page-btn" class="nav-btn" title="Open Full Documents View">Full Docs</a>
+						<a href="admin_inbox.html" id="admin-inbox-page-btn" class="nav-btn" style="display:none" title="Open Admin Inbox Page">Admin Inbox <span id="admin-inbox-badge" class="badge" style="display:none"></span></a>
+						<a href="recycle_bin.html" id="recycle-bin-page-btn" class="nav-btn" style="display:none" title="Open Recycle Bin">Recycle Bin</a>
+						<a href="users-dashboard.html" id="users-dashboard-page-btn" class="nav-btn" style="display:none" title="Open Users Dashboard">Users</a>
+					</div>
+					<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+						<span class="bar"></span>
+						<span class="bar"></span>
+						<span class="bar"></span>
+					</button>
+							<div class="nav-right">
+								<div class="nav-notifications">
+									<button class="notification-btn" title="Notifications">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+										<span class="notification-badge">0</span>
+									</button>
+									<div class="notification-menu">
+										<div class="notification-header"><span>Notifications</span><button class="clear-notifications">Clear All</button></div>
+										<ul class="notification-list"></ul>
+									</div>
+								</div>
+								<div id="clock" class="clock" aria-live="polite"></div>
+								<div id="sr-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+								<div class="nav-user" id="nav-user">
+									<a href="profile.html" title="Profile" style="text-decoration:none; margin-right: 4px;"><span id="nav-avatar" class="avatar small"></span></a>
+									<button class="user-btn" id="user-btn" aria-haspopup="true" aria-expanded="false"><span id="username-display"></span> <span id="role-badge" class="role-badge" style="display:none;margin-left:8px"></span></button>
+									<div class="user-menu" id="user-menu" role="menu" aria-label="User menu">
+										<a href="index.html" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+										<a href="profile.html" id="profile-btn" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profile</a>
+										<a href="settings.html" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a>
+										<button id="logout-btn" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</button>
+									</div>
+								</div>
+							</div>
+				</div>
+
+
+		</header>
+
+
+		<main>
+			<!-- Login Form -->
+			<section id="login-section" class="auth-overlay hidden">
+				<h1 class="auth-title">Inventory Monitoring System</h1>
+				<div id="login-box" class="auth-box">
+				<img src="Logo.jpg" alt="IMS Logo" class="auth-logo" />
+				<h2>Login</h2>
+				<form id="login-form">
+					<div class="form-group">
+						<input id="username" name="username" required placeholder=" " />
+						<label for="username">Username</label>
+					</div>
+					<div class="form-group">
+						<input id="password" name="password" type="password" required placeholder=" " />
+						<label for="password">Password</label>
+					</div>
+
+					<div style="display:flex; align-items:center; margin-bottom:15px; margin-top:5px">
+						<input type="checkbox" id="remember-me" style="width:auto; margin-right:8px; cursor:pointer">
+						<label for="remember-me" style="margin:0; font-size:0.9rem; color:#bdc3c7; cursor:pointer">Remember Me</label>
+					</div>
+
+					<button type="submit">Sign In</button>
+					<div style="margin-top:8px"><a href="#" id="forgot-password-link">Forgot password?</a></div>
+				</form>
+				<div style="margin-top:20px; text-align:center; border-top:1px solid #2c3e50; padding-top:15px">
+					<span class="muted">Don't have an account?</span>
+					<button id="show-register" type="button" style="background:none; border:none; color:#3498db; cursor:pointer; text-decoration:underline; padding:0; box-shadow:none;">Create account</button>
+				</div>
+				<p class="muted" style="text-align:center; margin-top:10px; font-size:12px">Default: <code>admin</code> / <code>password</code></p>
+				</div>
+
+				<div id="register-box" class="auth-box hidden">
+					<img src="Logo.jpg" alt="IMS Logo" class="auth-logo" />
+					<h2>Create Account</h2>
+					<form id="register-form">
+					<div class="form-group">
+						<input id="reg-username" name="reg-username" required placeholder=" " />
+						<label for="reg-username">Username</label>
+					</div>
+					<div class="form-group">
+						<input id="reg-password" name="reg-password" type="password" required placeholder=" " />
+						<label for="reg-password">Password</label>
+					</div>
+					<div class="form-group">
+						<input id="reg-password-confirm" name="reg-password-confirm" type="password" required placeholder=" " />
+						<label for="reg-password-confirm">Confirm Password</label>
+					</div>
+					<div class="form-group">
+						<select id="reg-role" name="reg-role" required>
+							<option value="" disabled selected></option>
+							<option value="user">User</option>
+							<option value="admin">Admin</option>
+						</select>
+						<label for="reg-role">Role</label>
+					</div>
+
+					<div class="form-actions" style="margin-top:2rem">
+						<button id="cancel-register" type="button" style="background:transparent; border:1px solid #7f8c8d; color:#bdc3c7;">Cancel</button>
+						<button id="register-btn" type="submit">Register</button>
+					</div>
+				</form>
+				</div>
+			</section>
+
+
+			<!-- Dashboard -->
+			<section id="dashboard" class="hidden">
+				<div class="layout">
+					<aside id="left-sidebar" class="card left-sidebar">
+						<div class="sidebar-controls" style="margin-bottom:10px;display:flex;gap:8px;align-items:center;">
+							<input id="sidebar-search" placeholder="Search sidebar..." style="flex:1;padding:6px;border:1px solid #e6eef8;border-radius:6px" />
+							<select id="sidebar-page-size" style="padding:6px;border:1px solid #e6eef8;border-radius:6px">
+								<option value="5">5</option>
+								<option value="8" selected>8</option>
+								<option value="12">12</option>
+							</select>
+						</div>
+
+						<h3>Routing by Status</h3>
+						<div id="approved-by-status" class="approved-list"></div>
+						<div id="by-status-pagination" class="sidebar-pagination" style="margin-bottom:10px"></div>
+						<hr />
+						<h3>Revision by Status</h3>
+						<div id="approved-by-wins" class="approved-list"></div>
+						<div id="by-wins-pagination" class="sidebar-pagination" style="margin-bottom:10px"></div>
+					</aside>						<!-- Sidebar toggle placed as sibling so it remains clickable when sidebar is collapsed -->
+						<button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="true" title="Hide sidebar">‹</button>					<div class="main-column">
+						<div class="controls">
+					<div class="left"></div>
+					<div class="right">
+						
+		
+					</div>
+				</div>
+
+				<!-- Dashboard Charts -->
+				<div id="dashboard-charts" class="card" style="margin-bottom: 20px;">
+					<h3>Dashboard Analytics</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around;">
+						<div style="flex: 1; min-width: 300px; max-width: 400px;">
+							<canvas id="dash-pie-title" style="max-height:300px"></canvas>
+						</div>
+						<div style="flex: 1; min-width: 300px; max-width: 400px;">
+							<canvas id="dash-bar-owner" style="max-height:300px"></canvas>
+						</div>
+						<div style="flex: 1; min-width: 300px; max-width: 100%;">
+							<canvas id="dash-line-week" style="max-height:300px"></canvas>
+						</div>
+						<div style="flex: 1; min-width: 300px; max-width: 100%;">
+							<canvas id="dash-line-created-forwarded" style="max-height:300px"></canvas>
+						</div>
+					</div>
+				</div>
+
+				<div id="new-doc-form" class="card hidden">
+            <h3>Add Document</h3>
+            <form id="doc-form">
+              <label for="control-number">Control Number</label>
+			  <input id="control-number" name="controlNumber" placeholder="ECOM-20XX-XXXX" pattern="ECOM-[0-9]{4}-[0-9]{4}" title="Format: ECOM-YYYY-NNNN (e.g. ECOM-2026-0001)" required />
+
+							<label for="doc-title">Title</label>
+							<select id="doc-title" name="title">
+								<option>Cycle Count</option>
+								<option>Retrieval Concerns</option>
+								<option>B1T1 Adj</option>
+								<option>LBR</option>
+								<option>Rejected Claims</option>
+								<option>SIS</option>
+								<option>Expired</option>
+								<option>Damaged</option>
+								<option>Manual Picked</option>
+								<option>Receiving Error</option>
+								<option>Other</option>
+							</select>
+							<input id="doc-title-other" name="titleOther" placeholder="Other title" style="display:none;margin-top:6px" />
+
+              <label for="doc-notes">Notes</label>
+              <textarea id="doc-notes" name="notes" rows="3"></textarea>
+
+              <label for="doc-owner">Owner</label>
+              <input id="doc-owner" name="owner" />
+
+              <label for="doc-status">Status</label>
+              <select id="doc-status" name="status">
+                <option>Revision</option>
+                <option>Routing</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+              </select>
+
+              <label for="wins-status">WINS Status</label>
+              <select id="wins-status" name="winsStatus">
+                <option>Approved</option>
+                <option>Pending for Approve</option>
+                <option>Rejected</option>
+              </select>
+
+              <label for="admin-status">Admin Status</label>
+              <select id="admin-status" name="adminStatus">
+                <option value="">Need User Attention</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+              </select>
+
+              <label for="created-at">Created (modify)</label>
+              <input id="created-at" name="createdAt" type="datetime-local" />
+
+              <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" id="cancel-new">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+
+
+				<div id="results" class="card">
+	
+					<div style="margin-top:12px;text-align:right;padding:10px">
+						<a href="documents_full.html" style="font-weight:bold;text-decoration:none;color:#2752a7">View Full Documents List &rarr;</a>
+					</div>
+				</div>
+			</div>
+			<aside id="sidebar" class="card">
+				<h3>Total Documents</h3>
+				<div id="total-docs" class="total-docs-display" aria-hidden="false"></div>
+
+				<hr />
+				<h3>Status Overview</h3>
+				<div id="status-chart" aria-hidden="false"></div>
+				<div style="margin-top:10px;">
+					<button id="clear-status-filter">Clear Filter</button>
+				</div>
+
+				<hr />
+				<h3>WINS Overview</h3>
+				<div id="wins-chart" aria-hidden="false"></div>
+				<div style="margin-top:10px;">
+					<button id="clear-wins-filter">Clear WINS Filter</button>
+				</div>
+
+				<hr />
+				<h3>Age Overview (by Status)</h3>
+				<div id="age-overview" aria-hidden="false"></div>
+				<div style="margin-top:10px;">
+					<button id="clear-age-filter">Clear Age Filter</button>
+				</div>
+			</aside>
+		</div>
+			</section>
+
+			<!-- Inventory Tracker System (Placeholder) -->
+			<section id="inventory-system" class="hidden">
+				<div class="card">
+					<h2>Inventory Tracker System</h2>
+					<p class="muted">This module is under development.</p>
+					<div style="padding: 2rem; text-align: center; background: #f9fbfd; border-radius: 8px; margin-top: 1rem;">
+						<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+						<p style="margin-top: 1rem; color: #666;">Inventory features coming soon.</p>
+					</div>
+				</div>
+			</section>
+		</main>
+
+
+
+<!-- Document details modal (opens from left sidebar) -->
+		
+
+			<!-- Mass Delete Confirmation Modal -->
+			<div id="delete-confirm-modal" class="modal hidden">
+				<div class="modal-overlay"></div>
+				<div class="modal-content card" style="max-width: 400px; margin-top: 100px;">
+					<h3>Confirm Mass Delete</h3>
+					<p>You are about to delete <span id="delete-count" style="font-weight:bold; color:#d9534f">0</span> records.</p>
+					<p class="muted">This action will move all documents to the Recycle Bin. Please enter Supervisor Code to proceed.</p>
+					<div style="margin: 15px 0;">
+						<label for="supervisor-code" style="display:block; margin-bottom:5px; font-weight:bold;">Supervisor Code</label>
+						<input type="password" id="supervisor-code" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" placeholder="Enter code (e.g. 12345)">
+					</div>
+					<div style="display:flex; justify-content:flex-end; gap:10px;">
+						<button id="cancel-delete-btn" style="background:#fff; color:#333; border:1px solid #ccc; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Cancel</button>
+						<button id="confirm-delete-btn" style="background:#d9534f; color:#fff; border:none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Confirm Delete</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="toast-notification" class="toast">Document added successfully!</div>
+			<script src="app.js"></script>
+
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					const STORAGE_KEY = 'dms_docs_v1';
+					
+					function loadDocs() {
+						try {
+							const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+							return Array.isArray(d) ? d.filter(x => x && typeof x === 'object') : [];
+						} catch (e) { return []; }
+					}
+
+					function aggregateCount(items, keyFn) {
+						const map = {};
+						items.forEach(it => {
+							if (!it) return;
+							const k = (keyFn(it) || 'Unknown').trim() || 'Unknown';
+							map[k] = (map[k] || 0) + 1;
+						});
+						return map;
+					}
+
+					function handleChartClick(evt, elements, chart) {
+						if (elements.length > 0) {
+							const i = elements[0].index;
+							const label = chart.data.labels[i];
+							const searchBox = document.getElementById('search-control');
+							if(searchBox){
+								searchBox.value = label;
+								if(typeof renderDocs === 'function') renderDocs(label);
+								const results = document.getElementById('results');
+								if(results) results.scrollIntoView({behavior: 'smooth'});
+							}
+						}
+					}
+
+					const docs = loadDocs();
+					// Migration logic to match app behavior
+					docs.forEach(d => {
+						if(d && d.status === 'Received'){
+							if(!d.adminStatus) d.adminStatus = 'Received';
+							d.status = 'Routing';
+						}
+					});
+
+					// Enhanced Chart Configuration
+					Chart.defaults.font.family = "'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif";
+					Chart.defaults.color = '#858796';
+
+					// 1. By Title (Pie)
+					const byTitle = aggregateCount(docs, d => d.title);
+					const sortedTitles = Object.entries(byTitle).sort((a,b) => b[1] - a[1]);
+					const ctxTitle = document.getElementById('dash-pie-title');
+					if (ctxTitle) {
+						new Chart(ctxTitle, {
+							type: 'pie',
+							data: {
+								labels: sortedTitles.map(e => e[0]),
+								datasets: [{
+									data: sortedTitles.map(e => e[1]),
+									backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6f42c1', '#fd7e14', '#20c997', '#e83e8c', '#5a5c69'],
+									hoverOffset: 4,
+									borderColor: '#ffffff',
+									borderWidth: 2
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: { title: { display: true, text: 'By Title' } },
+								plugins: { 
+									title: { display: true, text: 'Documents by Title', font: { size: 16, weight: 'bold' }, color: '#5a5c69' },
+									legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 10 } }
+								},
+								onClick: handleChartClick
+							}
+						});
+					}
+
+					// 2. By Owner (Bar)
+					const byOwner = aggregateCount(docs, d => d.owner);
+					// Sort by count descending
+					const sortedOwners = Object.entries(byOwner).sort((a,b) => b[1] - a[1]);
+					const ctxOwner = document.getElementById('dash-bar-owner');
+					if (ctxOwner) {
+						new Chart(ctxOwner, {
+							type: 'bar',
+							data: {
+								labels: sortedOwners.map(e => e[0]),
+								datasets: [{
+									label: 'Documents',
+									data: sortedOwners.map(e => e[1]),
+									backgroundColor: '#4e73df',
+									borderRadius: 4,
+									barPercentage: 0.6
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: { title: { display: true, text: 'By Owner' }, legend: { display: false } },
+								scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+								plugins: { 
+									title: { display: true, text: 'Documents by Owner', font: { size: 16, weight: 'bold' }, color: '#5a5c69' }, 
+									legend: { display: false } 
+								},
+								scales: { 
+									y: { beginAtZero: true, ticks: { precision: 0 }, grid: { borderDash: [2], drawBorder: false, color: '#e3e6f0' } },
+									x: { grid: { display: false, drawBorder: false } }
+								},
+								onClick: handleChartClick
+							}
+						});
+					}
+
+					// 3. By Week (Line)
+					const byWeek = {};
+					docs.forEach(d => {
+						if (!d || !d.createdAt) return;
+						let date = new Date(d.createdAt);
+						if (isNaN(date.getTime())) date = new Date(Number(d.createdAt));
+						if (isNaN(date.getTime())) return;
+						
+						const day = date.getDay();
+						const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+						const monday = new Date(date);
+						monday.setDate(diff);
+						const key = monday.toISOString().split('T')[0];
+						byWeek[key] = (byWeek[key] || 0) + 1;
+					});
+					const sortedWeeks = Object.keys(byWeek).sort();
+					const ctxWeek = document.getElementById('dash-line-week');
+					if (ctxWeek) {
+						new Chart(ctxWeek, {
+							type: 'line',
+							data: {
+								labels: sortedWeeks,
+								datasets: [{
+									label: 'New Documents',
+									data: sortedWeeks.map(k => byWeek[k]),
+									borderColor: '#36b9cc',
+									backgroundColor: 'rgba(54, 185, 204, 0.1)',
+									fill: true,
+									tension: 0.4,
+									pointRadius: 4,
+									pointBackgroundColor: '#36b9cc',
+									pointBorderColor: '#fff',
+									pointHoverRadius: 6
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: { title: { display: true, text: 'By Week Created' } },
+								scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+								plugins: { 
+									title: { display: true, text: 'Weekly Creation Trend', font: { size: 16, weight: 'bold' }, color: '#5a5c69' },
+									legend: { display: false }
+								},
+								scales: { 
+									y: { beginAtZero: true, ticks: { precision: 0 }, grid: { borderDash: [2], drawBorder: false, color: '#e3e6f0' } },
+									x: { grid: { display: false, drawBorder: false } }
+								},
+								onClick: handleChartClick
+							}
+						});
+					}
+
+					// 4. Created vs Forwarded (Line)
+					const timelineMap = {};
+					docs.forEach(d => {
+						if(d.createdAt){
+							const k = new Date(Number(d.createdAt)).toISOString().split('T')[0];
+							if(!timelineMap[k]) timelineMap[k] = { created: 0, forwarded: 0 };
+							timelineMap[k].created++;
+						}
+						if(d.forwardedAt){
+							const k = new Date(Number(d.forwardedAt)).toISOString().split('T')[0];
+							if(!timelineMap[k]) timelineMap[k] = { created: 0, forwarded: 0 };
+							timelineMap[k].forwarded++;
+						}
+					});
+					const timelineDates = Object.keys(timelineMap).sort();
+					const dataCreated = timelineDates.map(d => timelineMap[d].created);
+					const dataForwarded = timelineDates.map(d => timelineMap[d].forwarded);
+
+					const ctxCvF = document.getElementById('dash-line-created-forwarded');
+					if(ctxCvF){
+						new Chart(ctxCvF, {
+							type: 'line',
+							data: {
+								labels: timelineDates,
+								datasets: [
+									{ label: 'Created', data: dataCreated, borderColor: '#4e73df', backgroundColor: 'rgba(78, 115, 223, 0.05)', tension: 0.3, fill: true },
+									{ label: 'Forwarded to Admin', data: dataForwarded, borderColor: '#1cc88a', backgroundColor: 'rgba(28, 200, 138, 0.05)', tension: 0.3, fill: true }
+								]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: {
+									title: { display: true, text: 'Created vs Forwarded Volume', font: { size: 16, weight: 'bold' }, color: '#5a5c69' },
+									tooltip: { mode: 'index', intersect: false }
+								},
+								scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { borderDash: [2], drawBorder: false, color: '#e3e6f0' } }, x: { grid: { display: false } } }
+							}
+						});
+					}
+
+					// Ensure charts resize when sidebar is toggled
+					const sidebarToggle = document.getElementById('sidebar-toggle');
+					if(sidebarToggle){
+						sidebarToggle.addEventListener('click', () => {
+							setTimeout(() => {
+								Object.values(Chart.instances).forEach(c => c.resize());
+							}, 300);
+						});
+					}
+
+					// Toast Notification for Manual Input
+					const docForm = document.getElementById('doc-form');
+					if(docForm) {
+						docForm.addEventListener('submit', () => {
+							setTimeout(() => {
+								const toast = document.getElementById("toast-notification");
+								if(toast) {
+									toast.className = "toast show";
+									setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+								}
+							}, 100);
+						});
+					}
+
+					// Mass Delete Logic
+					const massDeleteBtn = document.getElementById('mass-delete-all-btn');
+					const deleteModal = document.getElementById('delete-confirm-modal');
+					const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+					const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+					const deleteCountSpan = document.getElementById('delete-count');
+					const supervisorCodeInput = document.getElementById('supervisor-code');
+
+					if(massDeleteBtn) {
+						massDeleteBtn.addEventListener('click', () => {
+							if(typeof docs === 'undefined' || docs.length === 0) { alert('No documents to delete.'); return; }
+							deleteCountSpan.textContent = 'ALL (' + docs.length + ')';
+							supervisorCodeInput.value = '';
+							if(deleteModal) deleteModal.classList.remove('hidden');
+						});
+					}
+
+					if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', () => { if(deleteModal) deleteModal.classList.add('hidden'); });
+					if(deleteModal) deleteModal.querySelector('.modal-overlay').addEventListener('click', () => deleteModal.classList.add('hidden'));
+
+					if(confirmDeleteBtn) {
+						confirmDeleteBtn.addEventListener('click', () => {
+							const code = supervisorCodeInput.value;
+							if(code !== '12345' && code !== 'admin') {
+								alert('Invalid Supervisor Code!');
+								return;
+							}
+							
+							if(typeof docs !== 'undefined' && docs.length > 0) {
+								const rb = (typeof loadRecycle === 'function') ? loadRecycle() : [];
+								const now = Date.now();
+								docs.forEach(d => rb.unshift(Object.assign({}, d, { deletedAt: now })));
+								docs.length = 0; // Clear array in place
+								if(typeof saveRecycle === 'function') saveRecycle(rb);
+								if(typeof saveDocs === 'function') saveDocs();
+								if(typeof renderDocs === 'function') renderDocs();
+								alert('All documents moved to Recycle Bin.');
+							}
+							if(deleteModal) deleteModal.classList.add('hidden');
+						});
+					}
+				});
+			</script>
+			<!-- profile moved to profile.html -->
+	</body>
+</html>

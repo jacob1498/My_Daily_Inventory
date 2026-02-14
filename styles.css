@@ -1,0 +1,913 @@
+:root{
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --accent:#2752a7;
+  --muted:#666;
+}
+/* Global Transition for Theme Switching */
+body, .card, .modal-content, header, input, select, textarea, table, th, td, .icon-btn, .sidebar-toggle, .sidebar-menu, .sidebar-submenu, .stat-card {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* Dark Mode Variables */
+body.dark-mode {
+  --bg: #2b2b2b;
+  --card: #323232;
+  --accent: #64b5f6;
+  --muted: #b0bec5;
+  color: #e0e0e0;
+  background-image: none;
+  background-color: var(--bg);
+  color-scheme: dark;
+}
+body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border-color: #444;
+}
+body.dark-mode input:focus, body.dark-mode select:focus, body.dark-mode textarea:focus {
+  border-color: var(--accent);
+  background-color: #333;
+  outline: none;
+}
+body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color: #888; }
+body.dark-mode .card, body.dark-mode .modal-content, body.dark-mode .sidebar-toggle, body.dark-mode #admin-filter-menu-box {
+  background-color: var(--card);
+  color: #e0e0e0;
+  border-color: #40444b;
+}
+body.dark-mode .modal-content { box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+body.dark-mode header { background: #323232; border-bottom: 1px solid #2b2b2b; }
+body.dark-mode header h1 { color: #ecf0f1; }
+body.dark-mode .modal-overlay { background: rgba(0, 0, 0, 0.7); }
+body.dark-mode a { color: #64b5f6; }
+body.dark-mode label { color: #e0e0e0; }
+
+body.dark-mode #docs-table th { background-color: #2d2d2d; color: #fff; border-bottom-color: #444; }
+body.dark-mode #docs-table td, body.dark-mode .approved-ul li { border-bottom-color: #333 !important; }
+body.dark-mode .approved-ul a:hover { background-color: #333; }
+body.dark-mode .sidebar button, body.dark-mode .status-row button, body.dark-mode .wins-row button, body.dark-mode .age-ov-row button, body.dark-mode .open-new-tab {
+    background-color: #2c2c2c; color: #e0e0e0; border-color: #444;
+}
+body.dark-mode .nav-user .user-menu { background-color: #2d2d2d; color: #fff; border: 1px solid #444; }
+body.dark-mode .nav-user .user-menu a, body.dark-mode .nav-user .user-menu button { color: #e0e0e0; }
+body.dark-mode .nav-user .user-menu a:hover, body.dark-mode .nav-user .user-menu button:hover { background-color: #3d3d3d; }
+
+/* Dark Mode Generic Table Support */
+body.dark-mode table { color: #e0e0e0; }
+body.dark-mode table th { background-color: #2d2d2d !important; color: #fff; border-color: #444 !important; }
+body.dark-mode table td { border-color: #333 !important; color: #e0e0e0; }
+body.dark-mode table tr:hover td { background-color: #444 !important; }
+
+/* Dark Mode Icon Buttons */
+body.dark-mode .card .icon-btn, body.dark-mode .small-nav .icon-btn, body.dark-mode .icon-btn {
+    background-color: #444; color: #e0e0e0; border-color: #555;
+}
+body.dark-mode .card .icon-btn:hover, body.dark-mode .small-nav .icon-btn:hover, body.dark-mode .icon-btn:hover {
+    background-color: #555;
+}
+
+/* Dark Mode Stat Cards */
+body.dark-mode .stat-card { background-color: #323232; border-color: #40444b; }
+body.dark-mode .stat-value { color: #e0e0e0; }
+
+/* Dark Mode Scrollbars */
+body.dark-mode ::-webkit-scrollbar { width: 10px; height: 10px; }
+body.dark-mode ::-webkit-scrollbar-track { background: #2b2b2b; }
+body.dark-mode ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
+body.dark-mode ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Dark Mode Specific Fixes */
+body.dark-mode .muted { color: #b0bec5 !important; }
+body.dark-mode .tab-btn { background-color: #2c2c2c; color: #aaa; border-color: #444; }
+body.dark-mode .tab-btn.active { background-color: #323232; color: #fff; border-bottom-color: var(--accent); }
+body.dark-mode .tab-btn:hover:not(.active) { background-color: #444; color: #fff; }
+
+
+/* Screen-reader only helper (visually hidden but available to assistive tech) */
+.sr-only{position:absolute!important;border:0!important;padding:0!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(1px,1px,1px,1px)!important;white-space:nowrap!important;clip-path:inset(50%)!important}
+*{box-sizing:border-box}
+html,body{height:100%;
+  box-sizing: border-box;
+}
+
+body{font-family:Segoe UI,Roboto,Arial, sans-serif;background:url(BG7.jpg); background-repeat: no-repeat ; background-size:cover; background-blend-mode: soft-light ; background-color:transparent; backface-visibility: inherit; }
+/* Improved background: subtle gradient overlay for readability */
+body{
+  background-image: linear-gradient(180deg, rgba(20,30,48,0.18), rgba(255,255,255,0.02)), url(BG7.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(90deg,#fff, #f9fbfd);border-bottom:1px solid #e6e9ee}
+header h1{margin:0;font-size:18px}
+.hidden{display:none}
+.header-right{display:flex;align-items:center;gap:12px}
+.clock{font-size:13px;color:var(--muted);padding:6px 10px;border-radius:6px;background:rgba(39,82,167,0.05)}
+main{max-width:100%;margin:0;padding:20px}
+.card{background:var(--card);padding:4px;border-radius:8px;box-shadow:0 1px 3px rgba(6, 212, 212, 0.06);margin-bottom:2px}
+#login-section{max-width:400px;margin:0 auto;padding:20px}
+#results{overflow-x:auto}
+form{display:flex;flex-direction:column;gap:10px}
+label{font-size:13px;color:var(--muted)}
+input[type=text], input[type=password], select, input{padding:8px;border:1px solid #d6dbe6;border-radius:6px}
+button{background: linear-gradient(45deg, var(--accent), #4a90e2); color:#f4f7f8; border:0; padding:8px 12px; border-radius:6px; cursor:pointer; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+button:hover{background: linear-gradient(45deg, #4a90e2, var(--accent)); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2);}
+button[disabled]{opacity:0.6;cursor:default}
+/* Active filter button state */
+button.active-filter { background: #2c3e50; color: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); transform: translateY(1px); }
+
+.muted{color:var(--muted);font-size:13px}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.controls .right{display:flex;gap:8px;align-items:center}
+#docs-table{width:100%;border-collapse:collapse ; margin-right: auto; table-layout: auto;}
+#docs-table th, #docs-table td{padding:8px;border-bottom:1px solid #eef2f6;text-align:left}
+#docs-table th{background:#fbfdff;font-weight:600; position: sticky; top: 0; z-index: 1;}
+.form-actions{display:flex;gap:8px}
+td.actions button{margin-right:6px;background: linear-gradient(45deg, var(--accent), #4a90e2); color:#f4f7f8;}
+td.actions button.delete{background: linear-gradient(45deg, #a63131, #d9534f); color:#f4f7f8;}
+td.actions button.delete:hover{background: linear-gradient(45deg, #d9534f, #a63131);}
+footer{max-width:980px;margin:6px auto;padding:6px 16px;color:var(--muted)}
+
+.age{display:inline-block;padding:4px 8px;border-radius:6px;color:#fff;font-weight:600}
+.age-good{background:#2b8a2b}
+.age-warn{background:#d08a1a}
+.age-bad{background:#b92b2b}
+
+/* Layout with sidebar */
+.layout{display:flex;gap:16px}
+.left-sidebar{width:260px;flex:0 0 260px;max-height:calc(100vh - 140px);overflow:auto;padding:12px}
+.main-column{flex:1}
+#sidebar{width:280px;flex:0 0 280px}
+
+/* Approved lists in left sidebar */
+.approved-list{font-size:13px}
+.approved-list .muted{padding:6px;color:var(--muted)}
+.approved-ul{list-style:none;padding:0;margin:0}
+.approved-ul li{margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.approved-ul a{color:var(--accent);text-decoration:none;font-weight:600;display:block;padding:6px;border-radius:6px;flex:1}
+.approved-ul a:hover{background:#f1f6ff}
+
+/* Sidebar toggle styles */
+.layout{display:flex;gap:16px;position:relative}
+/* Toggle positioned as a sibling to keep it clickable when sidebar is collapsed */
+.left-sidebar{position:relative}
+.sidebar-toggle{position:absolute;left:260px;top:14px;width:34px;height:40px;border-radius:6px;border:1px solid #e6eef8;background:#ffffff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.08);z-index:2200}
+/* When sidebar is collapsed, move the toggle to the left edge */
+.left-sidebar.collapsed + .sidebar-toggle{left:4px}
+.left-sidebar.collapsed{width:0;flex-basis:0;min-width:0;padding-left:0;padding-right:0;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none}
+.left-sidebar{transition:width 300ms cubic-bezier(0.4, 0, 0.2, 1), flex-basis 300ms cubic-bezier(0.4, 0, 0.2, 1), padding 300ms ease, opacity 300ms ease}
+
+/* Ensure toggle moves smoothly */
+.sidebar-toggle{transition:left 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms ease}
+
+/* Role badge */
+.role-badge{display:inline-block;padding:4px 8px;border-radius:6px;background:#eef4ff;color:var(--accent);font-weight:700;font-size:12px}
+
+/* Login center styles */
+#login-section.centered{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2200;box-shadow:0 6px 18px rgba(0,0,0,0.12);border-radius:8px}
+
+
+/* Sidebar search & pagination */
+.sidebar-controls input{width:100%}
+.sidebar-pagination{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px}
+.sidebar-pagination button{padding:6px 8px;border-radius:6px;border:1px solid #e6eef8;background:#fff;color:var(--accent);}
+.sidebar-pagination .current-page{font-weight:700;color:var(--muted)}
+
+/* Make sidebar control buttons more readable on white background */
+.sidebar button{background:#fff;color:var(--accent);border:1px solid #e6eef8;padding:6px 8px;border-radius:6px}
+.sidebar button:hover{background:#f6f9ff}
+
+/* Modal styles */
+.modal.hidden{display:none}
+.modal{position:fixed;inset:0;z-index:2000}
+.modal-overlay{position:absolute;inset:0;background:rgba(18,24,36,0.48)}
+.modal-content{position:relative;max-width:760px;margin:40px auto;padding:16px;border-radius:8px;z-index:2001}
+.modal-close{position:absolute;right:10px;top:10px;border:0;background:#fff;border-radius:6px;padding:6px 8px;cursor:pointer}
+.modal-content form{display:flex;flex-direction:column;gap:8px}
+.modal-content input, .modal-content select, .modal-content textarea{padding:8px;border:1px solid #d6dbe6;border-radius:6px}
+#modal-open-new{background:#fff;color:var(--accent);border:1px solid #e0e6f0}
+#modal-cancel{background:#f0f0f0;color:#333;border:1px solid #d6dbe6}
+
+
+
+/* Status chart rows */
+.status-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.status-label{width:90px;font-weight:600}
+.status-count{width:40px;text-align:right;color:var(--muted)}
+.status-bar{flex:1;background:#eef4fb;border-radius:6px;overflow:hidden;height:14px}
+.status-bar-inner{height:100%;background:#2752a7;width:0}
+.status-revision .status-bar-inner{background:#6aa84f}
+.status-routing .status-bar-inner{background:#f6b042}
+.status-approved .status-bar-inner{background:#2b8a2b}
+.status-rejected .status-bar-inner{background:#d9534f}
+
+.status-row button{margin-left:6px;background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:4px 6px;border-radius:6px}
+.status-row.selected{outline:2px solid rgba(39,82,167,0.14);background:#f6f9ff}
+
+/* WINS chart styles */
+.wins-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.wins-label{width:110px;font-weight:600}
+.wins-count{width:40px;text-align:right;color:var(--muted)}
+.wins-bar{flex:1;background:#f2f7f2;border-radius:6px;overflow:hidden;height:14px}
+.wins-bar-inner{height:100%;background:#2b8a2b;width:0}
+.wins-approved .wins-bar-inner{background:#2b8a2b}
+.wins-pending .wins-bar-inner{background:#f6b042}
+.wins-rejected .wins-bar-inner{background:#d9534f}
+.wins-row button{margin-left:6px;background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:4px 6px;border-radius:6px}
+.wins-row.selected{outline:2px solid rgba(43,138,43,0.12);background:#f7fff6}
+
+/* Age overview styles */
+.age-ov-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.age-ov-label{width:110px;font-weight:600}
+.age-ov-avg{min-width:56px;padding:4px 8px;border-radius:6px;background:#eef6ff;color:#0b4da0;text-align:center;font-weight:700}
+.age-ov-buckets{flex:1;display:flex;gap:6px;align-items:center}
+.age-bucket{flex:1;background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden;position:relative}
+.age-bucket-inner{height:100%;background:#6aa84f;width:0}
+.age-bucket-inner.mid{background:#f6b042}
+.age-bucket-inner.bad{background:#d9534f}
+.age-ov-count{width:36px;text-align:right;color:var(--muted)}
+.age-ov-row button{margin-left:6px;background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:4px 6px;border-radius:6px}
+.age-ov-row.selected{outline:2px solid rgba(39,82,167,0.08);background:#f6faff}
+
+/* Total documents display */
+.total-docs-display{font-size:48px;font-weight:700;text-align:center;color:var(--accent);padding:20px 0}
+
+/* Centered overview area (Status / WINS / Admin Status / Age) */
+.center-overviews{max-width:980px;margin:18px auto;padding:12px}
+.overviews-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.overview-card{flex:1 1 240px;max-width:480px;min-width:220px;padding:12px;border-radius:8px;background:var(--card);box-shadow:0 1px 3px rgba(6,212,212,0.04)}
+.overview-card h3{margin-top:0;margin-bottom:8px}
+
+/* Full documents view: fit to window */
+body.full-view main{min-height:calc(100vh - 220px)}
+.full-results{width:100%}
+
+/* Ensure charts expand to card width */
+#status-chart, #wins-chart, #age-overview, #admin-status-overview{width:100%}
+
+
+/* Notes cell: truncate long notes and provide tooltip */
+.notes-cell{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notes-cell .notes-text{display:inline-block;vertical-align:middle;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.note-edit-btn{background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:2px 6px;border-radius:6px;margin-left:6px}
+.note-save-btn{background:#2b6a2b;padding:4px 6px;margin-left:6px}
+.note-cancel-btn{background:#a63131;padding:4px 6px;margin-left:6px}
+
+/* Forward/Receive buttons */
+.forward{background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:4px 6px;border-radius:6px;margin-left:6px}
+.receive{background:#2b8a2b;color:#fff;padding:4px 6px;border-radius:6px;margin-left:6px;border:0}
+.forwarded-label{display:inline-block;padding:4px 8px;border-radius:6px;background:#fff3e8;color:#d08a1a;font-weight:700;margin-left:6px}
+
+/* Admin received status styling (dashboard) */
+.admin-status-label{display:inline-block;padding:4px 8px;border-radius:6px;background:#2ecc71;color:#fff;font-weight:700;margin-left:6px}
+
+/* Returned icon styling */
+.returned-icon{display:inline-flex;align-items:center;justify-content:center;padding:6px;border-radius:6px;background:#fff;color:#e74c3c;border:1px solid #fdecea}
+.returned-icon svg{width:16px;height:16px}
+
+/* Admin inbox */
+#admin-inbox{margin-bottom:12px}
+#admin-inbox-list .approved-ul li{padding:8px;border-bottom:1px solid #eef2f6}
+#admin-inbox-list .approved-ul li .muted{margin-top:4px;display:block}
+#admin-inbox-list .receive{background:#2b8a2b;color:#fff;border:0}
+#admin-inbox-list .open-new-tab{background:#fff;color:var(--accent);border:1px solid #e0e6f0;padding:4px 6px;border-radius:6px}
+
+/* Icon with label (vertical) used in admin inbox action buttons */
+.icon-with-label{display:flex;flex-direction:column;align-items:center;gap:6px}
+.icon-with-label .btn-label-under{font-size:11px;color:var(--muted);display:block;text-align:center}
+.icon-with-label .icon-btn{padding:6px;border-radius:6px}
+
+/* Avatar / profile picture */
+.avatar{width:64px;height:64px;border-radius:50%;background:#cfd8e3;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#16325a;font-size:20px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar.small{width:32px;height:32px;font-size:12px}
+
+/* Column widths for the documents table (Select, Control, Title, Notes, Owner, Status, WINS, Created, Updated, Age, Actions) */
+
+/* Removed fixed widths for autofit */
+
+/* Ensure truncated cells wrap appropriately where needed */
+#docs-table td{overflow:hidden;text-overflow:ellipsis}
+
+/* Highlight selected rows */
+.selected-row { background-color: #e6f3ff; }
+
+
+/* Navbar container (fixed top, consistent across pages) */
+.navbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  left: 240px; /* Shifted for main sidebar */
+  z-index:9999;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* Centered project title inside navbar */
+.nav-title{position:absolute;left:0;right:0;text-align:center;pointer-events:none;color:#fff;font-weight:700;font-size:16px}
+
+/* ensure page content is not hidden under fixed navbar */
+body{padding-top:64px}
+
+/* Navbar groups */
+.navbar .nav-left, .navbar .nav-right{display:flex;align-items:center;gap:8px}
+.navbar .nav-right{margin-left:auto}
+
+/* Links inside the navbar */
+.navbar a {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  color: #ecf0f1;
+  text-decoration: none;
+  padding: 0 15px;
+  height: 60px; /* Full height for hover effect */
+  transition: background 160ms ease, transform 120ms ease;
+}
+
+/* Navbar button-style link */
+.navbar .nav-btn{
+  background: transparent;
+  border-radius: 0;
+  color: #ecf0f1;
+  box-shadow: none;
+}
+.navbar .nav-btn:hover{ 
+  background-color: #34495e;
+  color: white;
+  transform: none; 
+}
+.navbar .nav-btn.active {
+  background-color: #34495e;
+  color: white;
+  font-weight: bold;
+}
+
+/* Admin Inbox Filter Menu Items Alignment */
+.admin-filter-item-box {
+  justify-content: flex-start !important;
+  width: 100%;
+  text-align: left;
+}
+
+/* subtle hover for links */
+.navbar a:hover{ background-color: #34495e; color: white; }
+
+/* User dropdown in navbar (right side) */
+.nav-user{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nav-user .user-btn{
+  background:transparent;color:#fff;border:0;padding:6px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:8px
+}
+.nav-user .user-btn:hover{background:rgba(255,255,255,0.06)}
+.nav-user .user-menu{position:absolute;right:0;top:50px;background:#fff;color:#111;border-radius:4px;box-shadow:0 8px 16px rgba(0,0,0,0.2);min-width:160px;visibility:hidden;z-index:3000;padding:0;transform:translateY(-10px);opacity:0;transition:all 0.3s ease}
+.nav-user .user-menu a, .nav-user .user-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 12px;border-radius:6px;background:transparent;border:0;color:#16325a;font-size:14px}
+.nav-user .user-menu svg{width:16px;height:16px;opacity:0.7;transition:opacity 0.2s}
+.nav-user .user-menu a:hover svg, .nav-user .user-menu button:hover svg{opacity:1}
+.nav-user .user-menu a:hover, .nav-user .user-menu button:hover{background:#f1f5fb}
+.nav-user.open .user-menu{visibility:visible;transform:translateY(0);opacity:1}
+.nav-user:hover .user-menu{visibility:visible;transform:translateY(0);opacity:1}
+
+/* Clock styling inside navbar */
+.navbar .clock{background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:6px;color:#bdc3c7}
+
+/* Hide navbar when body has no-navbar (used during login view) */
+/* Disabled so navbar remains visible across pages */
+body.no-navbar .navbar{display:none}
+
+/* Responsive: stack navbar and header-right on small screens */
+@media (max-width: 720px) {
+  header {flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}
+  header h1 {font-size:16px}
+  .navbar {display:flex;flex-wrap:wrap;gap:8px;padding:8px;background-color:#333}
+  .navbar a {float:none;display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:6px;text-align:center}
+  .navbar { left: 0; position: relative; } /* Reset fixed pos on mobile */
+  .navbar .nav-btn {flex:1 1 auto;margin-left:0}
+  .header-right {display:flex;justify-content:flex-end;gap:8px;padding:0 8px 8px}
+  .clock{order:1}
+  /* hide left links by default and show hamburger */
+  .nav-left{display:none}
+  .nav-toggle{display:inline-flex}
+
+  /* Stack controls on small screens */
+  .controls{flex-direction:column;align-items:stretch}
+  .controls .left, .controls .right{width:100%;display:flex;gap:8px;flex-wrap:wrap}
+  .controls .right{justify-content:flex-start}
+  .tools{flex-direction:column}
+  /* make table responsive */
+  .full-results{overflow-x:auto}
+
+  /* Fix sidebar responsiveness: stack layout */
+  .layout { flex-direction: column; }
+  .left-sidebar { width: 100%; flex: none; max-height: 300px; }
+  .sidebar-toggle { display: none; }
+  /* Ensure sidebar is visible if it was collapsed on desktop */
+  .left-sidebar.collapsed { width: 100%; height: auto; opacity: 1; visibility: visible; pointer-events: auto; }
+}
+
+@media (max-width: 420px) {
+  .navbar a {font-size:14px;padding:8px 10px}
+  .header-right {justify-content:center}
+  header h1 {text-align:left}
+}
+
+.nav-toggle{display:none !important;border:0;background:transparent;color:#fff;padding:8px;border-radius:6px;cursor:pointer;align-items:center;justify-content:center}
+.nav-toggle .bar{display:block;width:18px;height:2px;background:#fff;margin:3px 0;border-radius:2px;transition:all 160ms ease}
+.navbar.open .nav-left{display:flex}
+.navbar.open .nav-toggle .bar:nth-child(1){transform:translateY(5px) rotate(45deg)}
+.navbar.open .nav-toggle .bar:nth-child(2){opacity:0}
+.navbar.open .nav-toggle .bar:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+
+/* Ensure navbar stays hidden on login even on small screens */
+/* Disabled so navbar remains visible across pages */
+body.no-navbar .navbar{display:none !important}
+
+/* Badge used on admin inbox nav button */
+.nav-badge{display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;font-size:12px;font-weight:700;color:#fff}
+.nav-badge.badge-forwarded{background:#f39c12}
+.nav-badge.badge-received{background:#2ecc71}
+.nav-badge.badge-returned{background:#e74c3c}
+.nav-badge.badge-intervention{background:#d97706}
+
+/* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit; /* Important for vertical align on mobile phones */
+  margin: 0; /* Important for vertical align on mobile phones */
+}
+
+/* Hover style for navbar links and dropdowns */
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: rgba(255,255,255,0.06);
+}
+
+/* Icon-style small buttons used for actions */
+.icon-btn{background:transparent;border:0;color:inherit;padding:6px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn svg{width:16px;height:16px;display:block}
+.icon-btn:hover{background:rgba(255,255,255,0.06);transform:translateY(-2px)}
+
+/* Small inline nav inside card (admin inbox) - make icon buttons readable on white background */
+.small-nav .icon-btn{ color: var(--accent); background: #fff; border: 1px solid #e6eef8; padding:6px; border-radius:6px; box-shadow: 0 1px 2px rgba(16,40,80,0.04); }
+.small-nav .icon-btn svg{ width:16px; height:16px }
+.small-nav .icon-btn:hover{ background:#f6f9ff; transform:translateY(-2px); }
+.small-nav .nav-badge{ margin-left:6px; font-size:12px; padding:2px 6px }
+
+/* Button label (show on wider screens) */
+.icon-btn .btn-label{display:none;margin-left:8px;font-weight:600;color:inherit}
+@media (min-width:720px){
+  .icon-btn .btn-label{display:inline-block}
+}
+
+/* Returned text label (when not using icon) */
+.returned-label{display:inline-block;padding:4px 8px;border-radius:6px;background:#fff6f6;color:#e74c3c;font-weight:700;margin-left:6px}
+
+/* small tools area for pages */
+.tools{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.tools input{padding:6px 8px;border-radius:6px;border:1px solid #e6eef8}
+
+/* Ensure icon buttons inside navbar stay white */
+.navbar .icon-btn{ color: #fff }
+
+/* Icon buttons inside cards (controls / small-nav) should be visible on white background */
+.card .icon-btn, .small-nav .icon-btn{ color: var(--accent); background: #fff; border:1px solid #e6eef8 }
+.card .icon-btn:hover, .small-nav .icon-btn:hover{ background:#f6f9ff }
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* --- Main App Sidebar --- */
+#app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: #1a252f;
+  color: #ecf0f1;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+}
+
+.sidebar-brand {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 20px;
+  font-weight: bold;
+  background: #151e26;
+  border-bottom: 1px solid #2c3e50;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-menu li button {
+  width: 100%;
+  text-align: left;
+  padding: 15px 20px;
+  background: transparent;
+  border: none;
+  color: #bdc3c7;
+  font-size: 15px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sidebar-menu li button:hover { background: #2c3e50; color: #fff; transform: none; }
+.sidebar-menu li button.active { background: #2752a7; color: #fff; border-left: 4px solid #64b5f6; }
+
+/* Adjust body to make room for sidebar */
+body { padding-left: 240px; }
+
+/* Hide sidebar on login */
+body.no-navbar #app-sidebar { display: none; }
+body.no-navbar { padding-left: 0 !important; }
+
+/* Mobile adjustments for main sidebar */
+@media (max-width: 720px) {
+  #app-sidebar { display: none; } /* Hide main sidebar on mobile for now */
+  body { padding-left: 0; }
+}
+
+/* --- Main Sidebar Collapsible Styles --- */
+.sidebar-toggle-btn { background: transparent; border: none; color: #bdc3c7; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+.sidebar-toggle-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.sidebar-toggle-btn svg { width: 20px; height: 20px; }
+.menu-icon { width: 20px; height: 20px; margin-right: 12px; vertical-align: middle; opacity: 0.8; }
+.menu-text { vertical-align: middle; white-space: nowrap; opacity: 1; transition: opacity 0.2s; }
+
+#app-sidebar { transition: width 0.3s ease; }
+body { transition: padding-left 0.3s ease; }
+.navbar { transition: left 0.3s ease; }
+
+#app-sidebar.collapsed { width: 60px; }
+#app-sidebar.collapsed .brand-text { display: none; }
+#app-sidebar.collapsed .sidebar-brand { justify-content: center; padding: 0; }
+#app-sidebar.collapsed .menu-text { display: none; }
+#app-sidebar.collapsed .sidebar-menu li button { text-align: center; padding: 15px 0; }
+#app-sidebar.collapsed .menu-icon { margin-right: 0; }
+#app-sidebar.collapsed .sidebar-toggle-btn svg { transform: rotate(180deg); }
+
+body.main-sidebar-collapsed { padding-left: 60px; }
+body.main-sidebar-collapsed .navbar { left: 60px; }
+
+/* Tooltips for collapsed sidebar */
+#app-sidebar.collapsed .sidebar-menu li button {
+  position: relative;
+}
+#app-sidebar.collapsed .sidebar-menu li button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: 1000;
+  margin-left: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+#app-sidebar.collapsed .sidebar-menu li button:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hide DMS nav items when in inventory mode */
+body.inventory-mode .navbar .nav-left {
+  display: none !important;
+}
+
+/* Sidebar Submenu */
+.sidebar-submenu {
+  display: none;
+  list-style: none;
+  padding: 0;
+  background: #0f161d;
+}
+.sidebar-menu li:hover .sidebar-submenu {
+  display: block;
+}
+.sidebar-submenu li button {
+  padding: 12px 20px 12px 52px; /* Indent */
+  font-size: 14px;
+  color: #a0aab5;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-submenu li button:hover {
+  color: #fff;
+  background: #1a252f;
+}
+
+/* Collapsed Sidebar Submenu overrides */
+#app-sidebar.collapsed .sidebar-menu li:hover .sidebar-submenu {
+  position: absolute; left: 100%; top: 0; width: 200px;
+  display: block; background: #1a252f; box-shadow: 4px 0 8px rgba(0,0,0,0.2); border-left: 1px solid #2c3e50;
+}
+#app-sidebar.collapsed .sidebar-submenu li button { padding: 12px 20px; }
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Main App Sidebar */
+#app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: #1a252f;
+  color: #ecf0f1;
+  transition: width 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+body {
+  padding-left: 240px;
+  transition: padding-left 0.3s ease;
+}
+#app-sidebar.collapsed {
+  width: 60px;
+  overflow: visible;
+}
+body.sidebar-collapsed {
+  padding-left: 60px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 14px;
+  position: relative;
+}
+/* Hide sidebar on login/no-navbar pages */
+body.no-navbar #app-sidebar {
+  display: none;
+}
+body.no-navbar {
+  padding-left: 0;
+}
+
+.sidebar-brand {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #151e26;
+  flex-shrink: 0;
+}
+.brand-text {
+  font-weight: bold;
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s;
+}
+#app-sidebar.collapsed .brand-text {
+  opacity: 0;
+  width: 0;
+}
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+.sidebar-menu li button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #b8c7ce;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 14px;
+}
+.sidebar-menu li button:hover, .sidebar-menu li button.active {
+  background: #2c3b41;
+  color: #fff;
+}
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.menu-text {
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s;
+}
+#app-sidebar.collapsed .menu-text {
+  opacity: 0;
+  width: 0;
+  display: none;
+}
+.sidebar-submenu {
+  list-style: none;
+  padding: 0;
+  background: #222d32;
+  display: none;
+}
+.sidebar-menu li:hover .sidebar-submenu, .sidebar-menu li button.active + .sidebar-submenu {
+  display: block;
+}
+#app-sidebar.collapsed .sidebar-submenu {
+  display: none !important;
+}
+.sidebar-submenu li button {
+  padding-left: 48px;
+  font-size: 13px;
+}
+/* Tooltips for collapsed sidebar */
+#app-sidebar.collapsed .sidebar-menu li button {
+  position: relative;
+}
+#app-sidebar.collapsed .sidebar-menu li button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 1000;
+  margin-left: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+#app-sidebar.collapsed .sidebar-menu li button::before {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #2c3e50;
+  margin-left: 0px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 1000;
+  pointer-events: none;
+}
+#app-sidebar.collapsed .sidebar-menu li button:hover::after,
+#app-sidebar.collapsed .sidebar-menu li button:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(5px);
+}
+
+/* Custom Tooltip for Icon Buttons (Bottom Arrow / Top Position) */
+.icon-btn[data-tooltip] { position: relative; }
+.icon-btn[data-tooltip]::before, .icon-btn[data-tooltip]::after {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 10000;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+}
+.icon-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  bottom: 100%;
+  margin-bottom: 8px;
+  background: #2c3e50;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.icon-btn[data-tooltip]::before {
+  content: '';
+  bottom: 100%;
+  margin-bottom: 3px;
+  border: 5px solid transparent;
+  border-top-color: #2c3e50;
+}
+.icon-btn[data-tooltip]:hover::before, .icon-btn[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Notifications */
+.nav-notifications { position: relative; margin-right: 12px; }
+.notification-btn { background: transparent; border: none; color: #fff; cursor: pointer; position: relative; padding: 8px; display: flex; align-items: center; justify-content: center; }
+.notification-btn:hover { background: rgba(255,255,255,0.1); border-radius: 6px; }
+.notification-badge { position: absolute; top: 4px; right: 4px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px; font-weight: bold; display: none; line-height: 1; min-width: 16px; text-align: center; }
+.notification-menu { position: absolute; right: 0; top: 100%; width: 300px; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 10000; max-height: 400px; overflow-y: auto; color: #333; margin-top: 8px; }
+.notification-menu.show { display: block; }
+.notification-header { padding: 10px 15px; border-bottom: 1px solid #eee; font-weight: bold; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 4px 4px 0 0; }
+.notification-list { list-style: none; padding: 0; margin: 0; }
+.notification-item { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 13px; transition: background 0.2s; }
+.notification-item:last-child { border-bottom: none; }
+.notification-item:hover { background: #f9f9f9; }
+.notification-time { font-size: 11px; color: #888; display: block; margin-top: 4px; }
+.notification-empty { padding: 20px; text-align: center; color: #888; font-style: italic; }
+.clear-notifications { font-size: 11px; color: #2752a7; cursor: pointer; background: none; border: none; padding: 0; font-weight: 600; }
+.clear-notifications:hover { text-decoration: underline; }
+body.dark-mode .notification-menu { background: #2c2c2c; border-color: #444; color: #eee; }
+body.dark-mode .notification-header { background: #1f1f1f; border-bottom-color: #444; }
+body.dark-mode .notification-item { border-bottom-color: #444; }
+body.dark-mode .notification-item:hover { background: #333; }
+body.dark-mode .clear-notifications { color: #64b5f6; }ersion 
