@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     /* Dark Mode Header */
     body.dark-mode header { background: #1a252f; border-bottom: 1px solid #2c3e50; }
@@ -302,11 +303,8 @@
       <button id="validators-view-btn" class="icon-btn" title="Validators View" style="margin-left: 5px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> Validators View
       </button>
-      <button id="counter-timestamp-btn" class="icon-btn" title="Activity Tracker" style="margin-left: 5px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Activity Tracker
-      </button>
-      <button id="main-assign-task-btn" class="icon-btn" title="Assign Task" style="margin-left: 5px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Assign Task
+      <button onclick="window.location.href='daily_task_tracker.html'" class="icon-btn" title="Daily Task Tracker" style="margin-left: 5px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><rect x="9" y="3" width="6" height="4" rx="2"></rect><path d="M9 14l2 2 4-4"></path></svg> Daily Task Tracker
       </button>
       <div style="display:flex; align-items:center; gap:5px; margin-left:10px; border-left:1px solid #ccc; padding-left:10px;">
           <input type="checkbox" id="auto-refresh-check" title="Auto Refresh every 15s">
@@ -443,6 +441,9 @@
             <button id="print-att-btn" class="icon-btn" title="Print List">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             </button>
+            <button id="bulk-timeout-btn" class="icon-btn" title="Bulk Time Out" style="color:#34495e; display:none; margin-right:5px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </button>
             <button id="delete-selected-att-btn" class="icon-btn" title="Delete Selected" style="color:#d9534f; display:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
             </button>
@@ -451,6 +452,9 @@
             </button>
             <button id="undo-forward-btn" class="icon-btn" title="Undo Last Forward" style="background: #7f8c8d; color: white; margin-right: 5px; display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg> Undo
+            </button>
+            <button id="export-excel-btn" class="icon-btn" title="Export Excel (By Status)" style="margin-right:5px; color:#27ae60;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             </button>
             <button id="export-att-btn" class="icon-btn" title="Export CSV" style="margin-right:5px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -729,10 +733,11 @@
                         <input type="text" id="ts-user-name-display" placeholder="Name" readonly style="flex:1; padding:10px; font-size:16px; border:1px solid #ccc; border-radius:4px; background:#f9f9f9;">
                     </div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:5px; margin-bottom:10px;">
+                    <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:5px; margin-bottom:10px;">
                         <button id="btn-break-start-main" class="icon-btn" style="background:#f1c40f; color:white; padding:10px; font-weight:bold; justify-content:center;">Break Out</button>
                         <button id="btn-break-end-main" class="icon-btn" style="background:#f39c12; color:white; padding:10px; font-weight:bold; justify-content:center;">Break In</button>
-                        <button id="btn-nsw" class="icon-btn" style="background:#9b59b6; color:white; padding:10px; font-weight:bold; justify-content:center;">NSW</button>
+                        <button id="btn-nsw" class="icon-btn" style="background:#9b59b6; color:white; padding:10px; font-weight:bold; justify-content:center;">Simple Task</button>
+                        <button id="btn-end-task" class="icon-btn" style="background:#8e44ad; color:white; padding:10px; font-weight:bold; justify-content:center;">End Task</button>
                         <button id="btn-time-out" class="icon-btn" style="background:#34495e; color:white; padding:10px; font-weight:bold; justify-content:center;">Time Out</button>
                     </div>
                 </div>
@@ -1118,6 +1123,7 @@
             </div>
             <div style="display:flex; align-items:center; gap: 5px;">
                 <button id="toggle-add-task-widget-btn" class="icon-btn" title="Open Add Task Widget" style="background:#2752a7; color:white;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button id="add-ops-task-btn" class="icon-btn" title="Print Blank Ops Form" style="background:#e67e22; color:white;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg></button>
                 <div style="width:1px; height:20px; background:#ddd; margin:0 2px;"></div>
                 <button onclick="window.openUniversalSearch && window.openUniversalSearch(['Cycle Count', 'Attendance', 'Daily Counter', 'Validation Task'])" class="icon-btn" title="Universal Search (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
                 <div style="position:relative;">
@@ -1125,17 +1131,8 @@
                     <div id="val-search-preview" class="search-preview-dropdown" style="display:none;"></div>
                 </div>
                 <input type="date" id="val-view-date" title="Filter Date" style="padding:4px; border:1px solid #ccc; border-radius:4px; font-size:12px; color:#333;">
-                <button id="download-sku-template-btn" class="icon-btn" title="Download SKU Template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
-                <button id="upload-sku-desc-btn" class="icon-btn" title="Upload SKU Master List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></button>
-                <button id="clear-sku-master-btn" class="icon-btn" title="Clear SKU Master List" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
-                <input type="file" id="upload-sku-desc-file" accept=".csv" style="display:none;">
-                <div style="width:1px; height:20px; background:#ddd; margin:0 2px;"></div>
-                <button id="download-task-template-btn" class="icon-btn" title="Download Task Template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button>
-                <button id="upload-bulk-tasks-btn" class="icon-btn" title="Bulk Assign Tasks (CSV)" style="color:#2752a7;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></button>
-                <button id="clear-val-tasks-btn" class="icon-btn" title="Clear Tasks" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                <input type="file" id="upload-bulk-tasks-file" accept=".csv" style="display:none;">
-                <div style="width:1px; height:20px; background:#ddd; margin:0 2px;"></div>
-                <button id="go-to-timestamp-btn" class="icon-btn" title="Activity Tracker" style="margin-right:5px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></button>
+                <button id="export-val-all-btn" class="icon-btn" title="Export All (Excel)" style="color:#27ae60; border:1px solid #ccc; background:#fff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button>
+                <button id="val-actions-btn" class="icon-btn" title="Actions" style="margin-right:5px; padding: 4px 12px; font-size: 12px; font-weight: bold; background: #f0f4f8; border: 1px solid #ccc;">Actions</button>
                 <button class="icon-btn close-modal">&times;</button>
             </div>
         </div>
@@ -1421,6 +1418,7 @@
                                         <th style="position:sticky; top:0; z-index:1;">Validator</th>
                                         <th style="position:sticky; top:0; z-index:1;">Status</th>
                                         <th style="position:sticky; top:0; z-index:1;">Sub Status</th>
+                                        <th style="position:sticky; top:0; z-index:1;">Reassigned To</th>
                                         <th style="position:sticky; top:0; z-index:1;">Duration</th>
                                         <th style="position:sticky; top:0; z-index:1;">Action</th>
                                     </tr>
@@ -1628,6 +1626,47 @@
         </div>
     </div>
 
+  <!-- Validator Actions Modal -->
+  <div id="val-actions-modal" class="modal hidden" style="z-index: 10060;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content card" style="max-width: 300px; margin: 100px auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0">Actions</h3>
+            <button class="icon-btn close-modal">&times;</button>
+        </div>
+        <div style="display:grid; gap:10px;">
+            <div style="font-size:12px; font-weight:bold; color:#666; border-bottom:1px solid #eee; padding-bottom:5px;">SKU Master</div>
+            <button id="download-sku-template-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Template
+            </button>
+            <button id="upload-sku-desc-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Upload Master List
+            </button>
+            <button id="clear-sku-master-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px; color:#d9534f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg> Clear Master List
+            </button>
+            <input type="file" id="upload-sku-desc-file" accept=".csv" style="display:none;">
+
+            <div style="font-size:12px; font-weight:bold; color:#666; border-bottom:1px solid #eee; padding-bottom:5px; margin-top:5px;">Tasks</div>
+            <button id="download-task-template-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Download Template
+            </button>
+            <button id="upload-bulk-tasks-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px; color:#2752a7;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Bulk Assign Tasks
+            </button>
+            <button id="clear-val-tasks-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px; color:#d9534f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Clear Tasks
+            </button>
+            <input type="file" id="upload-bulk-tasks-file" accept=".csv" style="display:none;">
+
+            <div style="font-size:12px; font-weight:bold; color:#666; border-bottom:1px solid #eee; padding-bottom:5px; margin-top:5px;">Tools</div>
+            <button id="go-to-timestamp-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Activity Tracker
+            </button>
+        </div>
+    </div>
+  </div>
+
   <div id="toast-notification" class="toast"></div>
   <script src="app.js"></script>
   <script>
@@ -1671,6 +1710,7 @@
         const attFilterRole = document.getElementById('att-filter-role');
         const deleteSelectedAttBtn = document.getElementById('delete-selected-att-btn');
         const selectAllAtt = document.getElementById('select-all-att');
+        const bulkTimeoutBtn = document.getElementById('bulk-timeout-btn');
         
         const globalStartDate = document.getElementById('global-start-date');
         const globalEndDate = document.getElementById('global-end-date');
@@ -1685,6 +1725,7 @@
         const btnBreakStartMain = document.getElementById('btn-break-start-main');
         const btnBreakEndMain = document.getElementById('btn-break-end-main');
         const btnEndCount = document.getElementById('btn-end-count');
+        const btnEndTask = document.getElementById('btn-end-task');
         const btnNSW = document.getElementById('btn-nsw');
         const btnBreakStart = document.getElementById('btn-break-start');
         const btnBreakEnd = document.getElementById('btn-break-end');
@@ -2431,6 +2472,9 @@
             if (deleteSelectedAttBtn) {
                 deleteSelectedAttBtn.style.display = selectedCount > 0 ? 'inline-flex' : 'none';
             }
+            if (bulkTimeoutBtn) {
+                bulkTimeoutBtn.style.display = selectedCount > 0 ? 'inline-flex' : 'none';
+            }
         }
 
         if (selectAllAtt) {
@@ -2444,6 +2488,49 @@
             attendanceTableBody.addEventListener('change', (e) => {
                 if (e.target.classList.contains('att-row-checkbox')) {
                     updateAttendanceActionButtons();
+                }
+            });
+        }
+
+        if (bulkTimeoutBtn) {
+            bulkTimeoutBtn.addEventListener('click', () => {
+                const selectedIds = Array.from(document.querySelectorAll('.att-row-checkbox:checked')).map(cb => cb.dataset.id);
+                if (selectedIds.length === 0) return;
+
+                const now = new Date();
+                const defaultTime = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+                const timeOutVal = prompt("Enter Time Out (HH:MM):", defaultTime);
+                
+                if (timeOutVal !== null) {
+                    let data = getAttendanceData();
+                    const selectedSet = new Set(selectedIds);
+                    
+                    // Sync to Daily Counters Attendance
+                    const dailyCountersAttendanceKey = 'ims_daily_counters_attendance_v1';
+                    let dailyAttendance = [];
+                    try { dailyAttendance = JSON.parse(localStorage.getItem(dailyCountersAttendanceKey) || '[]'); } catch (err) { dailyAttendance = []; }
+                    let dailyModified = false;
+
+                    data.forEach(item => {
+                        if (selectedSet.has(item.id)) {
+                            item.timeOut = timeOutVal;
+                            // Sync if exists in daily attendance (Cycle Counters)
+                            dailyAttendance.forEach(dItem => {
+                                if (dItem.id === item.id || (dItem.userId === item.userId && dItem.date === item.date && dItem.shift === item.shift)) {
+                                    dItem.timeOut = timeOutVal;
+                                    dailyModified = true;
+                                }
+                            });
+                        }
+                    });
+
+                    saveAttendanceData(data);
+                    if (dailyModified) localStorage.setItem(dailyCountersAttendanceKey, JSON.stringify(dailyAttendance));
+                    
+                    renderAttendanceTable();
+                    if(selectAllAtt) selectAllAtt.checked = false;
+                    updateAttendanceActionButtons();
+                    showToast(`Bulk timeout set for ${selectedIds.length} records.`);
                 }
             });
         }
@@ -2583,6 +2670,67 @@
                 if (code !== '12345' && code !== 'admin') { alert('Invalid Supervisor Code.'); return; }
                 if (typeof supervisorDeleteCallback === 'function') supervisorDeleteCallback();
                 supervisorDeleteModal.classList.add('hidden');
+            });
+        }
+
+        // Export Excel (By Status)
+        const exportExcelBtn = document.getElementById('export-excel-btn');
+        if (exportExcelBtn) {
+            exportExcelBtn.addEventListener('click', () => {
+                // Pass true to ignore shift tab filter (export all shifts)
+                const data = getFilteredAttendanceData(true);
+                if (data.length === 0) { alert('No attendance records to export.'); return; }
+                
+                if (typeof XLSX === 'undefined') {
+                    alert('SheetJS library not loaded. Please check internet connection.');
+                    return;
+                }
+
+                const wb = XLSX.utils.book_new();
+                
+                // Group by Status
+                const grouped = {};
+                data.forEach(item => {
+                    const status = item.status || 'Unknown';
+                    if (!grouped[status]) grouped[status] = [];
+                    grouped[status].push(item);
+                });
+
+                Object.keys(grouped).forEach(status => {
+                    const sheetData = grouped[status];
+                    
+                    // Format data
+                    const rows = sheetData.map(item => ({
+                        'Date': item.date,
+                        'User ID': item.userId || '',
+                        'Shift': item.shift,
+                        'Name': item.name,
+                        'Role': item.role || '',
+                        'Job Description': item.area || '',
+                        'Time In': item.timeIn || '',
+                        'Break Out': item.breakOut || '',
+                        'Break In': item.breakIn || '',
+                        'Time Out': item.timeOut || '',
+                        'Duration': getDuration(item.breakOut, item.breakIn),
+                        'Status': item.status || '',
+                        'Notes': item.notes || ''
+                    }));
+
+                    const ws = XLSX.utils.json_to_sheet(rows);
+                    // Sanitize sheet name
+                    let sheetName = status.replace(/[\\/?*\[\]]/g, ' ').substring(0, 31);
+                    // Ensure unique sheet names
+                    if(wb.SheetNames.includes(sheetName)) {
+                        let i = 1;
+                        while(wb.SheetNames.includes(sheetName + " " + i)) i++;
+                        sheetName += " " + i;
+                    }
+                    
+                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                });
+
+                const dateStr = new Date().toISOString().split('T')[0];
+                XLSX.writeFile(wb, `attendance_by_status_${dateStr}.xlsx`);
             });
         }
 
@@ -3105,7 +3253,7 @@
                         <td>${t.desc || ''}</td>
                         <td>${t.qty}</td>
                         <td>${t.reason || ''}</td>
-                        <td>${t.status}</td>
+                        <td>${t.status === 'Completed' ? 'Resolved' : t.status}</td>
                         <td>${new Date(t.timestamp).toLocaleTimeString()}</td>
                     </tr>
                 `;
@@ -3117,13 +3265,13 @@
                     <title>Validator Sign-Off - ${validator.name}</title>
                     <style>
                         body { font-family: sans-serif; padding: 20px; }
-                        h2 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
-                        .info-section { margin-bottom: 20px; }
+                        h2 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
+                        .info-section { margin-bottom: 20px; border: 1px solid #000; padding: 10px; }
                         .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
                         .stats-table, .tasks-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
-                        .stats-table th, .stats-table td, .tasks-table th, .tasks-table td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+                        .stats-table th, .stats-table td, .tasks-table th, .tasks-table td { border: 1px solid #000; padding: 6px; text-align: left; }
                         .stats-table th, .tasks-table th { background-color: #f0f0f0; }
-                        .sign-off-section { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px; }
+                        .sign-off-section { margin-top: 40px; border-top: 1px solid #000; padding-top: 20px; }
                         .signature-row { display: flex; justify-content: space-between; margin-top: 40px; }
                         .signature-box { width: 45%; border-top: 1px solid #000; text-align: center; padding-top: 5px; }
                     </style>
@@ -3208,21 +3356,21 @@
             validatorTasks.forEach(t => {
                 tasksHtml += `
                     <tr>
-                        <td style="border:1px solid #ccc; padding:6px;">${t.sku}</td>
-                        <td style="border:1px solid #ccc; padding:6px;">${t.desc || ''}</td>
-                        <td style="border:1px solid #ccc; padding:6px;">${t.qty}</td>
-                        <td style="border:1px solid #ccc; padding:6px;">${t.reason || ''}</td>
-                        <td style="border:1px solid #ccc; padding:6px;">${t.status}</td>
-                        <td style="border:1px solid #ccc; padding:6px;">${new Date(t.timestamp).toLocaleTimeString()}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.sku}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.desc || ''}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.qty}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.reason || ''}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.status === 'Completed' ? 'Resolved' : t.status}</td>
+                        <td style="border:1px solid #000; padding:6px;">${new Date(t.timestamp).toLocaleTimeString()}</td>
                     </tr>
                 `;
             });
 
             container.innerHTML = `
                 <div style="font-family: sans-serif; padding: 20px; color: #000;">
-                    <h2 style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;">Validator Sign-Off Form</h2>
+                    <h2 style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">Validator Sign-Off Form</h2>
                     
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 20px; border: 1px solid #000; padding: 10px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><strong>Validator Name:</strong> ${validator.name}</div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><strong>User ID:</strong> ${validator.userId || '-'}</div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><strong>Shift:</strong> ${validator.shift}</div>
@@ -3232,14 +3380,14 @@
                     <h3>Task Summary</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
                         <thead>
-                            <tr><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Total Tasks</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Resolved</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Unresolved</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Pending</th></tr>
+                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Total Tasks</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Resolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Unresolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Pending</th></tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="border:1px solid #ccc; padding:6px;">${total}</td>
-                                <td style="border:1px solid #ccc; padding:6px;">${resolved}</td>
-                                <td style="border:1px solid #ccc; padding:6px;">${unresolved}</td>
-                                <td style="border:1px solid #ccc; padding:6px;">${pending}</td>
+                                <td style="border:1px solid #000; padding:6px;">${total}</td>
+                                <td style="border:1px solid #000; padding:6px;">${resolved}</td>
+                                <td style="border:1px solid #000; padding:6px;">${unresolved}</td>
+                                <td style="border:1px solid #000; padding:6px;">${pending}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -3247,14 +3395,14 @@
                     <h3>Task Details</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
                         <thead>
-                            <tr><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">SKU</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Description</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Qty</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Reason</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Status</th><th style="border:1px solid #ccc; padding:6px; background-color:#f0f0f0;">Time</th></tr>
+                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">SKU</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Description</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Qty</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Reason</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Status</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Time</th></tr>
                         </thead>
                         <tbody>
-                            ${tasksHtml || '<tr><td colspan="6" style="text-align:center; border:1px solid #ccc; padding:6px;">No tasks found</td></tr>'}
+                            ${tasksHtml || '<tr><td colspan="6" style="text-align:center; border:1px solid #000; padding:6px;">No tasks found</td></tr>'}
                         </tbody>
                     </table>
 
-                    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+                    <div style="margin-top: 40px; border-top: 1px solid #000; padding-top: 20px;">
                         <p>I confirm that the validation tasks listed above have been attended to according to the standard operating procedures.</p>
                         
                         <div style="display: flex; justify-content: space-between; margin-top: 40px;">
@@ -3810,6 +3958,16 @@
                         durationStr = diffMins < 60 ? `${diffMins}m` : `${Math.floor(diffMins/60)}h ${diffMins%60}m`;
                     }
 
+                    let options = `<option value="Unassigned">Unassign</option>`;
+                    validatorNames.forEach(v => {
+                        const selected = (t.validator === v) ? 'selected' : '';
+                        options += `<option value="${v}" ${selected}>${v}</option>`;
+                    });
+                    if (t.validator && !validatorNames.includes(t.validator)) {
+                        options += `<option value="${t.validator}" selected>${t.validator} (inactive)</option>`;
+                    }
+                    const validatorInput = `<select class="task-validator-input" data-id="${t.id}" style="width:100%; padding:4px; border:1px solid #e0e0e0; border-radius:4px; font-size:11px; background:#fff; color:#333;">${options}</select>`;
+
                     const actionHtml = `
                         <button class="icon-btn reopen-task-btn" data-id="${t.id}" title="Reopen (Move to Pending)" style="color:#f39c12; margin-right:5px;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg>
@@ -3817,7 +3975,7 @@
                         <button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
                         </button>`;
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.validator}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${validatorInput}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
                     resolvedTasksTbody.appendChild(tr);
                 });
             }
@@ -3902,7 +4060,7 @@
             if(historyNext) historyNext.disabled = valHistoryPage >= totalHistoryPages;
 
             if(paginatedHistory.length === 0) {
-                historyTasksTbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:10px; color:#999;">No history tasks.</td></tr>';
+                historyTasksTbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:10px; color:#999;">No history tasks.</td></tr>';
             } else {
                 paginatedHistory.forEach(t => {
                     const tr = document.createElement('tr');
@@ -3929,9 +4087,13 @@
                     if (t.status === 'Reassigned') {
                         displayStatus = 'Unresolved';
                         displaySubStatus = 'Reassigned';
+                    } else if (t.status === 'Completed') {
+                        displayStatus = 'Resolved';
                     }
 
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
+                    const reassignedTo = t.reassignedTo || '-';
+
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${reassignedTo}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
                     historyTasksTbody.appendChild(tr);
                 });
             }
@@ -4593,7 +4755,43 @@
                 }
             });
         }
-        if(resolvedTasksTbody) resolvedTasksTbody.addEventListener('click', handleTaskAction);
+        if(resolvedTasksTbody) {
+            resolvedTasksTbody.addEventListener('click', handleTaskAction);
+            resolvedTasksTbody.addEventListener('change', (e) => {
+                if(e.target.classList.contains('task-validator-input')) {
+                    const id = e.target.dataset.id;
+                    const newValidator = e.target.value;
+                    if(confirm(`Reassign this resolved task to ${newValidator}? This will create a new task entry with reset duration.`)) {
+                        let tasks = getValidationTasks();
+                        const taskIndex = tasks.findIndex(t => t.id === id);
+                        if(taskIndex > -1) {
+                            const oldTask = tasks[taskIndex];
+                            const newTask = {
+                                ...oldTask,
+                                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                                timestamp: new Date().toISOString(),
+                                validator: newValidator,
+                                status: 'Pending',
+                                completedAt: undefined,
+                                unresolvedAt: undefined,
+                                reassignedTo: undefined,
+                                reassignedAt: undefined
+                            };
+                            tasks.push(newTask);
+                            oldTask.subStatus = 'Reassigned';
+                            oldTask.reassignedTo = newValidator;
+                            oldTask.reassignedAt = new Date().toISOString();
+                            saveValidationTasks(tasks);
+                            renderValidationTasks();
+                            renderValidatorsModal();
+                            showToast(`Resolved task reassigned to ${newValidator}`);
+                        }
+                    } else {
+                        renderValidationTasks();
+                    }
+                }
+            });
+        }
         const unresolvedTasksTbody = document.getElementById('unresolved-tasks-tbody');
         if(unresolvedTasksTbody) {
             unresolvedTasksTbody.addEventListener('click', handleTaskAction);
@@ -5785,6 +5983,80 @@
             });
         }
 
+        // Ops Task - Print Blank Form Logic
+        const addOpsTaskBtn = document.getElementById('add-ops-task-btn');
+
+        if(addOpsTaskBtn) {
+            addOpsTaskBtn.addEventListener('click', () => {
+                const printWindow = window.open('', '_blank');
+                const rows = 20;
+                let rowsHtml = '';
+                for(let i=0; i<rows; i++) {
+                    rowsHtml += '<tr><td></td><td></td><td></td><td></td><td></td></tr>';
+                }
+                
+                const html = `
+                    <html>
+                    <head>
+                        <title>Ops Validator Task Form</title>
+                        <style>
+                            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; font-size: 12px; }
+                            h2 { text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 24px; }
+                            .header { display: flex; justify-content: space-between; margin-bottom: 20px; border: 1px solid #000; padding: 10px; }
+                            .header div { flex: 1; }
+                            table { width: 100%; border-collapse: collapse; border: 1px solid #000; }
+                            th, td { border: 1px solid #000; padding: 8px; }
+                            th { background-color: #f2f2f2; text-align: center; font-weight: bold; }
+                            td { height: 25px; }
+                            .footer { margin-top: 40px; display: flex; justify-content: space-between; padding: 0 50px; }
+                            .sig-line { width: 200px; border-top: 1px solid #000; text-align: center; padding-top: 5px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Ops Validator Task Form</h2>
+                        <div class="header">
+                            <div><strong>Date:</strong> __________________</div>
+                            <div style="text-align:center;"><strong>Shift:</strong> __________________</div>
+                            <div style="text-align:right;"><strong>Requested By:</strong> __________________</div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%;">SKU</th>
+                                    <th style="width: 35%;">Description</th>
+                                    <th style="width: 10%;">Qty</th>
+                                    <th style="width: 25%;">Reason</th>
+                                    <th style="width: 15%;">Status / Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                        <div class="footer">
+                            <div class="sig-line">Ops Validator Signature</div>
+                            <div class="sig-line">Received By (Validator)</div>
+                        </div>
+                        <script>
+                            window.onload = function() { window.print(); }
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                printWindow.document.write(html);
+                printWindow.document.close();
+            });
+        }
+
+        // Validator Actions Modal
+        const valActionsBtn = document.getElementById('val-actions-btn');
+        const valActionsModal = document.getElementById('val-actions-modal');
+        if(valActionsBtn && valActionsModal){
+            valActionsBtn.addEventListener('click', () => {
+                valActionsModal.classList.remove('hidden');
+            });
+        }
+
         // Check for auto-open validators modal
         if (sessionStorage.getItem('ims_open_validators_modal') === 'true') {
             sessionStorage.removeItem('ims_open_validators_modal');
@@ -5819,6 +6091,64 @@
                             toggleValAnalyticsBtn.title = "Collapse View";
                         }
                     }
+                });
+            }
+
+            // Export All Validation Tasks (Excel with Sheets)
+            const exportValAllBtn = document.getElementById('export-val-all-btn');
+            if (exportValAllBtn) {
+                exportValAllBtn.addEventListener('click', () => {
+                    let tasks = getValidationTasks();
+                    
+                    // Date Filtering
+                    const valViewDate = document.getElementById('val-view-date');
+                    if (valViewDate && valViewDate.value) {
+                        tasks = tasks.filter(t => getLocalYMD(t.timestamp) === valViewDate.value);
+                    } else if (globalStartDate.value || globalEndDate.value) {
+                        const start = globalStartDate.value ? new Date(globalStartDate.value) : null;
+                        if(start) start.setHours(0,0,0,0);
+                        const end = globalEndDate.value ? new Date(globalEndDate.value) : null;
+                        if(end) end.setHours(23,59,59,999);
+
+                        tasks = tasks.filter(t => {
+                            const d = new Date(t.timestamp);
+                            return (!start || d >= start) && (!end || d <= end);
+                        });
+                    }
+
+                    if (tasks.length === 0) { alert('No data to export for selected date.'); return; }
+                    if (typeof XLSX === 'undefined') { alert('SheetJS library not loaded.'); return; }
+
+                    const wb = XLSX.utils.book_new();
+                    const groups = { 'Pending': [], 'Assigned': [], 'Resolved': [], 'Unresolved': [], 'Reassigned': [] };
+
+                    tasks.forEach(t => {
+                        if (t.status === 'Completed') groups['Resolved'].push(t);
+                        else if (t.status === 'Unresolved') groups['Unresolved'].push(t);
+                        else if (t.status === 'Reassigned') groups['Reassigned'].push(t);
+                        else if (t.status === 'Pending') {
+                            if (t.validator && t.validator !== 'Unassigned') groups['Assigned'].push(t);
+                            else groups['Pending'].push(t);
+                        }
+                    });
+
+                    Object.keys(groups).forEach(status => {
+                        if (groups[status].length === 0) return;
+                        const rows = groups[status].map(t => ({
+                            'Date': new Date(t.timestamp).toLocaleString(),
+                            'SKU': t.sku, 'Description': t.desc, 'Qty': t.qty, 'Reason': t.reason,
+                            'Priority': t.priority || 'Normal', 'Validator': t.validator || '',
+                            'Status': t.status,
+                            'Completed At': t.completedAt ? new Date(t.completedAt).toLocaleString() : '',
+                            'Unresolved At': t.unresolvedAt ? new Date(t.unresolvedAt).toLocaleString() : '',
+                            'Reassigned To': t.reassignedTo || ''
+                        }));
+                        const ws = XLSX.utils.json_to_sheet(rows);
+                        XLSX.utils.book_append_sheet(wb, ws, status);
+                    });
+
+                    const dateStr = valViewDate && valViewDate.value ? valViewDate.value : new Date().toISOString().split('T')[0];
+                    XLSX.writeFile(wb, `validation_tasks_all_${dateStr}.xlsx`);
                 });
             }
     });
