@@ -1558,7 +1558,7 @@
                         <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
                             <h4 style="margin:0 0 5px 0; color:#2752a7; font-size:13px;">Task Status</h4>
                             <div style="position:relative; flex:1; min-height:0;">
-                                <canvas id="val-status-chart"></canvas>
+                                <canvas id="val-status-chart" style="width:100%; height:100%;"></canvas>
                             </div>
                         </div>
                         <div style="width:1px; background:#eee;"></div>
@@ -3411,10 +3411,10 @@
                         <div class="signature-row">
                             <div class="signature-box">
                                 <strong>${validator.name}</strong><br>
-                                Validator Signature
+                                IC Validator
                             </div>
                             <div class="signature-box">
-                                <strong>Supervisor / Manager</strong><br>
+                                <strong>Team Leader</strong><br>
                                 Signature
                             </div>
                         </div>
@@ -3502,10 +3502,10 @@
                         <div style="display: flex; justify-content: space-between; margin-top: 40px;">
                             <div style="width: 45%; border-top: 1px solid #000; text-align: center; padding-top: 5px;">
                                 <strong>${validator.name}</strong><br>
-                                Validator Signature
+                                IC Validator
                             </div>
                             <div style="width: 45%; border-top: 1px solid #000; text-align: center; padding-top: 5px;">
-                                <strong>Supervisor / Manager</strong><br>
+                                <strong>Team Leader</strong><br>
                                 Signature
                             </div>
                         </div>
@@ -3555,11 +3555,14 @@
             
             const shiftFilter = document.getElementById('val-view-shift') ? document.getElementById('val-view-shift').value : '';
             let data = getAttendanceData();
-            if (globalStartDate.value || globalEndDate.value) {
-                const start = globalStartDate.value;
-                const end = globalEndDate.value;
+            const valStart = document.getElementById('val-start-date');
+            const valEnd = document.getElementById('val-end-date');
+            const startStr = (valStart && valStart.value) || globalStartDate.value;
+            const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+            if (startStr || endStr) {
                 data = data.filter(item => {
-                    return (!start || item.date >= start) && (!end || item.date <= end);
+                    return (!startStr || item.date >= startStr) && (!endStr || item.date <= endStr);
                 });
             }
             let validators = data.filter(item => item.area === 'Validator' && !item.timeOut);
@@ -3571,9 +3574,7 @@
             }
 
             let tasks = getValidationTasks();
-            if (globalStartDate.value || globalEndDate.value) {
-                const startStr = globalStartDate.value;
-                const endStr = globalEndDate.value;
+            if (startStr || endStr) {
                 tasks = tasks.filter(t => {
                     const shiftInfo = getShiftFromTimestamp(t.timestamp);
                     return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -3717,9 +3718,12 @@
             let tasks = getValidationTasks();
 
             const shiftFilter = document.getElementById('val-view-shift') ? document.getElementById('val-view-shift').value : '';
-            if (globalStartDate.value || globalEndDate.value) {
-                const startStr = globalStartDate.value;
-                const endStr = globalEndDate.value;
+            const valStart = document.getElementById('val-start-date');
+            const valEnd = document.getElementById('val-end-date');
+            const startStr = (valStart && valStart.value) || globalStartDate.value;
+            const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+            if (startStr || endStr) {
                 tasks = tasks.filter(t => {
                     const shiftInfo = getShiftFromTimestamp(t.timestamp);
                     return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -4212,11 +4216,8 @@
             const ctx = document.getElementById('val-status-chart');
             if (!ctx || typeof Chart === 'undefined') return;
             
-            if (valStatusChart) {
-                valStatusChart.data.labels = ['Resolved', 'Pending', 'Assigned', 'Unresolved'];
-                valStatusChart.data.datasets[0].data = [resolvedCount, pendingCount, assignedCount, unresolvedCount];
-                valStatusChart.update();
-            } else {
+            if (valStatusChart) valStatusChart.destroy();
+
                 valStatusChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -4229,7 +4230,7 @@
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
-                        layout: { padding: 60 },
+                        layout: { padding: 20 },
                         plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
                         cutout: '75%',
                         onHover: (event, chartElement) => {
@@ -4253,15 +4254,17 @@
                         }
                     }
                 });
-            }
         }
 
         function renderValAnalytics() {
             let tasks = getValidationTasks();
             const rawTasks = [...tasks]; // Keep raw for specific period overrides
-            if (globalStartDate.value || globalEndDate.value) {
-                const startStr = globalStartDate.value;
-                const endStr = globalEndDate.value;
+            const valStart = document.getElementById('val-start-date');
+            const valEnd = document.getElementById('val-end-date');
+            const startStr = (valStart && valStart.value) || globalStartDate.value;
+            const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+            if (startStr || endStr) {
                 tasks = tasks.filter(t => {
                     const shiftInfo = getShiftFromTimestamp(t.timestamp);
                     return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -4382,8 +4385,8 @@
                 if (reasonPeriod) {
                     const period = reasonPeriod.value;
                     if (period === 'today') {
-                        const today = getLocalYMD(new Date());
-                        reasonTasks = rawTasks.filter(t => getLocalYMD(t.timestamp) === today);
+                        const today = getShiftFromTimestamp(new Date().toISOString()).date;
+                        reasonTasks = rawTasks.filter(t => getShiftFromTimestamp(t.timestamp).date === today);
                     } else if (period === 'week') {
                         const now = new Date();
                         const startOfWeek = new Date(now);
@@ -4463,19 +4466,17 @@
             if(ctxTrend) {
                 let trendTasks = rawTasks;
                 if (globalStartDate.value || globalEndDate.value) {
-                    const start = globalStartDate.value ? new Date(globalStartDate.value) : null;
-                    if(start) start.setHours(0,0,0,0);
-                    const end = globalEndDate.value ? new Date(globalEndDate.value) : null;
-                    if(end) end.setHours(23,59,59,999);
+                    const startStr = globalStartDate.value;
+                    const endStr = globalEndDate.value;
                     trendTasks = trendTasks.filter(t => {
-                        const d = new Date(t.timestamp);
-                        return (!start || d >= start) && (!end || d <= end);
+                        const shiftInfo = getShiftFromTimestamp(t.timestamp);
+                        return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
                     });
                 }
 
                 const trendData = {};
                 trendTasks.forEach(t => {
-                    const d = getLocalYMD(t.timestamp);
+                    const d = getShiftFromTimestamp(t.timestamp).date;
                     if(!trendData[d]) trendData[d] = { total: 0, resolved: 0, unresolved: 0 };
                     trendData[d].total++;
                     if(t.status === 'Completed') trendData[d].resolved++;
@@ -4512,9 +4513,12 @@
 
             // Recalculate data
             let tasks = getValidationTasks();
-            if (globalStartDate.value || globalEndDate.value) {
-                const startStr = globalStartDate.value;
-                const endStr = globalEndDate.value;
+            const valStart = document.getElementById('val-start-date');
+            const valEnd = document.getElementById('val-end-date');
+            const startStr = (valStart && valStart.value) || globalStartDate.value;
+            const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+            if (startStr || endStr) {
                 tasks = tasks.filter(t => {
                     const shiftInfo = getShiftFromTimestamp(t.timestamp);
                     return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -4567,8 +4571,8 @@
                 if (reasonPeriod) {
                     const period = reasonPeriod.value;
                     if (period === 'today') {
-                        const today = getLocalYMD(new Date());
-                        reasonTasks = rawTasks.filter(t => getLocalYMD(t.timestamp) === today);
+                        const today = getShiftFromTimestamp(new Date().toISOString()).date;
+                        reasonTasks = rawTasks.filter(t => getShiftFromTimestamp(t.timestamp).date === today);
                     } else if (period === 'week') {
                         const now = new Date();
                         const startOfWeek = new Date(now);
@@ -4614,7 +4618,7 @@
                 
                 const trendData = {};
                 tasks.forEach(t => {
-                    const d = getLocalYMD(t.timestamp);
+                    const d = getShiftFromTimestamp(t.timestamp).date;
                     if(!trendData[d]) trendData[d] = { total: 0, resolved: 0, unresolved: 0 };
                     trendData[d].total++;
                     if(t.status === 'Completed') trendData[d].resolved++;
@@ -5015,10 +5019,13 @@
         const exportValCSV = () => {
             let tasks = getValidationTasks();
             
-            // Apply Global Date Filter
-            if (globalStartDate.value || globalEndDate.value) {
-                const startStr = globalStartDate.value;
-                const endStr = globalEndDate.value;
+            // Apply Date Filter (Modal or Global)
+            const valStart = document.getElementById('val-start-date');
+            const valEnd = document.getElementById('val-end-date');
+            const startStr = (valStart && valStart.value) || globalStartDate.value;
+            const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+            if (startStr || endStr) {
                 tasks = tasks.filter(t => {
                     const shiftInfo = getShiftFromTimestamp(t.timestamp);
                     return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -5463,8 +5470,10 @@
             emailValReportBtn.addEventListener('click', () => {
                 const tasks = getValidationTasks();
                 let filteredTasks = tasks;
-                const startStr = document.getElementById('global-start-date').value;
-                const endStr = document.getElementById('global-end-date').value;
+                const valStart = document.getElementById('val-start-date');
+                const valEnd = document.getElementById('val-end-date');
+                const startStr = (valStart && valStart.value) || document.getElementById('global-start-date').value;
+                const endStr = (valEnd && valEnd.value) || document.getElementById('global-end-date').value;
                 const shiftFilter = document.getElementById('val-view-shift') ? document.getElementById('val-view-shift').value : '';
                 
                 if (startStr || endStr || shiftFilter) {
@@ -6055,9 +6064,12 @@
 
                 // Get current view tasks (filtered by date)
                 let tasks = getValidationTasks();
-                if (globalStartDate.value || globalEndDate.value) {
-                    const startStr = globalStartDate.value;
-                    const endStr = globalEndDate.value;
+                const valStart = document.getElementById('val-start-date');
+                const valEnd = document.getElementById('val-end-date');
+                const startStr = (valStart && valStart.value) || globalStartDate.value;
+                const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+                if (startStr || endStr) {
                     tasks = tasks.filter(t => {
                         const shiftInfo = getShiftFromTimestamp(t.timestamp);
                         return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
@@ -6432,12 +6444,12 @@
                     let tasks = getValidationTasks();
                     
                     // Date Filtering
-                    const valViewDate = document.getElementById('val-view-date');
-                    if (valViewDate && valViewDate.value) {
-                        tasks = tasks.filter(t => getLocalYMD(t.timestamp) === valViewDate.value);
-                    } else if (globalStartDate.value || globalEndDate.value) {
-                        const startStr = globalStartDate.value;
-                        const endStr = globalEndDate.value;
+                    const valStart = document.getElementById('val-start-date');
+                    const valEnd = document.getElementById('val-end-date');
+                    const startStr = (valStart && valStart.value) || globalStartDate.value;
+                    const endStr = (valEnd && valEnd.value) || globalEndDate.value;
+
+                    if (startStr || endStr) {
                         tasks = tasks.filter(t => {
                             const shiftInfo = getShiftFromTimestamp(t.timestamp);
                             return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
