@@ -1850,22 +1850,6 @@
                 window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    const text = ev.target.result;
-                    const lines = text.split(/\r?\n/);
-                    if(lines.length < 2) { alert('Invalid CSV'); return; }
-                    let users = getMasterUsers();
-                    let count = 0;
-                    for(let i=1; i<lines.length; i++) {
-                        const line = lines[i].trim();
-                        if(!line) continue;
-                        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                        if(parts.length >= 2) {
-                            const id = parts[0]; const name = parts[1]; const role = parts[2] || '';
-                            if(id && name) {
-                                const idx = users.findIndex(u => u.userId === id);
-                                if(idx > -1) users[idx] = { userId: id, name, role };
-                                else users.push({ userId: id, name, role });
-                                count++;
                     try {
                         const text = ev.target.result;
                         const lines = text.split(/\r?\n/);
@@ -1895,10 +1879,6 @@
                     } finally {
                         window.hideLoading && window.hideLoading();
                     }
-                    saveMasterUsers(users);
-                    renderMasterUsers();
-                    alert(`Imported/Updated ${count} users.`);
-                    importMasterUsersFile.value = '';
                 };
                 reader.onerror = () => {
                     window.hideLoading && window.hideLoading();
@@ -5213,25 +5193,6 @@
                 };
                 reader.onload = (event) => {
                     if (progressContainer) setTimeout(() => { progressContainer.style.display = 'none'; }, 500);
-                    const text = event.target.result;
-                    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
-                    if (lines.length < 2) { alert('Invalid CSV format or empty file.'); return; }
-                    
-                    const labels = JSON.parse(localStorage.getItem('ims_rack_labels_v1') || '{}');
-                    const statuses = JSON.parse(localStorage.getItem('ims_rack_status_v1') || '{}');
-                    let updatedCount = 0;
-                    
-                    for (let i = 1; i < lines.length; i++) {
-                        // Simple CSV parse handling quotes
-                        let row = [];
-                        let inQuote = false;
-                        let current = '';
-                        for(let char of lines[i]) {
-                            if(char === '"') { inQuote = !inQuote; continue; }
-                            if(char === ',' && !inQuote) { row.push(current); current = ''; }
-                            else current += char;
-                        }
-                        row.push(current);
                     try {
                         const text = event.target.result;
                         const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
@@ -5253,16 +5214,6 @@
                             }
                             row.push(current);
 
-                        if (row.length >= 1) {
-                            const id = row[0].trim();
-                            const name = row.length > 1 ? row[1].trim() : '';
-                            const status = row.length > 2 ? row[2].trim() : '';
-                            
-                            if (id) {
-                                if (name) labels[id] = name;
-                                if (status) {
-                                    if (status === 'auto') delete statuses[id];
-                                    else statuses[id] = status;
                             if (row.length >= 1) {
                                 const id = row[0].trim();
                                 const name = row.length > 1 ? row[1].trim() : '';
@@ -5276,7 +5227,6 @@
                                     }
                                     updatedCount++;
                                 }
-                                updatedCount++;
                             }
                         }
                         
@@ -5288,16 +5238,9 @@
                     } catch (err) {
                         showToast('Failed to process CSV file.', 'error');
                     }
-                    
-                    localStorage.setItem('ims_rack_labels_v1', JSON.stringify(labels));
-                    localStorage.setItem('ims_rack_status_v1', JSON.stringify(statuses));
-                    alert(`Updated ${updatedCount} cells.`);
-                    renderMonitorGrid();
-                    monitorFileInput.value = '';
                 };
                 reader.onerror = () => {
                     if (progressContainer) progressContainer.style.display = 'none';
-                    alert('Error reading file');
                     showToast('Error reading file', 'error');
                     monitorFileInput.value = '';
                 };
