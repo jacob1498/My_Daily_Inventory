@@ -1291,6 +1291,7 @@
                             <button class="icon-btn" id="val-clear-filters-btn-1" title="Clear Filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                             <button class="icon-btn" id="val-print-btn-1" title="Print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg></button>
                             <button class="icon-btn" id="val-export-btn-1" title="Export CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+                            <button class="icon-btn" id="val-bulk-assign-btn-1" title="Bulk Assign" style="color:#3498db; display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></button>
                             <button class="icon-btn" id="val-bulk-reassign-btn-1" title="Bulk Reassign" style="color:#f39c12; display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
                             <button class="icon-btn" id="val-bulk-delete-btn-1" title="Delete Selected" style="color:#d9534f; display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
                         </div>
@@ -3032,31 +3033,42 @@
             importReqFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    const text = ev.target.result;
-                    const lines = text.split(/\r?\n/);
-                    const reqs = loadRequirements();
-                    const shiftsList = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
-                    let count = 0;
-                    for(let i=1; i<lines.length; i++) {
-                        const line = lines[i].trim();
-                        if(!line) continue;
-                        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                        if(parts.length >= 4) {
-                            const role = parts[0];
-                            if(role) {
-                                reqs[`${role}|${shiftsList[0]}`] = parseInt(parts[1]) || 0;
-                                reqs[`${role}|${shiftsList[1]}`] = parseInt(parts[2]) || 0;
-                                reqs[`${role}|${shiftsList[2]}`] = parseInt(parts[3]) || 0;
-                                count++;
+                    try {
+                        const text = ev.target.result;
+                        const lines = text.split(/\r?\n/);
+                        const reqs = loadRequirements();
+                        const shiftsList = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
+                        let count = 0;
+                        for(let i=1; i<lines.length; i++) {
+                            const line = lines[i].trim();
+                            if(!line) continue;
+                            const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+                            if(parts.length >= 4) {
+                                const role = parts[0];
+                                if(role) {
+                                    reqs[`${role}|${shiftsList[0]}`] = parseInt(parts[1]) || 0;
+                                    reqs[`${role}|${shiftsList[1]}`] = parseInt(parts[2]) || 0;
+                                    reqs[`${role}|${shiftsList[2]}`] = parseInt(parts[3]) || 0;
+                                    count++;
+                                }
                             }
                         }
+                        localStorage.setItem('ims_att_requirements_v1', JSON.stringify(reqs));
+                        showToast(`Imported requirements for ${count} roles.`);
+                        importReqFile.value = '';
+                        if(setReqBtn) setReqBtn.click(); // Refresh modal
+                    } catch (err) {
+                        showToast('Failed to import requirements. Please check file format.', 'error');
+                    } finally {
+                        window.hideLoading && window.hideLoading();
                     }
-                    localStorage.setItem('ims_att_requirements_v1', JSON.stringify(reqs));
-                    showToast(`Imported requirements for ${count} roles.`);
-                    importReqFile.value = '';
-                    if(setReqBtn) setReqBtn.click(); // Refresh modal
+                };
+                reader.onerror = () => {
+                    window.hideLoading && window.hideLoading();
+                    showToast('Failed to read the file.', 'error');
                 };
                 reader.readAsText(file);
             });
@@ -4923,6 +4935,9 @@
             const btn1 = document.getElementById('val-bulk-delete-btn-1');
             if(btn1) btn1.style.display = (pCount + aCount + rCount + uCount + hCount) > 0 ? 'inline-flex' : 'none';
 
+            const btnAssign = document.getElementById('val-bulk-assign-btn-1');
+            if(btnAssign) btnAssign.style.display = pCount > 0 ? 'inline-flex' : 'none';
+
             const btnReassign = document.getElementById('val-bulk-reassign-btn-1');
             if(btnReassign) btnReassign.style.display = uCount > 0 ? 'inline-flex' : 'none';
         }
@@ -4958,6 +4973,37 @@
 
         const btnBulkDel1 = document.getElementById('val-bulk-delete-btn-1');
         if(btnBulkDel1) btnBulkDel1.addEventListener('click', () => handleBulkDelete('.pending-cb, .assigned-cb, .resolved-cb, .unresolved-cb, .history-cb'));
+
+        const btnBulkAssign = document.getElementById('val-bulk-assign-btn-1');
+        if(btnBulkAssign) {
+            btnBulkAssign.addEventListener('click', () => {
+                const selected = Array.from(document.querySelectorAll('.pending-cb:checked')).map(cb => cb.value);
+                if(selected.length === 0) return;
+                
+                let attendanceData = getAttendanceData();
+                const validators = attendanceData.filter(item => item.area === 'Validator' && !item.timeOut).map(v => v.name);
+                const uniqueValidators = [...new Set(validators)].sort();
+                
+                const newValidator = prompt(`Assign ${selected.length} tasks to validator:\n(Available: ${uniqueValidators.join(', ')})`);
+                if(!newValidator) return;
+
+                if(confirm(`Confirm assigning ${selected.length} tasks to "${newValidator}"?`)) {
+                    let tasks = getValidationTasks();
+                    let count = 0;
+                    selected.forEach(id => {
+                        const taskIndex = tasks.findIndex(t => t.id === id);
+                        if(taskIndex > -1) {
+                            tasks[taskIndex].validator = newValidator;
+                            count++;
+                        }
+                    });
+                    saveValidationTasks(tasks);
+                    renderValidationTasks();
+                    renderValidatorsModal();
+                    showToast(`${count} tasks assigned to ${newValidator}`);
+                }
+            });
+        }
 
         const btnBulkReassign = document.getElementById('val-bulk-reassign-btn-1');
         if(btnBulkReassign) {
@@ -5152,36 +5198,47 @@
             icMasterUploadFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    const text = ev.target.result;
-                    const lines = text.split(/\r?\n/);
-                    let users = [];
-                    try { users = JSON.parse(localStorage.getItem('ims_master_users_v1') || '[]'); } catch(e) {}
-                    let count = 0;
-                    // Skip header if present (simple check)
-                    const startIdx = lines[0].toLowerCase().includes('user id') ? 1 : 0;
-                    
-                    for(let i=startIdx; i<lines.length; i++) {
-                        const line = lines[i].trim();
-                        if(!line) continue;
-                        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                        if(parts.length >= 2) {
-                            const id = parts[0].toUpperCase();
-                            const name = parts[1].toUpperCase();
-                            const role = parts[2] || 'IC Support';
-                            const job = parts[3] || '';
-                            
-                            const existingIdx = users.findIndex(u => u.userId === id);
-                            if(existingIdx > -1) users[existingIdx] = { userId: id, name, role, jobDescription: job };
-                            else users.push({ userId: id, name, role, jobDescription: job });
-                            count++;
+                    try {
+                        const text = ev.target.result;
+                        const lines = text.split(/\r?\n/);
+                        let users = [];
+                        try { users = JSON.parse(localStorage.getItem('ims_master_users_v1') || '[]'); } catch(e) {}
+                        let count = 0;
+                        // Skip header if present (simple check)
+                        const startIdx = lines[0].toLowerCase().includes('user id') ? 1 : 0;
+                        
+                        for(let i=startIdx; i<lines.length; i++) {
+                            const line = lines[i].trim();
+                            if(!line) continue;
+                            const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+                            if(parts.length >= 2) {
+                                const id = parts[0].toUpperCase();
+                                const name = parts[1].toUpperCase();
+                                const role = parts[2] || 'IC Support';
+                                const job = parts[3] || '';
+                                
+                                const existingIdx = users.findIndex(u => u.userId === id);
+                                if(existingIdx > -1) users[existingIdx] = { userId: id, name, role, jobDescription: job };
+                                else users.push({ userId: id, name, role, jobDescription: job });
+                                count++;
+                            }
                         }
+                        localStorage.setItem('ims_master_users_v1', JSON.stringify(users));
+                        showToast(`Imported/Updated ${count} users.`);
+                        renderIcMaster();
+                        icMasterUploadFile.value = '';
+                    } catch (err) {
+                        showToast('Failed to import master list. Please check file format.', 'error');
+                    } finally {
+                        window.hideLoading && window.hideLoading();
                     }
-                    localStorage.setItem('ims_master_users_v1', JSON.stringify(users));
-                    showToast(`Imported/Updated ${count} users.`);
-                    renderIcMaster();
-                    icMasterUploadFile.value = '';
+                };
+                reader.onerror = () => {
+                    window.hideLoading && window.hideLoading();
+                    showToast('Failed to read the file.', 'error');
                 };
                 reader.readAsText(file);
             });
@@ -5242,41 +5299,53 @@
             uploadSkuFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    let text = ev.target.result;
-                    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-                    const lines = text.split(/\r\n|\n/);
-                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
-                    
-                    let skuIdx = headers.indexOf('item code');
-                    if (skuIdx === -1) skuIdx = headers.indexOf('sku');
-                    const descIdx = headers.indexOf('description');
-                    
-                    if(skuIdx === -1 || descIdx === -1) {
-                        alert('CSV must contain "Item Code" (or "SKU") and "Description" columns.');
-                        return;
-                    }
-
-                    let masterMap = {};
-                    try { masterMap = JSON.parse(localStorage.getItem('ims_master_desc_v1') || '{}'); } catch(e) {}
-                    
-                    let count = 0;
-                    for(let i=1; i<lines.length; i++) {
-                        if(!lines[i].trim()) continue;
-                        const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
-                        const sku = cols[skuIdx];
-                        const desc = cols[descIdx];
+                    try {
+                        let text = ev.target.result;
+                        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+                        const lines = text.split(/\r\n|\n/);
+                        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
                         
-                        if(sku) {
-                            masterMap[sku] = desc || '';
-                            count++;
+                        let skuIdx = headers.indexOf('item code');
+                        if (skuIdx === -1) skuIdx = headers.indexOf('sku');
+                        const descIdx = headers.indexOf('description');
+                        
+                        if(skuIdx === -1 || descIdx === -1) {
+                            showToast('CSV must contain "Item Code" (or "SKU") and "Description" columns.', 'error');
+                            window.hideLoading && window.hideLoading();
+                            return;
                         }
+
+                        let masterMap = {};
+                        try { masterMap = JSON.parse(localStorage.getItem('ims_master_desc_v1') || '{}'); } catch(e) {}
+                        
+                        let count = 0;
+                        for(let i=1; i<lines.length; i++) {
+                            if(!lines[i].trim()) continue;
+                            const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                            const sku = cols[skuIdx];
+                            const desc = cols[descIdx];
+                            
+                            if(sku) {
+                                masterMap[sku] = desc || '';
+                                count++;
+                            }
+                        }
+                        localStorage.setItem('ims_master_desc_v1', JSON.stringify(masterMap));
+                        showToast(`SKU Master List updated with ${count} items.`);
+                        updateSkuMasterStatus();
+                        uploadSkuFile.value = '';
+                    } catch (err) {
+                        showToast('Failed to import SKU master list. Please check file format.', 'error');
+                    } finally {
+                        window.hideLoading && window.hideLoading();
                     }
-                    localStorage.setItem('ims_master_desc_v1', JSON.stringify(masterMap));
-                    showToast(`SKU Master List updated with ${count} items.`);
-                    updateSkuMasterStatus();
-                    uploadSkuFile.value = '';
+                };
+                reader.onerror = () => {
+                    window.hideLoading && window.hideLoading();
+                    showToast('Failed to read the file.', 'error');
                 };
                 reader.readAsText(file);
             });
@@ -5311,69 +5380,81 @@
             uploadBulkTasksFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    let text = ev.target.result;
-                    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-                    const lines = text.split(/\r\n|\n/);
-                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
-                    
-                    const skuIdx = headers.indexOf('sku');
-                    const descIdx = headers.indexOf('description');
-                    const qtyIdx = headers.indexOf('qty');
-                    const reasonIdx = headers.indexOf('reason');
-                    let valIdx = headers.indexOf('validator');
-                    if (valIdx === -1) valIdx = headers.indexOf('ic validator');
-                    const prioIdx = headers.indexOf('priority');
-                    const opsValIdx = headers.indexOf('ops validator');
-                    
-                    if(skuIdx === -1 || qtyIdx === -1) {
-                        alert('CSV must contain "SKU" and "Qty" columns.');
-                        return;
-                    }
-
-                    const tasks = getValidationTasks();
-                    let count = 0;
-                    
-                    // Get SKU Master for description lookup if missing
-                    let masterMap = {};
-                    try { masterMap = JSON.parse(localStorage.getItem('ims_master_desc_v1') || '{}'); } catch(e) {}
-
-                    for(let i=1; i<lines.length; i++) {
-                        if(!lines[i].trim()) continue;
-                        // Simple CSV split
-                        const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                    try {
+                        let text = ev.target.result;
+                        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+                        const lines = text.split(/\r\n|\n/);
+                        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
                         
-                        const sku = cols[skuIdx];
-                        const qty = cols[qtyIdx];
-                        let desc = (descIdx > -1) ? cols[descIdx] : '';
-                        const reason = (reasonIdx > -1) ? cols[reasonIdx] : '';
-                        const validator = (valIdx > -1) ? cols[valIdx] : '';
-                        const priority = (prioIdx > -1) ? cols[prioIdx] : 'Normal';
-                        const opsValidator = (opsValIdx > -1) ? cols[opsValIdx] : '';
+                        const skuIdx = headers.indexOf('sku');
+                        const descIdx = headers.indexOf('description');
+                        const qtyIdx = headers.indexOf('qty');
+                        const reasonIdx = headers.indexOf('reason');
+                        let valIdx = headers.indexOf('validator');
+                        if (valIdx === -1) valIdx = headers.indexOf('ic validator');
+                        const prioIdx = headers.indexOf('priority');
+                        const opsValIdx = headers.indexOf('ops validator');
                         
-                        if(sku && qty) {
-                            if(!desc && masterMap[sku]) desc = masterMap[sku];
-                            
-                            tasks.push({
-                                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-                                timestamp: new Date().toISOString(),
-                                sku: sku,
-                                desc: desc,
-                                qty: qty,
-                                reason: reason,
-                                priority: priority || 'Normal',
-                                validator: validator || 'Unassigned',
-                                opsValidator: opsValidator || '',
-                                status: 'Pending'
-                            });
-                            count++;
+                        if(skuIdx === -1 || qtyIdx === -1) {
+                            showToast('CSV must contain "SKU" and "Qty" columns.', 'error');
+                            window.hideLoading && window.hideLoading();
+                            return;
                         }
+
+                        const tasks = getValidationTasks();
+                        let count = 0;
+                        
+                        // Get SKU Master for description lookup if missing
+                        let masterMap = {};
+                        try { masterMap = JSON.parse(localStorage.getItem('ims_master_desc_v1') || '{}'); } catch(e) {}
+
+                        for(let i=1; i<lines.length; i++) {
+                            if(!lines[i].trim()) continue;
+                            // Simple CSV split
+                            const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                            
+                            const sku = cols[skuIdx];
+                            const qty = cols[qtyIdx];
+                            let desc = (descIdx > -1) ? cols[descIdx] : '';
+                            const reason = (reasonIdx > -1) ? cols[reasonIdx] : '';
+                            const validator = (valIdx > -1) ? cols[valIdx] : '';
+                            const priority = (prioIdx > -1) ? cols[prioIdx] : 'Normal';
+                            const opsValidator = (opsValIdx > -1) ? cols[opsValIdx] : '';
+                            
+                            if(sku && qty) {
+                                if(!desc && masterMap[sku]) desc = masterMap[sku];
+                                
+                                tasks.push({
+                                    id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                                    timestamp: new Date().toISOString(),
+                                    sku: sku,
+                                    desc: desc,
+                                    qty: qty,
+                                    reason: reason,
+                                    priority: priority || 'Normal',
+                                    validator: validator || 'Unassigned',
+                                    opsValidator: opsValidator || '',
+                                    status: 'Pending'
+                                });
+                                count++;
+                            }
+                        }
+                        saveValidationTasks(tasks);
+                        renderValidationTasks();
+                        showToast(`${count} tasks assigned.`);
+                        uploadBulkTasksFile.value = '';
+                    } catch (err) {
+                        showToast('Failed to import tasks. Please check file format.', 'error');
+                    } finally {
+                        window.hideLoading && window.hideLoading();
                     }
-                    saveValidationTasks(tasks);
-                    renderValidationTasks();
-                    showToast(`${count} tasks assigned.`);
-                    uploadBulkTasksFile.value = '';
+                };
+                reader.onerror = () => {
+                    window.hideLoading && window.hideLoading();
+                    showToast('Failed to read the file.', 'error');
                 };
                 reader.readAsText(file);
             });
