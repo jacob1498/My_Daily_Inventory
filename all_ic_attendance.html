@@ -193,6 +193,15 @@
     #val-analytics-card.expanded .val-analytics-tab-content { max-height: none !important; }
     #val-analytics-card.expanded #tab-val-reason-analysis > div:last-child { max-height: none !important; }
 
+    /* Modal Animation */
+    .modal:not(.hidden) {
+        animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
     /* Search Preview Styles */
     .search-preview-dropdown {
         position: absolute;
@@ -255,7 +264,7 @@
         </button>
         <ul class="sidebar-submenu">
             
-            <li><button onclick="sessionStorage.setItem('ims_open_validators_modal', 'true'); window.location.href='all_ic_attendance.html'">
+            <li><button onclick="if(document.getElementById('validators-modal')){ document.getElementById('validators-view-btn').click(); } else { sessionStorage.setItem('ims_open_validators_modal', 'true'); window.location.href='all_ic_attendance.html'; }">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-right:10px;"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
                 Validators View
             </button></li>
@@ -6205,6 +6214,11 @@
         }
 
         // Initial Render
+        // Set default date filter to current operational day (6am-6am cycle)
+        const currentOpDate = getShiftFromTimestamp(new Date()).date;
+        if (globalStartDate) globalStartDate.value = currentOpDate;
+        if (globalEndDate) globalEndDate.value = currentOpDate;
+
         renderAttendanceTable();
 
         // Modal Search Logic
