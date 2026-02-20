@@ -1404,6 +1404,7 @@
                                     <th style="position:sticky; top:0; z-index:1;">Ops Validator</th>
                                     <th style="position:sticky; top:0; z-index:1;">IC Validator</th>
                                     <th style="position:sticky; top:0; z-index:1;">Findings</th>
+                                    <th style="position:sticky; top:0; z-index:1;">Resolved Qty</th>
                                     <th style="position:sticky; top:0; z-index:1;">Duration</th>
                                     <th style="position:sticky; top:0; z-index:1;">Action</th>
                                 </tr>
@@ -1489,6 +1490,7 @@
                                         <th style="position:sticky; top:0; z-index:1;">Sub Status</th>
                                         <th style="position:sticky; top:0; z-index:1;">Reassigned To</th>
                                         <th style="position:sticky; top:0; z-index:1;">Findings</th>
+                                        <th style="position:sticky; top:0; z-index:1;">Resolved Qty</th>
                                         <th style="position:sticky; top:0; z-index:1;">Duration</th>
                                         <th style="position:sticky; top:0; z-index:1;">Action</th>
                                     </tr>
@@ -1603,6 +1605,7 @@
                             <th style="position:sticky; top:0; z-index:1;">Shift</th>
                             <th style="position:sticky; top:0; z-index:1;">Pending</th>
                             <th style="position:sticky; top:0; z-index:1;">Resolved</th>
+                            <th style="position:sticky; top:0; z-index:1;">Resolved Qty</th>
                             <th style="position:sticky; top:0; z-index:1;">Unresolved</th>
                             <th style="position:sticky; top:0; z-index:1;">Total</th>
                         </tr>
@@ -1624,6 +1627,7 @@
                             <th style="position:sticky; top:0; z-index:1;">Shift</th>
                             <th style="position:sticky; top:0; z-index:1;">Pending</th>
                             <th style="position:sticky; top:0; z-index:1;">Resolved</th>
+                            <th style="position:sticky; top:0; z-index:1;">Resolved Qty</th>
                             <th style="position:sticky; top:0; z-index:1;">Unresolved</th>
                             <th style="position:sticky; top:0; z-index:1;">Total</th>
                             <th style="position:sticky; top:0; z-index:1;">Action</th>
@@ -1707,6 +1711,8 @@
         <h3 style="margin-top:0">Resolve Task</h3>
         <input type="hidden" id="resolve-task-id">
         <div style="margin-bottom:15px;">
+            <label for="resolve-qty" style="font-weight:bold; display:block; margin-bottom:5px;">Resolved Qty:</label>
+            <input type="number" id="resolve-qty" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:10px;" placeholder="Enter quantity">
             <label for="resolve-findings" style="font-weight:bold; display:block; margin-bottom:5px;">Findings:</label>
             <select id="resolve-findings-select" style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px; margin-bottom:5px; display:none;">
                 <option value="">Select Common Finding...</option>
@@ -1825,12 +1831,19 @@
     </div>
   </div>
 
+  <div id="loading-spinner-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
   <div id="toast-notification" class="toast"></div>
   <script src="app.js"></script>
   <script>
     if(!sessionStorage.getItem('dms_auth_v1')) window.location.href = 'index.html';
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Ensure loading spinner helpers are available
+        window.showLoading = function() { const el = document.getElementById('loading-spinner-overlay'); if(el) el.classList.add('visible'); };
+        window.hideLoading = function() { const el = document.getElementById('loading-spinner-overlay'); if(el) el.classList.remove('visible'); };
+
         const STORAGE_KEY_ATTENDANCE = 'ims_daily_attendance_v1';
         const STORAGE_KEY_TIMESTAMPS = 'ims_all_ic_timestamps_v1'; // Using the correct key
         
@@ -3682,6 +3695,7 @@
                 const completedCount = tasks.filter(t => t.validator === v.name && t.status === 'Completed').length;
                 const unresolvedCount = tasks.filter(t => t.validator === v.name && t.status === 'Unresolved').length;
                 const totalCount = pendingCount + completedCount + unresolvedCount;
+                const totalResolvedQty = tasks.filter(t => t.validator === v.name && t.status === 'Completed').reduce((sum, t) => sum + (parseInt(t.resolvedQty) || 0), 0);
 
                 const tr = document.createElement('tr');
                 let actionHtml = '';
@@ -3691,7 +3705,7 @@
                         <button class="icon-btn export-pdf-btn" title="Export PDF" style="color:#e74c3c;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg></button>
                     </td>`;
                 }
-                tr.innerHTML = `<td>${v.userId || '-'}</td><td>${v.name}</td><td>${v.shift}</td><td>${pendingCount}</td><td>${completedCount}</td><td>${unresolvedCount}</td><td>${totalCount}</td>${actionHtml}`;
+                tr.innerHTML = `<td>${v.userId || '-'}</td><td>${v.name}</td><td>${v.shift}</td><td>${pendingCount}</td><td>${completedCount}</td><td>${totalResolvedQty}</td><td>${unresolvedCount}</td><td>${totalCount}</td>${actionHtml}`;
                 
                 if (isTimeout) {
                     const btn = tr.querySelector('.print-signoff-btn');
@@ -4164,7 +4178,7 @@
                         <button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
                         </button>`;
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${validatorInput}</td><td>${t.findings || '-'}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${validatorInput}</td><td>${t.findings || '-'}</td><td>${t.resolvedQty || '-'}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
                     resolvedTasksTbody.appendChild(tr);
                 });
             }
@@ -4282,7 +4296,7 @@
 
                     const reassignedTo = t.reassignedTo || '-';
 
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${reassignedTo}</td><td>${t.findings || '-'}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${reassignedTo}</td><td>${t.findings || '-'}</td><td>${t.resolvedQty || '-'}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
                     historyTasksTbody.appendChild(tr);
                 });
             }
@@ -4842,6 +4856,7 @@
                 if(modal && inputId && inputFindings) {
                     inputId.value = id;
                     inputFindings.value = '';
+                    if(document.getElementById('resolve-qty')) document.getElementById('resolve-qty').value = '';
                     modal.classList.remove('hidden');
                     setTimeout(() => inputFindings.focus(), 100);
                 }
@@ -5002,6 +5017,7 @@
             confirmResolveBtn.addEventListener('click', () => {
                 const id = document.getElementById('resolve-task-id').value;
                 const findings = document.getElementById('resolve-findings').value.trim();
+                const resolvedQty = document.getElementById('resolve-qty').value.trim();
                 
                 let tasks = getValidationTasks();
                 const taskIndex = tasks.findIndex(t => t.id === id);
@@ -5009,6 +5025,7 @@
                     tasks[taskIndex].status = 'Completed';
                     tasks[taskIndex].completedAt = new Date().toISOString();
                     tasks[taskIndex].findings = findings;
+                    tasks[taskIndex].resolvedQty = resolvedQty;
                     saveValidationTasks(tasks);
                     renderValidationTasks();
                     showToast('Task completed');
@@ -6754,6 +6771,9 @@
             const exportValAllBtn = document.getElementById('export-val-all-btn');
             if (exportValAllBtn) {
                 exportValAllBtn.addEventListener('click', () => {
+                    window.showLoading();
+                    setTimeout(() => {
+                    try {
                     let tasks = getValidationTasks();
                     
                     // Date Filtering
@@ -6769,8 +6789,8 @@
                         });
                     }
 
-                    if (tasks.length === 0) { alert('No data to export for selected date.'); return; }
-                    if (typeof XLSX === 'undefined') { alert('SheetJS library not loaded.'); return; }
+                    if (tasks.length === 0) { alert('No data to export for selected date.'); window.hideLoading(); return; }
+                    if (typeof XLSX === 'undefined') { alert('SheetJS library not loaded.'); window.hideLoading(); return; }
 
                     const wb = XLSX.utils.book_new();
                     const groups = { 'Pending': [], 'Assigned': [], 'Resolved': [], 'Unresolved': [], 'Reassigned': [] };
@@ -6794,14 +6814,19 @@
                             'Status': t.status,
                             'Completed At': t.completedAt ? new Date(t.completedAt).toLocaleString() : '',
                             'Unresolved At': t.unresolvedAt ? new Date(t.unresolvedAt).toLocaleString() : '',
-                            'Reassigned To': t.reassignedTo || ''
+                            'Reassigned To': t.reassignedTo || '',
+                            'Findings': t.findings || '',
+                            'Resolved Qty': t.resolvedQty || ''
                         }));
                         const ws = XLSX.utils.json_to_sheet(rows);
                         XLSX.utils.book_append_sheet(wb, ws, status);
                     });
 
-                    const dateStr = valViewDate && valViewDate.value ? valViewDate.value : new Date().toISOString().split('T')[0];
+                    const dateStr = valStart && valStart.value ? valStart.value : new Date().toISOString().split('T')[0];
                     XLSX.writeFile(wb, `validation_tasks_all_${dateStr}.xlsx`);
+                    } catch (e) { console.error(e); alert('Export failed: ' + e.message); }
+                    finally { window.hideLoading(); }
+                    }, 100);
                 });
             }
     });
