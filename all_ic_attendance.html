@@ -1169,6 +1169,9 @@
                 <button id="manage-ops-validators-btn" class="icon-btn" title="Manage Ops Validators" style="background:#9b59b6; color:white;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </button>
+                <button id="manage-findings-btn" class="icon-btn" title="Manage Findings" style="background:#e91e63; color:white;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </button>
                 <div style="width:1px; height:20px; background:#ddd; margin:0 2px;"></div>
                 <div style="display:flex; align-items:center; gap:2px;">
                     <input type="date" id="val-start-date" style="padding:4px; border:1px solid #ccc; border-radius:4px; font-size:11px; width:110px;" title="From Date">
@@ -1400,6 +1403,7 @@
                                     <th style="position:sticky; top:0; z-index:1;">Expiry Date</th>
                                     <th style="position:sticky; top:0; z-index:1;">Ops Validator</th>
                                     <th style="position:sticky; top:0; z-index:1;">IC Validator</th>
+                                    <th style="position:sticky; top:0; z-index:1;">Findings</th>
                                     <th style="position:sticky; top:0; z-index:1;">Duration</th>
                                     <th style="position:sticky; top:0; z-index:1;">Action</th>
                                 </tr>
@@ -1484,6 +1488,7 @@
                                         <th style="position:sticky; top:0; z-index:1;">Status</th>
                                         <th style="position:sticky; top:0; z-index:1;">Sub Status</th>
                                         <th style="position:sticky; top:0; z-index:1;">Reassigned To</th>
+                                        <th style="position:sticky; top:0; z-index:1;">Findings</th>
                                         <th style="position:sticky; top:0; z-index:1;">Duration</th>
                                         <th style="position:sticky; top:0; z-index:1;">Action</th>
                                     </tr>
@@ -1695,6 +1700,26 @@
         </div>
     </div>
 
+  <!-- Resolve Task Modal -->
+  <div id="resolve-task-modal" class="modal hidden" style="z-index: 10050;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content card" style="max-width: 400px; margin: 150px auto;">
+        <h3 style="margin-top:0">Resolve Task</h3>
+        <input type="hidden" id="resolve-task-id">
+        <div style="margin-bottom:15px;">
+            <label for="resolve-findings" style="font-weight:bold; display:block; margin-bottom:5px;">Findings:</label>
+            <select id="resolve-findings-select" style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px; margin-bottom:5px; display:none;">
+                <option value="">Select Common Finding...</option>
+            </select>
+            <textarea id="resolve-findings" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" rows="4" placeholder="Enter findings..."></textarea>
+        </div>
+        <div style="text-align:right; display:flex; gap:10px; justify-content:flex-end;">
+            <button id="cancel-resolve-btn" class="icon-btn" style="border:1px solid #ccc;">Cancel</button>
+            <button id="confirm-resolve-btn" class="icon-btn" style="background:#2ecc71; color:white;">Resolve</button>
+        </div>
+    </div>
+  </div>
+
   <!-- Validator Actions Modal -->
   <div id="val-actions-modal" class="modal hidden" style="z-index: 10060;">
     <div class="modal-overlay"></div>
@@ -1738,6 +1763,39 @@
             <button id="go-to-timestamp-btn" class="icon-btn" style="justify-content:flex-start; width:100%; padding:8px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; width:16px; height:16px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Activity Tracker
             </button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Findings Master Modal -->
+  <div id="findings-master-modal" class="modal hidden" style="z-index: 10035;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content card" style="max-width: 500px; margin: 50px auto; display:flex; flex-direction:column; max-height:85vh;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0">Manage Findings</h3>
+            <button class="icon-btn close-modal">&times;</button>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr auto; gap:5px; align-items:end; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #eee;">
+            <div>
+                <label style="font-size:11px; font-weight:bold;">Finding Description</label>
+                <input type="text" id="finding-master-text" style="width:100%; padding:5px;" placeholder="Enter finding...">
+                <input type="hidden" id="finding-master-id">
+            </div>
+            <button id="save-finding-master-btn" class="icon-btn" style="background:#2752a7; color:white; height:28px; padding:0 10px;">Save</button>
+        </div>
+        <div style="margin-bottom:10px;">
+            <input type="text" id="finding-master-search" placeholder="Search..." style="padding:6px; border:1px solid #ccc; border-radius:4px; width: 100%;">
+        </div>
+        <div style="flex:1; overflow:auto; border:1px solid #eee;">
+            <table id="findings-master-table" class="report-table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th style="position:sticky; top:0; z-index:1;">Description</th>
+                        <th style="position:sticky; top:0; z-index:1; width: 80px; text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
   </div>
@@ -2217,6 +2275,7 @@
             if (searchTerm) {
                 data = data.filter(item => 
                     (item.name && item.name.toLowerCase().includes(searchTerm)) ||
+                    (item.userId && item.userId.toLowerCase().includes(searchTerm)) ||
                     (item.role && item.role.toLowerCase().includes(searchTerm)) ||
                     (item.area && item.area.toLowerCase().includes(searchTerm))
                 );
@@ -4105,7 +4164,7 @@
                         <button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
                         </button>`;
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${validatorInput}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox resolved-cb" value="${t.id}"></td><td>${resolvedTime}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${validatorInput}</td><td>${t.findings || '-'}</td><td>${durationStr}</td><td>${actionHtml}</td>`;
                     resolvedTasksTbody.appendChild(tr);
                 });
             }
@@ -4223,7 +4282,7 @@
 
                     const reassignedTo = t.reassignedTo || '-';
 
-                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${reassignedTo}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
+                    tr.innerHTML = `<td><input type="checkbox" class="val-row-checkbox history-cb" value="${t.id}"></td><td>${dateStr}</td><td>${prioHtml}</td><td>${t.sku}</td><td>${t.desc}</td><td>${t.qty}</td><td>${t.reason || '-'}</td><td>${expiryStr}</td><td>${t.opsValidator || '-'}</td><td>${t.validator}</td><td>${displayStatus}</td><td>${displaySubStatus}</td><td>${reassignedTo}</td><td>${t.findings || '-'}</td><td>${durationStr}</td><td><button class="icon-btn delete-task-btn" data-id="${t.id}" title="Delete" style="color:#d9534f;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button></td>`;
                     historyTasksTbody.appendChild(tr);
                 });
             }
@@ -4777,14 +4836,14 @@
                 }
             } else if(btn.classList.contains('complete-task-btn')) {
                 const id = btn.dataset.id;
-                let tasks = getValidationTasks();
-                const taskIndex = tasks.findIndex(t => t.id === id);
-                if(taskIndex > -1) {
-                    tasks[taskIndex].status = 'Completed';
-                    tasks[taskIndex].completedAt = new Date().toISOString();
-                    saveValidationTasks(tasks);
-                    renderValidationTasks();
-                    showToast('Task completed');
+                const modal = document.getElementById('resolve-task-modal');
+                const inputId = document.getElementById('resolve-task-id');
+                const inputFindings = document.getElementById('resolve-findings');
+                if(modal && inputId && inputFindings) {
+                    inputId.value = id;
+                    inputFindings.value = '';
+                    modal.classList.remove('hidden');
+                    setTimeout(() => inputFindings.focus(), 100);
                 }
             } else if(btn.classList.contains('mark-unresolved-btn')) {
                 if(!confirm('Are you sure you want to mark this task as Unresolved?')) return;
@@ -4932,6 +4991,31 @@
         }
         const historyTasksTbody = document.getElementById('history-tasks-tbody');
         if(historyTasksTbody) historyTasksTbody.addEventListener('click', handleTaskAction);
+
+        const confirmResolveBtn = document.getElementById('confirm-resolve-btn');
+        const cancelResolveBtn = document.getElementById('cancel-resolve-btn');
+        const resolveModal = document.getElementById('resolve-task-modal');
+
+        if(cancelResolveBtn) cancelResolveBtn.addEventListener('click', () => resolveModal.classList.add('hidden'));
+
+        if(confirmResolveBtn) {
+            confirmResolveBtn.addEventListener('click', () => {
+                const id = document.getElementById('resolve-task-id').value;
+                const findings = document.getElementById('resolve-findings').value.trim();
+                
+                let tasks = getValidationTasks();
+                const taskIndex = tasks.findIndex(t => t.id === id);
+                if(taskIndex > -1) {
+                    tasks[taskIndex].status = 'Completed';
+                    tasks[taskIndex].completedAt = new Date().toISOString();
+                    tasks[taskIndex].findings = findings;
+                    saveValidationTasks(tasks);
+                    renderValidationTasks();
+                    showToast('Task completed');
+                    resolveModal.classList.add('hidden');
+                }
+            });
+        }
 
         // Bulk Actions Logic for Validators
         function updateValBulkButtons() {
@@ -5146,7 +5230,7 @@
             if (dataToExport.length === 0) { alert('No data to export'); return; }
             
            
-            const headers = ['Date', 'SKU', 'Description', 'Qty', 'Reason', 'Ops Validator', 'IC Validator', 'Status', 'Completed At'];
+            const headers = ['Date', 'SKU', 'Description', 'Qty', 'Reason', 'Ops Validator', 'IC Validator', 'Status', 'Completed At', 'Findings'];
             const csv = [headers.join(',')];
             
             dataToExport.forEach(t => {
@@ -5155,8 +5239,8 @@
                 const row = [
                     `"${date}"`, `"${t.sku || ''}"`, `"${(t.desc || '').replace(/"/g, '""')}"`,
                     `"${t.qty || ''}"`, `"${(t.reason || '').replace(/"/g, '""')}"`,
-                    `"${t.validator || ''}"`, `"${t.status || ''}"`, `"${completedAt}"`
-                    `"${t.opsValidator || ''}"`, `"${t.validator || ''}"`, `"${t.status || ''}"`, `"${completedAt}"`
+                    `"${t.opsValidator || ''}"`, `"${t.validator || ''}"`, `"${t.status || ''}"`, `"${completedAt}"`,
+                    `"${(t.findings || '').replace(/"/g, '""')}"`
                 ];
                 csv.push(row.join(','));
             });
@@ -5368,8 +5452,8 @@
         if(downloadTaskTemplateBtn) {
             downloadTaskTemplateBtn.addEventListener('click', () => {
                 
-                const headers = ['SKU', 'Description', 'Qty', 'Reason', 'Priority', 'Ops Validator', 'IC Validator'];
-                const sample = ['10000001', 'Sample Item', '10', 'Variance Check', 'Normal', 'Jane Ops', 'John Doe'];
+                const headers = ['SKU', 'Qty', 'Reason', 'Priority', 'Ops Validator', 'IC Validator'];
+                const sample = ['10000001', '10', 'Variance Check', 'Normal', 'Jane Ops', 'John Doe'];
                 const csvContent = headers.join(',') + '\n' + sample.join(',');
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
@@ -5409,7 +5493,6 @@
                         
                         if(skuIdx === -1 || qtyIdx === -1) {
                             showToast('CSV must contain "SKU" and "Qty" columns.', 'error');
-                            window.hideLoading && window.hideLoading();
                             return;
                         }
 
@@ -6494,6 +6577,141 @@
                 updateOpsValidatorDropdown();
             });
         }
+
+        // Findings Master Logic
+        const STORAGE_KEY_FINDINGS = 'ims_findings_master_v1';
+        const manageFindingsBtn = document.getElementById('manage-findings-btn');
+        const findingsMasterModal = document.getElementById('findings-master-modal');
+        const saveFindingMasterBtn = document.getElementById('save-finding-master-btn');
+        const findingMasterText = document.getElementById('finding-master-text');
+        const findingMasterId = document.getElementById('finding-master-id');
+        const findingMasterSearch = document.getElementById('finding-master-search');
+        const findingsMasterTableBody = document.querySelector('#findings-master-table tbody');
+        const resolveFindingsSelect = document.getElementById('resolve-findings-select');
+        const resolveFindingsText = document.getElementById('resolve-findings');
+
+        function getFindingsMaster() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY_FINDINGS) || '[]'); } catch(e) { return []; }
+        }
+        function saveFindingsMaster(data) {
+            localStorage.setItem(STORAGE_KEY_FINDINGS, JSON.stringify(data));
+        }
+
+        function renderFindingsMaster() {
+            if (!findingsMasterTableBody) return;
+            let findings = getFindingsMaster();
+            const search = findingMasterSearch ? findingMasterSearch.value.toLowerCase() : '';
+            if (search) {
+                findings = findings.filter(f => f.text.toLowerCase().includes(search));
+            }
+            findings.sort((a, b) => a.text.localeCompare(b.text));
+            
+            findingsMasterTableBody.innerHTML = '';
+            if (findings.length === 0) {
+                findingsMasterTableBody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding:10px; color:#999;">No findings found.</td></tr>';
+                return;
+            }
+            
+            findings.forEach(f => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${f.text}</td>
+                    <td style="text-align:center;">
+                        <button class="icon-btn edit-finding-btn" data-id="${f.id}" title="Edit" style="padding:2px 6px;">✎</button>
+                        <button class="icon-btn delete-finding-btn" data-id="${f.id}" title="Delete" style="padding:2px 6px; color:#d9534f;">&times;</button>
+                    </td>
+                `;
+                findingsMasterTableBody.appendChild(tr);
+            });
+        }
+
+        function updateResolveFindingsDropdown() {
+            if (!resolveFindingsSelect) return;
+            const findings = getFindingsMaster();
+            findings.sort((a, b) => a.text.localeCompare(b.text));
+            
+            resolveFindingsSelect.innerHTML = '<option value="">Select Common Finding...</option>';
+            if (findings.length > 0) {
+                resolveFindingsSelect.style.display = 'block';
+                findings.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f.text;
+                    opt.textContent = f.text;
+                    resolveFindingsSelect.appendChild(opt);
+                });
+            } else {
+                resolveFindingsSelect.style.display = 'none';
+            }
+        }
+
+        if (manageFindingsBtn) {
+            manageFindingsBtn.addEventListener('click', () => {
+                if (findingsMasterModal) {
+                    findingsMasterModal.classList.remove('hidden');
+                    renderFindingsMaster();
+                }
+            });
+        }
+
+        if (saveFindingMasterBtn) {
+            saveFindingMasterBtn.addEventListener('click', () => {
+                const text = findingMasterText.value.trim();
+                const id = findingMasterId.value;
+                if (!text) { alert('Finding description is required.'); return; }
+                
+                let findings = getFindingsMaster();
+                if (id) {
+                    const idx = findings.findIndex(f => f.id == id);
+                    if (idx > -1) findings[idx].text = text;
+                } else {
+                    if (findings.some(f => f.text.toLowerCase() === text.toLowerCase())) { alert('Finding already exists.'); return; }
+                    findings.push({ id: Date.now(), text: text });
+                }
+                saveFindingsMaster(findings);
+                renderFindingsMaster();
+                findingMasterText.value = ''; findingMasterId.value = '';
+                updateResolveFindingsDropdown();
+            });
+        }
+
+        if (findingsMasterTableBody) {
+            findingsMasterTableBody.addEventListener('click', (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const id = btn.dataset.id;
+                if (btn.classList.contains('edit-finding-btn')) {
+                    const findings = getFindingsMaster();
+                    const f = findings.find(i => i.id == id);
+                    if (f) {
+                        findingMasterText.value = f.text;
+                        findingMasterId.value = f.id;
+                    }
+                } else if (btn.classList.contains('delete-finding-btn')) {
+                    if (confirm('Delete this finding?')) {
+                        let findings = getFindingsMaster();
+                        findings = findings.filter(i => i.id != id);
+                        saveFindingsMaster(findings);
+                        renderFindingsMaster();
+                        updateResolveFindingsDropdown();
+                    }
+                }
+            });
+        }
+
+        if (findingMasterSearch) findingMasterSearch.addEventListener('input', renderFindingsMaster);
+
+        if (resolveFindingsSelect && resolveFindingsText) {
+            resolveFindingsSelect.addEventListener('change', () => {
+                if (resolveFindingsSelect.value) {
+                    const current = resolveFindingsText.value.trim();
+                    resolveFindingsText.value = current ? current + '; ' + resolveFindingsSelect.value : resolveFindingsSelect.value;
+                    resolveFindingsSelect.value = ''; // Reset
+                }
+            });
+        }
+
+        // Initialize dropdown on load
+        updateResolveFindingsDropdown();
 
         // Check for auto-open validators modal
         if (sessionStorage.getItem('ims_open_validators_modal') === 'true') {
