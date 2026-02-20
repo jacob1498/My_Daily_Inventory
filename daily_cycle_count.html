@@ -2600,9 +2600,17 @@
             
             const searchTerm = countersSearchInput ? countersSearchInput.value.toLowerCase() : '';
             if (searchTerm) {
+                const userIdsWithMatch = new Set(
+                    attendance
+                        .filter(a => a.userId && a.userId.toLowerCase().includes(searchTerm))
+                        .map(a => `${a.date}|${a.shift}`)
+                );
+
                 data = data.filter(item => 
-                    item.date.toLowerCase().includes(searchTerm) || 
-                    item.shift.toLowerCase().includes(searchTerm)
+                    (item.date && item.date.toLowerCase().includes(searchTerm)) || 
+                    (item.shift && item.shift.toLowerCase().includes(searchTerm)) ||
+                    (item.note && item.note.toLowerCase().includes(searchTerm)) ||
+                    userIdsWithMatch.has(`${item.date}|${item.shift}`)
                 );
             }
 
@@ -3752,6 +3760,7 @@
             if (searchTerm) {
                 data = data.filter(item => 
                     (item.name && item.name.toLowerCase().includes(searchTerm)) ||
+                    (item.userId && item.userId.toLowerCase().includes(searchTerm)) ||
                     (item.role && item.role.toLowerCase().includes(searchTerm)) ||
                     (item.jobDescription && item.jobDescription.toLowerCase().includes(searchTerm)) ||
                     (item.area && item.area.toLowerCase().includes(searchTerm))
