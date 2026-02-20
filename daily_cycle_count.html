@@ -7262,12 +7262,6 @@
                 const areaType = document.getElementById('ec-area-type').value;
                 const now = new Date();
 
-                // Validation
-                if (areaType && areaType.startsWith('Reserved') && pallets === 0) {
-                    alert('Pallets Completed cannot be zero for Reserved area.');
-                    return;
-                }
-
                 // 1. Log Timestamp
                 const data = getTimestamps();
                 data.push({
