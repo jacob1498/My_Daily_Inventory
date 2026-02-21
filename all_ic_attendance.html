@@ -3431,6 +3431,7 @@
             const resolved = validatorTasks.filter(t => t.status === 'Completed').length;
             const unresolved = validatorTasks.filter(t => t.status === 'Unresolved').length;
             const total = validatorTasks.length;
+            const totalResolvedQty = validatorTasks.filter(t => t.status === 'Completed').reduce((sum, t) => sum + (parseInt(t.resolvedQty) || 0), 0);
 
             let tasksHtml = '';
             validatorTasks.forEach(t => {
@@ -3441,6 +3442,7 @@
                         <td>${t.qty}</td>
                         <td>${t.reason || ''}</td>
                         <td>${t.status === 'Completed' ? 'Resolved' : t.status}</td>
+                        <td>${t.resolvedQty || '-'}</td>
                         <td>${new Date(t.timestamp).toLocaleTimeString()}</td>
                     </tr>
                 `;
@@ -3476,12 +3478,13 @@
                     <h3>Task Summary</h3>
                     <table class="stats-table">
                         <thead>
-                            <tr><th>Total Tasks</th><th>Resolved</th><th>Unresolved</th><th>Pending</th></tr>
+                            <tr><th>Total Tasks</th><th>Resolved</th><th>Resolved Qty</th><th>Unresolved</th><th>Pending</th></tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>${total}</td>
                                 <td>${resolved}</td>
+                                <td>${totalResolvedQty}</td>
                                 <td>${unresolved}</td>
                                 <td>${pending}</td>
                             </tr>
@@ -3491,10 +3494,10 @@
                     <h3>Task Details</h3>
                     <table class="tasks-table">
                         <thead>
-                            <tr><th>SKU</th><th>Description</th><th>Qty</th><th>Reason</th><th>Status</th><th>Time</th></tr>
+                            <tr><th>SKU</th><th>Description</th><th>Qty</th><th>Reason</th><th>Status</th><th>Resolved Qty</th><th>Time</th></tr>
                         </thead>
                         <tbody>
-                            ${tasksHtml || '<tr><td colspan="6" style="text-align:center">No tasks found</td></tr>'}
+                            ${tasksHtml || '<tr><td colspan="7" style="text-align:center">No tasks found</td></tr>'}
                         </tbody>
                     </table>
 
@@ -3538,6 +3541,7 @@
             const resolved = validatorTasks.filter(t => t.status === 'Completed').length;
             const unresolved = validatorTasks.filter(t => t.status === 'Unresolved').length;
             const total = validatorTasks.length;
+            const totalResolvedQty = validatorTasks.filter(t => t.status === 'Completed').reduce((sum, t) => sum + (parseInt(t.resolvedQty) || 0), 0);
 
             let tasksHtml = '';
             validatorTasks.forEach(t => {
@@ -3548,6 +3552,7 @@
                         <td style="border:1px solid #000; padding:6px;">${t.qty}</td>
                         <td style="border:1px solid #000; padding:6px;">${t.reason || ''}</td>
                         <td style="border:1px solid #000; padding:6px;">${t.status === 'Completed' ? 'Resolved' : t.status}</td>
+                        <td style="border:1px solid #000; padding:6px;">${t.resolvedQty || '-'}</td>
                         <td style="border:1px solid #000; padding:6px;">${new Date(t.timestamp).toLocaleTimeString()}</td>
                     </tr>
                 `;
@@ -3567,12 +3572,13 @@
                     <h3>Task Summary</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
                         <thead>
-                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Total Tasks</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Resolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Unresolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Pending</th></tr>
+                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Total Tasks</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Resolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Resolved Qty</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Unresolved</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Pending</th></tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td style="border:1px solid #000; padding:6px;">${total}</td>
                                 <td style="border:1px solid #000; padding:6px;">${resolved}</td>
+                                <td style="border:1px solid #000; padding:6px;">${totalResolvedQty}</td>
                                 <td style="border:1px solid #000; padding:6px;">${unresolved}</td>
                                 <td style="border:1px solid #000; padding:6px;">${pending}</td>
                             </tr>
@@ -3582,10 +3588,10 @@
                     <h3>Task Details</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
                         <thead>
-                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">SKU</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Description</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Qty</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Reason</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Status</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Time</th></tr>
+                            <tr><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">SKU</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Description</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Qty</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Reason</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Status</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Resolved Qty</th><th style="border:1px solid #000; padding:6px; background-color:#f0f0f0;">Time</th></tr>
                         </thead>
                         <tbody>
-                            ${tasksHtml || '<tr><td colspan="6" style="text-align:center; border:1px solid #000; padding:6px;">No tasks found</td></tr>'}
+                            ${tasksHtml || '<tr><td colspan="7" style="text-align:center; border:1px solid #000; padding:6px;">No tasks found</td></tr>'}
                         </tbody>
                     </table>
 
