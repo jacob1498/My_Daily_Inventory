@@ -34,74 +34,59 @@
         </button>
       </li>
       <li>
-        <button data-tooltip="Document Monitoring">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          <span class="menu-text">Document Monitoring</span>
+        <button onclick="window.location.href='daily_cycle_count.html'" data-tooltip="Daily Cycle Count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span class="menu-text">Daily Cycle Count</span>
         </button>
         <ul class="sidebar-submenu">
-						<li><button onclick="window.location.href='index.html'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              IAAF Monitoring</button></li>
-						<li><button onclick="window.location.href='ir_monitoring.html'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-              IR Monitoring</button></li>
-
+            <li><button id="sidebar-timestamp-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Timestamp
+            </button></li>
+            
         </ul>
       </li>
       <li>
-        <button data-tooltip="Inventory Tracker">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-        <span class="menu-text">Inventory Tracker</span>
+        <button onclick="window.location.href='all_ic_attendance.html'" data-tooltip="All IC Attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span class="menu-text">All IC Attendance</span>
         </button>
         <ul class="sidebar-submenu">
-          <li><button onclick="window.location.href='cycle_count.html'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.36-3.36L23 10"></path><path d="M20.49 15a9 9 0 0 1-14.36 3.36L1 14"></path></svg>
-            Cycle Count</button></li>
-          <li><button onclick="window.location.href='cycle_count_reports.html'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            Cycle Count Report</button></li>
-					<li><button onclick="window.location.href='cycle_count_completion.html'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            Cycle Count Completion</button></li>
-          <li><button onclick="window.location.href='cycle_count_schedule.html'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Cycle Count Schedule</button></li>
+            
+            <li><button onclick="sessionStorage.setItem('ims_open_validators_modal', 'true'); window.location.href='all_ic_attendance.html'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-right:10px;"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                Validators View
+            </button></li>
         </ul>
+      </li>
+      <li>
+        <button onclick="window.location.href='dashboard_analytics.html'" data-tooltip="Analytics & Reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span class="menu-text">Analytics & Reports</span>
+        </button>
       </li>
       <li><button class="active" data-tooltip="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         <span class="menu-text">Settings</span>
-      </button></li>
+      </button>
+      </li>
+      
     </ul>
   </nav>
-
   <header>
-    <h1>Settings</h1>
-    <div class="navbar" role="navigation">
-      <div class="nav-left">
-      </div>
-      <div class="nav-right">
-        <div class="nav-notifications">
-          <button class="notification-btn" title="Notifications">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            <span class="notification-badge">0</span>
-          </button>
-          <div class="notification-menu">
-            <div class="notification-header"><span>Notifications</span><button class="clear-notifications">Clear All</button></div>
-            <ul class="notification-list"></ul>
-          </div>
-        </div>
-        <div id="clock" class="clock" aria-live="polite"></div>
-        <div class="nav-user" id="nav-user">
-          <a href="profile.html" title="Profile" style="text-decoration:none; margin-right: 4px;"><span id="nav-avatar" class="avatar small"></span></a>
-          <button class="user-btn" id="user-btn" aria-haspopup="true" aria-expanded="false"><span id="username-display"></span> <span id="role-badge" class="role-badge" style="display:none;margin-left:8px"></span></button>
-          <div class="user-menu" id="user-menu" role="menu" aria-label="User menu">
-            <a href="profile.html" id="profile-btn" role="menuitem">Profile</a>
-            <a href="settings.html" role="menuitem">Settings</a>
-            <button id="logout-btn" role="menuitem">Logout</button>
-          </div>
-        </div>
-      </div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <button onclick="window.location.href='homepage.html'" class="icon-btn" title="Back to Dashboard" style="border:none; background:transparent; font-size:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
+        <h1>Settings</h1>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="toggleTheme()" class="icon-btn" title="Toggle Theme" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button onclick="signOut()" class="icon-btn" title="Logout" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #e74c3c;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
     </div>
   </header>
 
@@ -116,6 +101,9 @@
           <select id="theme-select" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
             <option value="light">Light</option>
             <option value="dark">Dark</option>
+            <option value="pastel-teal">Pastel Teal</option>
+            <option value="cream">Cream</option>
+            <option value="navy-blue">Navy Blue</option>
             <option value="system">System Default</option>
           </select>
         </div>
@@ -142,28 +130,26 @@
           </select>
         </div>
 
+        <div class="tracker-container" style="margin-top: 20px;">
+                <h3>Storage Status</h3>
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; color: var(--text-color);">
+                        <span id="storageUsageText">Usage: 0 KB / 5 MB</span>
+                        <span id="storagePercentText">0%</span>
+                    </div>
+                    <div style="width: 100%; background-color: #eee; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div id="storageProgressBar" style="height: 100%; width: 0%; background-color: var(--primary-color); transition: width 0.3s;"></div>
+                    </div>
+                    <p id="storageRowsText" style="font-size: 12px; color: #7f8c8d; margin-top: 8px;">Estimated capacity: Calculating...</p>
+                </div>
+            </div>
+
+
+
         <button type="submit">Save Changes</button>
       </form>
     </div>
 
-    <div class="card" style="margin-top: 20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h2>System Logs</h2>
-        <button id="clear-logs-btn" style="display:none; background: #d9534f; color: white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Clear Logs</button>
-      </div>
-      <p class="muted">Recent system activities and audit trails.</p>
-      <table id="system-logs-table" style="width:100%; border-collapse: collapse; margin-top: 10px;">
-        <thead>
-          <tr style="background: #f9fbfd; border-bottom: 1px solid #eee;">
-            <th style="padding: 8px; text-align: left;">Timestamp</th>
-            <th style="padding: 8px; text-align: left;">User</th>
-            <th style="padding: 8px; text-align: left;">Action</th>
-            <th style="padding: 8px; text-align: left;">Details</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
   </main>
 
   <script src="app.js"></script>
@@ -236,6 +222,67 @@
         alert('Settings saved!');
       });
     }
+
+    function updateStorageInfo() {
+        // Approximate limit for localStorage (5MB is standard safe limit)
+        const MAX_BYTES = 5 * 1024 * 1024; 
+        let totalUsed = 0;
+        
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                totalUsed += (localStorage[key].length + key.length);
+            }
+        }
+
+        const usedKB = (totalUsed / 1024).toFixed(2);
+        const totalMB = (MAX_BYTES / (1024 * 1024)).toFixed(0);
+        const percent = Math.min(100, (totalUsed / MAX_BYTES) * 100).toFixed(1);
+        
+        const usageText = document.getElementById('storageUsageText');
+        const percentText = document.getElementById('storagePercentText');
+        const progressBar = document.getElementById('storageProgressBar');
+
+        if(usageText) usageText.innerText = `Usage: ${usedKB} KB / ${totalMB} MB`;
+        if(percentText) percentText.innerText = `${percent}%`;
+        
+        if(progressBar){
+            progressBar.style.width = `${percent}%`;
+            if (parseFloat(percent) >= 90) {
+                progressBar.style.backgroundColor = '#e74c3c';
+                if(window.addNotification) window.addNotification("⚠️ Storage usage exceeds 90%!", "error");
+            } else {
+                progressBar.style.backgroundColor = 'var(--accent, #2752a7)';
+            }
+        }
+        
+        // Estimate Rows based on Documents
+        let avgSize = 1000; // Default 1KB
+        try {
+            const docsStr = localStorage.getItem('dms_docs_v1');
+            if(docsStr){
+                const docs = JSON.parse(docsStr);
+                if(Array.isArray(docs) && docs.length > 0){
+                    avgSize = docsStr.length / docs.length;
+                }
+            }
+        } catch(e){}
+        
+        const remainingBytes = MAX_BYTES - totalUsed;
+        const estimatedRows = Math.max(0, Math.floor(remainingBytes / avgSize));
+        
+        const rowsText = document.getElementById('storageRowsText');
+        if(rowsText) {
+            rowsText.innerHTML = `Estimated capacity: ~${estimatedRows.toLocaleString()} more documents based on current data size`;
+            
+            if (parseFloat(percent) >= 90) {
+                rowsText.innerHTML += '<br><strong style="color: #e74c3c;">⚠️ Critical Storage Level: Please backup and clear old data.</strong>';
+            }
+        }
+    }
+    
+    // Initialize storage info
+    updateStorageInfo();
+
   </script>
 </body>
 </html>
