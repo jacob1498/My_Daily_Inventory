@@ -103,6 +103,12 @@
           <span class="menu-text">All IC Attendance</span>
         </button>
       </li>
+      <li>
+        <button onclick="window.location.href='settings.html'" data-tooltip="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span class="menu-text">Settings</span>
+        </button>
+      </li>
     </ul>
   </nav>
 
@@ -692,6 +698,7 @@
         importCsvFile.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            window.showLoading && window.showLoading();
             const reader = new FileReader();
             reader.onload = (ev) => {
                 const text = ev.target.result;
@@ -702,12 +709,12 @@
                     rows = text.split('\n').map(line => line.split(','));
                 }
                 
-                if (rows.length < 2) { alert('Invalid CSV or empty file.'); return; }
+                if (rows.length < 2) { if(window.addNotification) window.addNotification('Invalid CSV or empty file.', 'error'); else alert('Invalid CSV or empty file.'); window.hideLoading && window.hideLoading(); return; }
                 
                 const headers = rows[0].map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
                 const descIdx = headers.indexOf('description');
                 
-                if (descIdx === -1) { alert('CSV must contain a "Description" column.'); return; }
+                if (descIdx === -1) { if(window.addNotification) window.addNotification('CSV must contain a "Description" column.', 'error'); else alert('CSV must contain a "Description" column.'); window.hideLoading && window.hideLoading(); return; }
                 
                 const assigneeIdx = headers.indexOf('assigned to');
                 const priorityIdx = headers.indexOf('priority');
@@ -737,7 +744,11 @@
                     tasks.push({ id: generateTaskId(tasks), description: desc, assignee, priority: priority || 'Medium', status: status || 'Pending', dueDate, tags, createdAt: new Date().toISOString(), comments: [], reminder: '', recurrence: recurrence || 'None', archived: false });
                     count++;
                 }
-                saveTasks(tasks); renderTasks(); alert(`Imported ${count} tasks.`); importCsvFile.value = '';
+                saveTasks(tasks); renderTasks(); if(window.addNotification) window.addNotification(`Imported ${count} tasks.`); else alert(`Imported ${count} tasks.`); importCsvFile.value = ''; window.hideLoading && window.hideLoading();
+            };
+            reader.onerror = () => {
+                window.hideLoading && window.hideLoading();
+                if(window.addNotification) window.addNotification('Failed to read file.', 'error'); else alert('Failed to read file.');
             };
             reader.readAsText(file);
         });
