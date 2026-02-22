@@ -100,6 +100,9 @@
     .card-attendance .card-icon-wrapper {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
+    .card-analytics .card-icon-wrapper {
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    }
 
     .card-icon {
       width: 80px;
@@ -163,6 +166,7 @@
     }
     .dashboard-card:nth-child(1) { animation-delay: 0.15s; }
     .dashboard-card:nth-child(2) { animation-delay: 0.3s; }
+    .dashboard-card:nth-child(3) { animation-delay: 0.45s; }
 
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(40px); }
@@ -213,6 +217,17 @@
           <div class="card-content">
             <div class="card-title">All IC Attendance</div>
             <div class="card-desc">Manage attendance for all IC roles and other job descriptions.</div>
+            <div class="card-action">Open Module &rarr;</div>
+          </div>
+        </div>
+
+        <div class="dashboard-card card-analytics" onclick="window.location.href='dashboard_analytics.html'">
+          <div class="card-icon-wrapper">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Analytics & Reports</div>
+            <div class="card-desc">View performance metrics, top performers, and generate reports.</div>
             <div class="card-action">Open Module &rarr;</div>
           </div>
         </div>
