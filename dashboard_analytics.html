@@ -174,6 +174,8 @@
         </div>
     </div>
 
+    
+
     <div class="dashboard-grid">
         <div class="chart-card">
             <h3 style="margin-top: 0; color: #e74c3c;">Bottom Attendance Users</h3>
@@ -188,6 +190,24 @@
             <ul id="bottom-counters-list" class="top-list"></ul>
         </div>
     </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Top Items (Most Tasks)</h3>
+            <ul id="top-items-total-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #27ae60;">Top Items (Most Resolved)</h3>
+            <ul id="top-items-resolved-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e74c3c;">Top Items (Most Unresolved)</h3>
+            <ul id="top-items-unresolved-list" class="top-list"></ul>
+        </div>
+    </div>
+
+
+
 
     <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
@@ -294,6 +314,19 @@
             });
             renderTopList('top-counters-list', ccCounts, 'Shifts');
 
+            // Top Items (SKU)
+            const itemStats = {};
+            filteredTasks.forEach(t => {
+                const sku = t.sku || 'Unknown';
+                if (!itemStats[sku]) itemStats[sku] = { desc: t.desc || '', total: 0, resolved: 0, unresolved: 0 };
+                itemStats[sku].total++;
+                if (t.status === 'Completed') itemStats[sku].resolved++;
+                if (t.status === 'Unresolved') itemStats[sku].unresolved++;
+            });
+            renderTopItemList('top-items-total-list', itemStats, 'total');
+            renderTopItemList('top-items-resolved-list', itemStats, 'resolved');
+            renderTopItemList('top-items-unresolved-list', itemStats, 'unresolved');
+
             // Bottom Lists
             renderBottomList('bottom-attendance-list', attCounts, 'Shifts');
             renderBottomList('bottom-validators-list', valCounts, 'Resolved');
@@ -317,6 +350,31 @@
             sorted.forEach(([name, count], index) => {
                 const li = document.createElement('li');
                 li.innerHTML = `<div><span class="rank-badge">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
+                list.appendChild(li);
+            });
+        }
+
+        function renderTopItemList(elementId, stats, metric) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            const sorted = Object.entries(stats).sort((a,b) => b[1][metric] - a[1][metric]).slice(0, 5);
+            
+            if (sorted.length === 0 || sorted[0][1][metric] === 0) {
+                list.innerHTML = '<li style="justify-content:center; color:#999;">No data available</li>';
+                return;
+            }
+
+            sorted.forEach(([sku, data], index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div style="display:flex; align-items:center; overflow:hidden; padding-right:10px;">
+                        <span class="rank-badge">${index + 1}</span>
+                        <div style="display:flex; flex-direction:column; overflow:hidden;">
+                            <span style="font-weight:bold; font-size:13px;">${sku}</span>
+                            <span style="font-size:11px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${data.desc}">${data.desc || '-'}</span>
+                        </div>
+                    </div>
+                    <strong>${data[metric]}</strong>`;
                 list.appendChild(li);
             });
         }
