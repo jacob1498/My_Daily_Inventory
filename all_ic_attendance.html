@@ -248,6 +248,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
           <span class="menu-text">Daily Cycle Count</span>
         </button>
+      
 
         <ul class="sidebar-submenu">
             <li><button id="sidebar-timestamp-btn">
@@ -269,6 +270,20 @@
                 Validators View
             </button></li>
         </ul>
+      </li>
+
+
+      <li>
+        <button onclick="window.location.href='dashboard_analytics.html'" data-tooltip="Analytics & Reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span class="menu-text">Analytics & Reports</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='settings.html'" data-tooltip="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span class="menu-text">Settings</span>
+        </button>
       </li>
     </ul>
   </nav>
@@ -437,6 +452,7 @@
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="Damaged Checker"> Damaged Checker</label>
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="B1T1 Checker"> B1T1 Checker</label>
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="Validator"> Validator</label>
+                    <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="Putaway Validator"> Putaway Validator</label>
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="HVI Support"> HVI Support</label>
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="Projects"> Projects</label>
                     <label style="display:block; margin-bottom:5px; cursor:pointer;"><input type="checkbox" class="att-area-cb" value="HO-Cancelled"> HO-Cancelled</label>
@@ -658,6 +674,7 @@
                         <option value="Damaged Checker">Damaged Checker</option>
                         <option value="B1T1 Checker">B1T1 Checker</option>
                         <option value="Validator">Validator</option>
+                        <option value="Putaway Validator">Putaway Validator</option>
                         <option value="HVI Support">HVI Support</option>
                         <option value="Cycle Counter">Cycle Counter</option>
                         <option value="Projects">Projects</option>
@@ -1194,6 +1211,7 @@
                 </div>
                 <button id="export-val-all-btn" class="icon-btn" title="Export All (Excel)" style="color:#27ae60; border:1px solid #ccc; background:#fff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button>
                 <button id="email-val-report-btn" class="icon-btn" title="Email Status Report" style="color:#3498db; border:1px solid #ccc; background:#fff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></button>
+                <button id="val-evaluation-btn" class="icon-btn" title="Evaluation Analysis" style="color:#8e44ad; border:1px solid #ccc; background:#fff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></button>
                 <button id="val-actions-btn" class="icon-btn" title="Actions" style="margin-right:5px; padding: 4px 12px; font-size: 12px; font-weight: bold; background: #f0f4f8; border: 1px solid #ccc;">Actions</button>
                 <button class="icon-btn close-modal">&times;</button>
             </div>
@@ -1831,6 +1849,48 @@
     </div>
   </div>
 
+  <!-- Validator Evaluation Modal -->
+  <div id="val-evaluation-modal" class="modal hidden" style="z-index: 10060;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content card" style="max-width: 900px; margin: 50px auto; display:flex; flex-direction:column; max-height:85vh;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0">Validator Evaluation Analysis</h3>
+            <button class="icon-btn close-modal">&times;</button>
+        </div>
+        <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center; background:#f9f9f9; padding:10px; border-radius:4px;">
+            <label style="font-size:12px; font-weight:bold;">Filter:</label>
+            <input type="date" id="eval-start-date" style="padding:4px; border:1px solid #ccc; border-radius:4px; font-size:11px;">
+            <span style="font-size:11px;">to</span>
+            <input type="date" id="eval-end-date" style="padding:4px; border:1px solid #ccc; border-radius:4px; font-size:11px;">
+            <button id="eval-filter-btn" class="icon-btn" style="background:#2752a7; color:white; padding:4px 8px; font-size:11px;">Apply</button>
+            <button id="eval-clear-btn" class="icon-btn" style="border:1px solid #ccc; padding:4px 8px; font-size:11px;">Clear</button>
+        </div>
+        <div style="margin-bottom:10px; font-size:11px; color:#666; font-style:italic;">
+            * Grade based on Task Completion Rate (A: 90%+, B: 80%+, C: 70%+, D: 60%+, F: <60%). Resolved Qty indicates total items processed.
+        </div>
+        <div style="flex:1; overflow:auto; border:1px solid #eee;">
+            <table id="val-evaluation-table" class="report-table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th class="sortable" onclick="sortEvaluationTable('name')">Validator <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('total')">Total Assigned <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('resolved')">Resolved <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('resolvedQty')">Resolved Qty <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('unresolved')">Unresolved <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('rate')">Completion Rate <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('grade')">Grade <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="sortEvaluationTable('avgTime')">Avg Resolution Time <span class="sort-icon"></span></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div style="text-align:right; margin-top:10px;">
+            <button id="export-evaluation-btn" class="icon-btn" style="background:#2752a7; color:white; padding:6px 12px;">Export CSV</button>
+        </div>
+    </div>
+  </div>
+
   <div id="loading-spinner-overlay" class="loading-overlay">
     <div class="spinner"></div>
   </div>
@@ -2338,7 +2398,7 @@
         function updateSummary() {
             const data = getFilteredAttendanceData(true); // Ignore shift tab filter
             const reqs = loadRequirements();
-            const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "HVI Support", "Projects", "HO-Cancelled"];
+            const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "Putaway Validator", "HVI Support", "Projects", "HO-Cancelled"];
             const shiftsList = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
 
             const summary = {
@@ -2982,7 +3042,7 @@
             setReqBtn.addEventListener('click', () => {
                 const reqs = loadRequirements();
                 const tbody = document.querySelector('#req-table tbody');
-                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "HVI Support", "Projects", "HO-Cancelled"];
+                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "Putaway Validator", "HVI Support", "Projects", "HO-Cancelled"];
                 const shiftsList = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
                 const roleFilter = document.getElementById('req-role-filter');
                 
@@ -3085,7 +3145,7 @@
         if(exportReqBtn) {
             exportReqBtn.addEventListener('click', () => {
                 const reqs = loadRequirements();
-                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "HVI Support", "Projects", "HO-Cancelled"];
+                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "Putaway Validator", "HVI Support", "Projects", "HO-Cancelled"];
                 const shiftsList = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
                 
                 const headers = ['Sub Role', '1st Shift', '2nd Shift', '3rd Shift'];
@@ -3249,7 +3309,7 @@
             
             // Populate Job Desc dropdown if needed
             if(jobSelect && jobSelect.options.length <= 1) {
-                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "HVI Support", "Projects", "HO-Cancelled"];
+                const subRolesList = ["Cycle Counter", "TL", "OIC", "Encoder", "SBD Checker", "RTV", "Damaged Checker", "B1T1 Checker", "Validator", "Putaway Validator", "HVI Support", "Projects", "HO-Cancelled"];
                 subRolesList.sort().forEach(r => {
                     const opt = document.createElement('option');
                     opt.value = r;
@@ -5384,18 +5444,23 @@
 
         if(downloadSkuTemplateBtn) {
             downloadSkuTemplateBtn.addEventListener('click', () => {
-                const headers = ['Item Code', 'Description'];
-                const sample = ['10000001', 'Sample Item Description'];
-                const csvContent = headers.join(',') + '\n' + sample.join(',');
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'sku_master_template.csv';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                if(valActionsModal) valActionsModal.classList.add('hidden');
+                window.showLoading && window.showLoading();
+                setTimeout(() => {
+                    const headers = ['Item Code', 'Description'];
+                    const sample = ['10000001', 'Sample Item Description'];
+                    const csvContent = headers.join(',') + '\n' + sample.join(',');
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'sku_master_template.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    window.hideLoading && window.hideLoading();
+                }, 500);
             });
         }
 
@@ -5415,6 +5480,7 @@
             uploadSkuFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                if(valActionsModal) valActionsModal.classList.add('hidden');
                 window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
@@ -5474,19 +5540,23 @@
 
         if(downloadTaskTemplateBtn) {
             downloadTaskTemplateBtn.addEventListener('click', () => {
-                
-                const headers = ['SKU', 'Qty', 'Reason', 'Priority', 'Ops Validator', 'IC Validator'];
-                const sample = ['10000001', '10', 'Variance Check', 'Normal', 'Jane Ops', 'John Doe'];
-                const csvContent = headers.join(',') + '\n' + sample.join(',');
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'bulk_task_template.csv';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                if(valActionsModal) valActionsModal.classList.add('hidden');
+                window.showLoading && window.showLoading();
+                setTimeout(() => {
+                    const headers = ['SKU', 'Qty', 'Reason', 'Priority', 'Ops Validator', 'IC Validator'];
+                    const sample = ['10000001', '10', 'Variance Check', 'Normal', 'Jane Ops', 'John Doe'];
+                    const csvContent = headers.join(',') + '\n' + sample.join(',');
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'bulk_task_template.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    window.hideLoading && window.hideLoading();
+                }, 500);
             });
         }
 
@@ -5496,6 +5566,7 @@
             uploadBulkTasksFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
+                if(valActionsModal) valActionsModal.classList.add('hidden');
                 window.showLoading && window.showLoading();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
@@ -5705,6 +5776,149 @@
                     const subject = `Validator Status Report - ${new Date().toLocaleDateString()}`;
                     window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 }
+            });
+        }
+
+        // Validator Evaluation Logic
+        const valEvaluationBtn = document.getElementById('val-evaluation-btn');
+        const valEvaluationModal = document.getElementById('val-evaluation-modal');
+        const exportEvaluationBtn = document.getElementById('export-evaluation-btn');
+        const evalStartInput = document.getElementById('eval-start-date');
+        const evalEndInput = document.getElementById('eval-end-date');
+        const evalFilterBtn = document.getElementById('eval-filter-btn');
+        const evalClearBtn = document.getElementById('eval-clear-btn');
+        let evalSortField = 'total';
+        let evalSortDir = 'desc';
+
+        if (valEvaluationBtn) {
+            valEvaluationBtn.addEventListener('click', () => {
+                // Initialize with global values if empty
+                if (evalStartInput && !evalStartInput.value) {
+                    evalStartInput.value = document.getElementById('val-start-date').value || globalStartDate.value;
+                }
+                if (evalEndInput && !evalEndInput.value) {
+                    evalEndInput.value = document.getElementById('val-end-date').value || globalEndDate.value;
+                }
+                valEvaluationModal.classList.remove('hidden');
+                renderValEvaluation();
+            });
+        }
+
+        if (evalFilterBtn) evalFilterBtn.addEventListener('click', renderValEvaluation);
+        if (evalClearBtn) evalClearBtn.addEventListener('click', () => {
+            if(evalStartInput) evalStartInput.value = '';
+            if(evalEndInput) evalEndInput.value = '';
+            renderValEvaluation();
+        });
+
+        window.sortEvaluationTable = function(field) {
+            if (evalSortField === field) {
+                evalSortDir = evalSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                evalSortField = field;
+                evalSortDir = 'desc'; // Default desc for numbers usually
+                if (field === 'name') evalSortDir = 'asc';
+            }
+            renderValEvaluation();
+        }
+
+        function renderValEvaluation() {
+            const tbody = document.querySelector('#val-evaluation-table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let tasks = getValidationTasks();
+            const startStr = evalStartInput ? evalStartInput.value : '';
+            const endStr = evalEndInput ? evalEndInput.value : '';
+            const shiftFilter = document.getElementById('val-view-shift') ? document.getElementById('val-view-shift').value : '';
+
+            if (startStr || endStr) {
+                tasks = tasks.filter(t => {
+                    const shiftInfo = getShiftFromTimestamp(t.timestamp);
+                    return (!startStr || shiftInfo.date >= startStr) && (!endStr || shiftInfo.date <= endStr);
+                });
+            }
+            if (shiftFilter) {
+                tasks = tasks.filter(t => getShiftFromTimestamp(t.timestamp).shift.includes(shiftFilter));
+            }
+
+            const stats = {};
+            tasks.forEach(t => {
+                if (!t.validator || t.validator === 'Unassigned') return;
+                if (!stats[t.validator]) stats[t.validator] = { name: t.validator, total: 0, resolved: 0, unresolved: 0, totalTime: 0, timeCount: 0, resolvedQty: 0 };
+                
+                stats[t.validator].total++;
+                if (t.status === 'Completed') {
+                    stats[t.validator].resolved++;
+                    stats[t.validator].resolvedQty += (parseInt(t.resolvedQty) || 0);
+                    if (t.completedAt && t.timestamp) {
+                        const diff = new Date(t.completedAt) - new Date(t.timestamp);
+                        if (diff > 0) {
+                            stats[t.validator].totalTime += diff;
+                            stats[t.validator].timeCount++;
+                        }
+                    }
+                } else if (t.status === 'Unresolved') {
+                    stats[t.validator].unresolved++;
+                }
+            });
+
+            const data = Object.values(stats).map(s => {
+                s.rate = s.total > 0 ? Math.round((s.resolved / s.total) * 100) : 0;
+                s.avgTime = s.timeCount > 0 ? Math.round((s.totalTime / s.timeCount) / 60000) : 0; // minutes
+                
+                if (s.rate >= 90) s.grade = 'A';
+                else if (s.rate >= 80) s.grade = 'B';
+                else if (s.rate >= 70) s.grade = 'C';
+                else if (s.rate >= 60) s.grade = 'D';
+                else s.grade = 'F';
+                
+                return s;
+            });
+
+            data.sort((a, b) => {
+                let valA = a[evalSortField];
+                let valB = b[evalSortField];
+                if (typeof valA === 'string') valA = valA.toLowerCase();
+                if (typeof valB === 'string') valB = valB.toLowerCase();
+                if (valA < valB) return evalSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return evalSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:10px; color:#999;">No data available for current filters.</td></tr>';
+                return;
+            }
+
+            data.forEach(d => {
+                const tr = document.createElement('tr');
+                const avgTimeStr = d.avgTime > 0 ? (d.avgTime > 60 ? `${Math.floor(d.avgTime/60)}h ${d.avgTime%60}m` : `${d.avgTime}m`) : '-';
+                
+                let gradeColor = '#e74c3c';
+                if (d.grade === 'A') gradeColor = '#2ecc71';
+                else if (d.grade === 'B') gradeColor = '#3498db';
+                else if (d.grade === 'C') gradeColor = '#f1c40f';
+                else if (d.grade === 'D') gradeColor = '#e67e22';
+
+                tr.innerHTML = `<td>${d.name}</td><td>${d.total}</td><td>${d.resolved}</td><td>${d.resolvedQty}</td><td>${d.unresolved}</td><td>${d.rate}%</td><td style="font-weight:bold; color:${gradeColor}">${d.grade}</td><td>${avgTimeStr}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        if (exportEvaluationBtn) {
+            exportEvaluationBtn.addEventListener('click', () => {
+                const rows = [['Validator', 'Total Assigned', 'Resolved', 'Resolved Qty', 'Unresolved', 'Completion Rate', 'Grade', 'Avg Resolution Time (min)']];
+                const trs = document.querySelectorAll('#val-evaluation-table tbody tr');
+                trs.forEach(tr => {
+                    const cols = Array.from(tr.children).map(td => `"${td.textContent}"`);
+                    if (cols.length > 1) rows.push(cols.join(','));
+                });
+                const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'validator_evaluation.csv';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
             });
         }
 
