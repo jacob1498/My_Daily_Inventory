@@ -1890,17 +1890,27 @@ function setupDocSorting(){
 
 function applyTheme(){
   const theme = localStorage.getItem('ims_theme') || 'light';
+  document.body.classList.remove('dark-mode', 'pastel-teal-mode', 'cream-mode', 'navy-blue-mode');
   if(theme === 'dark'){
     document.body.classList.add('dark-mode');
-  } else {
-    document.body.classList.remove('dark-mode');
+  } else if(theme === 'pastel-teal'){
+    document.body.classList.add('pastel-teal-mode');
+  } else if(theme === 'cream'){
+    document.body.classList.add('cream-mode');
+  } else if(theme === 'navy-blue'){
+    document.body.classList.add('navy-blue-mode');
   }
 }
 window.applyTheme = applyTheme;
 
 function toggleTheme(){
   const current = localStorage.getItem('ims_theme') || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
+  let next = 'dark';
+  if (current === 'dark') next = 'pastel-teal';
+  else if (current === 'pastel-teal') next = 'cream';
+  else if (current === 'cream') next = 'navy-blue';
+  else if (current === 'navy-blue') next = 'light';
+  
   localStorage.setItem('ims_theme', next);
   applyTheme();
 }
@@ -3026,4 +3036,16 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.notification-menu').forEach(m => m.classList.remove('show'));
     }
   });
+});
+
+// Global Loading Spinner Helpers
+window.showLoading = function() { const el = document.getElementById('loading-spinner-overlay'); if(el) el.classList.add('visible'); };
+window.hideLoading = function() { const el = document.getElementById('loading-spinner-overlay'); if(el) el.classList.remove('visible'); };
+
+// Inject spinner on load
+document.addEventListener('DOMContentLoaded', () => {
+  if (!document.getElementById('loading-spinner-overlay')) {
+    const overlay = document.createElement('div'); overlay.id = 'loading-spinner-overlay'; overlay.className = 'loading-overlay';
+    overlay.innerHTML = '<div class="spinner"></div>'; document.body.appendChild(overlay);
+  }
 });
