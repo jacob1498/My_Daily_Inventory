@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard - IMS</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    /* Dark Mode Header */
+    body.dark-mode header { background: #1a252f; border-bottom: 1px solid #2c3e50; }
+    body.dark-mode header h1 { color: #ecf0f1; }
+    body { padding-top: 0 !important; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .chart-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border: 1px solid #eef2f6;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      min-height: 0;
+    }
+    .stat-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #eef2f6;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .stat-value { font-size: 28px; font-weight: bold; color: var(--accent); }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .top-list { list-style: none; padding: 0; margin: 0; }
+    .top-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;
+    }
+    .top-list li:last-child { border-bottom: none; }
+    .rank-badge {
+      background: #eee; color: #555; width: 24px; height: 24px;
+      border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: bold; margin-right: 10px;
+    }
+    .top-list li:nth-child(1) .rank-badge { background: #f1c40f; color: #fff; }
+    .top-list li:nth-child(2) .rank-badge { background: #bdc3c7; color: #fff; }
+    .top-list li:nth-child(3) .rank-badge { background: #e67e22; color: #fff; }
+
+    body.dark-mode .chart-card, body.dark-mode .stat-card { background: #1e1e1e; border-color: #333; }
+    body.dark-mode .top-list li { border-bottom-color: #333; color: #e0e0e0; }
+  </style>
+</head>
+<body class="inventory-mode">
+  <script>
+    if(localStorage.getItem('ims_sidebar_collapsed') === '1') document.body.classList.add('sidebar-collapsed');
+  </script>
+
+  <nav id="app-sidebar">
+    <div class="sidebar-brand">
+      <img src="Logo.jpg" alt="Logo" class="sidebar-logo" style="height:32px;width:auto;margin-right:8px">
+      <span class="brand-text">IMS</span>
+      <button id="main-sidebar-toggle" class="sidebar-toggle-btn" title="Toggle Sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+    </div>
+    <ul class="sidebar-menu">
+      <li>
+        <button onclick="window.location.href='homepage.html'" data-tooltip="Homepage">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span class="menu-text">Homepage</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='daily_cycle_count.html'" data-tooltip="Daily Cycle Count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span class="menu-text">Daily Cycle Count</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='all_ic_attendance.html'" data-tooltip="All IC Attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span class="menu-text">All IC Attendance</span>
+        </button>
+      </li>
+      <li>
+        <button class="active" onclick="window.location.href='dashboard_analytics.html'" data-tooltip="Analytics & Reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span class="menu-text">Analytics & Reports</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='settings.html'" data-tooltip="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span class="menu-text">Settings</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <header>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <button onclick="window.location.href='homepage.html'" class="icon-btn" title="Back to Dashboard" style="border:none; background:transparent; font-size:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
+        <h1>Analytics & Reports</h1>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="toggleTheme()" class="icon-btn" title="Toggle Theme" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button onclick="signOut()" class="icon-btn" title="Logout" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #e74c3c;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="card" style="margin-bottom: 20px; padding: 15px; display: flex; align-items: center; gap: 10px;">
+        <strong style="color: var(--accent);">Date Range:</strong>
+        <input type="date" id="analytics-start" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+        <span>to</span>
+        <input type="date" id="analytics-end" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+        <button id="apply-filter" class="icon-btn" style="background: #2752a7; color: white; padding: 6px 12px;">Apply</button>
+        <button id="clear-filter" class="icon-btn" style="border: 1px solid #ccc; padding: 6px 12px;">Clear</button>
+        <button id="export-dashboard" class="icon-btn" style="background: #27ae60; color: white; padding: 6px 12px; margin-left: auto;">Export Excel</button>
+    </div>
+
+    <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-total-attendance">0</div>
+            <div class="stat-label">Total Attendance Shifts</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-total-tasks">0</div>
+            <div class="stat-label">Validation Tasks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-completion-rate">0%</div>
+            <div class="stat-label">Task Completion Rate</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-total-output">0</div>
+            <div class="stat-label">Total Items Counted</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Top Attendance Users</h3>
+            <ul id="top-attendance-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Top Validators (Resolved)</h3>
+            <ul id="top-validators-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Top Cycle Counters (Shifts)</h3>
+            <ul id="top-counters-list" class="top-list"></ul>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Attendance Users</h3>
+            <ul id="bottom-attendance-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Validators (Resolved)</h3>
+            <ul id="bottom-validators-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Cycle Counters (Shifts)</h3>
+            <ul id="bottom-counters-list" class="top-list"></ul>
+        </div>
+    </div>
+
+    <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Daily Output Trend</h3>
+            <div class="chart-container">
+                <canvas id="output-trend-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Daily Task Trend</h3>
+            <div class="chart-container">
+                <canvas id="daily-task-trend-chart"></canvas>
+            </div>
+        </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const startInput = document.getElementById('analytics-start');
+        const endInput = document.getElementById('analytics-end');
+        
+        // Default to current month
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        startInput.value = firstDay.toISOString().split('T')[0];
+        endInput.value = now.toISOString().split('T')[0];
+
+        function getData() {
+            return {
+                attendance: JSON.parse(localStorage.getItem('ims_daily_attendance_v1') || '[]'),
+                tasks: JSON.parse(localStorage.getItem('ims_validation_tasks_v1') || '[]'),
+                counters: JSON.parse(localStorage.getItem('ims_daily_counters_v1') || '[]'),
+                cycleCounts: JSON.parse(localStorage.getItem('ims_cycle_count_v1') || '[]')
+            };
+        }
+
+        function renderDashboard() {
+            const { attendance, tasks, counters, cycleCounts } = getData();
+            const start = startInput.value;
+            const end = endInput.value;
+
+            // Filter Data
+            const filteredAtt = attendance.filter(a => (!start || a.date >= start) && (!end || a.date <= end));
+            const filteredTasks = tasks.filter(t => {
+                const d = t.timestamp.split('T')[0];
+                return (!start || d >= start) && (!end || d <= end);
+            });
+            const filteredCounters = counters.filter(c => (!start || c.date >= start) && (!end || c.date <= end));
+
+            // Stats
+            document.getElementById('stat-total-attendance').textContent = filteredAtt.length;
+            document.getElementById('stat-total-tasks').textContent = filteredTasks.length;
+            
+            const resolvedTasks = filteredTasks.filter(t => t.status === 'Completed').length;
+            const rate = filteredTasks.length > 0 ? Math.round((resolvedTasks / filteredTasks.length) * 100) : 0;
+            document.getElementById('stat-completion-rate').textContent = rate + '%';
+
+            // Calculate Total Output from Daily Counters (Actuals)
+            let totalOutput = 0;
+            // Use actuals map from cycle counts if available, else hourlyActuals
+            const actualsMap = {};
+            cycleCounts.forEach(c => {
+                const d = (c.createdDate || c.date || '').split('T')[0];
+                if ((!start || d >= start) && (!end || d <= end)) {
+                    // Simple count of records in cycle count DB
+                    totalOutput++;
+                }
+            });
+            
+            // Fallback to aggregated daily counters if cycle counts DB is empty/not used fully
+            if (totalOutput === 0) {
+                filteredCounters.forEach(c => {
+                    if (c.hourlyActuals) {
+                        totalOutput += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
+                    }
+                });
+            }
+            document.getElementById('stat-total-output').textContent = totalOutput;
+
+            // Top Attendance
+            const attCounts = {};
+            filteredAtt.forEach(a => {
+                if(a.name) attCounts[a.name] = (attCounts[a.name] || 0) + 1;
+            });
+            renderTopList('top-attendance-list', attCounts, 'Shifts');
+
+            // Top Validators
+            const valCounts = {};
+            filteredTasks.forEach(t => {
+                if(t.status === 'Completed' && t.validator && t.validator !== 'Unassigned') {
+                    valCounts[t.validator] = (valCounts[t.validator] || 0) + 1;
+                }
+            });
+            renderTopList('top-validators-list', valCounts, 'Resolved');
+
+            // Top Cycle Counters (by Shift Count)
+            const ccCounts = {};
+            filteredAtt.forEach(a => {
+                if(a.name && (a.area === 'Cycle Counter' || a.jobDescription === 'Cycle Counter')) {
+                    ccCounts[a.name] = (ccCounts[a.name] || 0) + 1;
+                }
+            });
+            renderTopList('top-counters-list', ccCounts, 'Shifts');
+
+            // Bottom Lists
+            renderBottomList('bottom-attendance-list', attCounts, 'Shifts');
+            renderBottomList('bottom-validators-list', valCounts, 'Resolved');
+            renderBottomList('bottom-counters-list', ccCounts, 'Shifts');
+
+            // Charts
+            renderOutputTrend(filteredCounters);
+            renderDailyTaskTrend(filteredTasks);
+        }
+
+        function renderTopList(elementId, counts, suffix) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            
+            if (sorted.length === 0) {
+                list.innerHTML = '<li style="justify-content:center; color:#999;">No data available</li>';
+                return;
+            }
+
+            sorted.forEach(([name, count], index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<div><span class="rank-badge">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
+                list.appendChild(li);
+            });
+        }
+
+        function renderBottomList(elementId, counts, suffix) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            const sorted = Object.entries(counts).sort((a,b) => a[1] - b[1]).slice(0, 5);
+            
+            if (sorted.length === 0) {
+                list.innerHTML = '<li style="justify-content:center; color:#999;">No data available</li>';
+                return;
+            }
+
+            sorted.forEach(([name, count], index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<div><span class="rank-badge" style="background:#eee; color:#555;">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
+                list.appendChild(li);
+            });
+        }
+
+        let outputChart = null;
+        function renderOutputTrend(counters) {
+            const ctx = document.getElementById('output-trend-chart');
+            const dailyData = {};
+            
+            counters.forEach(c => {
+                if (!dailyData[c.date]) dailyData[c.date] = 0;
+                if (c.hourlyActuals) {
+                    dailyData[c.date] += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
+                }
+            });
+
+            const labels = Object.keys(dailyData).sort();
+            const data = labels.map(d => dailyData[d]);
+
+            if (outputChart) outputChart.destroy();
+            outputChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Output',
+                        data: data,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        let taskTrendChart = null;
+        function renderDailyTaskTrend(tasks) {
+            const ctx = document.getElementById('daily-task-trend-chart');
+            const dailyData = {};
+            
+            tasks.forEach(t => {
+                const d = t.timestamp.split('T')[0];
+                if (!dailyData[d]) dailyData[d] = { total: 0, resolved: 0 };
+                dailyData[d].total++;
+                if (t.status === 'Completed') dailyData[d].resolved++;
+            });
+
+            const labels = Object.keys(dailyData).sort();
+            const totalData = labels.map(d => dailyData[d].total);
+            const resolvedData = labels.map(d => dailyData[d].resolved);
+
+            if (taskTrendChart) taskTrendChart.destroy();
+            taskTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Tasks',
+                            data: totalData,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Resolved',
+                            data: resolvedData,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        }
+
+        function exportDashboard() {
+            const { attendance, tasks, counters, cycleCounts } = getData();
+            const start = startInput.value;
+            const end = endInput.value;
+
+            // Filter Data
+            const filteredAtt = attendance.filter(a => (!start || a.date >= start) && (!end || a.date <= end));
+            const filteredTasks = tasks.filter(t => {
+                const d = t.timestamp.split('T')[0];
+                return (!start || d >= start) && (!end || d <= end);
+            });
+            const filteredCounters = counters.filter(c => (!start || c.date >= start) && (!end || c.date <= end));
+
+            const wb = XLSX.utils.book_new();
+
+            // 1. Summary Sheet
+            const summaryData = [
+                ['Metric', 'Value'],
+                ['Total Attendance Shifts', document.getElementById('stat-total-attendance').textContent],
+                ['Validation Tasks', document.getElementById('stat-total-tasks').textContent],
+                ['Task Completion Rate', document.getElementById('stat-completion-rate').textContent],
+                ['Total Items Counted', document.getElementById('stat-total-output').textContent]
+            ];
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+            // 2. Attendance Ranking
+            const attCounts = {};
+            filteredAtt.forEach(a => { if(a.name) attCounts[a.name] = (attCounts[a.name] || 0) + 1; });
+            const attRows = [['Rank', 'Name', 'Shifts']];
+            Object.entries(attCounts)
+                .sort((a,b) => b[1] - a[1])
+                .forEach(([name, count], index) => attRows.push([index + 1, name, count]));
+            const wsAtt = XLSX.utils.aoa_to_sheet(attRows);
+            XLSX.utils.book_append_sheet(wb, wsAtt, "Attendance Ranking");
+
+            // 3. Validator Ranking
+            const valCounts = {};
+            filteredTasks.forEach(t => {
+                if(t.status === 'Completed' && t.validator && t.validator !== 'Unassigned') {
+                    valCounts[t.validator] = (valCounts[t.validator] || 0) + 1;
+                }
+            });
+            const valRows = [['Rank', 'Validator', 'Resolved Tasks']];
+            Object.entries(valCounts)
+                .sort((a,b) => b[1] - a[1])
+                .forEach(([name, count], index) => valRows.push([index + 1, name, count]));
+            const wsVal = XLSX.utils.aoa_to_sheet(valRows);
+            XLSX.utils.book_append_sheet(wb, wsVal, "Validator Ranking");
+
+            // 4. Cycle Counter Ranking
+            const ccCounts = {};
+            filteredAtt.forEach(a => {
+                if(a.name && (a.area === 'Cycle Counter' || a.jobDescription === 'Cycle Counter')) {
+                    ccCounts[a.name] = (ccCounts[a.name] || 0) + 1;
+                }
+            });
+            const ccRows = [['Rank', 'Name', 'Shifts']];
+            Object.entries(ccCounts)
+                .sort((a,b) => b[1] - a[1])
+                .forEach(([name, count], index) => ccRows.push([index + 1, name, count]));
+            const wsCC = XLSX.utils.aoa_to_sheet(ccRows);
+            XLSX.utils.book_append_sheet(wb, wsCC, "Cycle Counter Ranking");
+
+            // 5. Daily Output Data
+            const outputData = {};
+            filteredCounters.forEach(c => {
+                if (!outputData[c.date]) outputData[c.date] = 0;
+                if (c.hourlyActuals) {
+                    outputData[c.date] += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
+                }
+            });
+            const outputRows = [['Date', 'Total Output']];
+            Object.keys(outputData).sort().forEach(d => outputRows.push([d, outputData[d]]));
+            const wsOutput = XLSX.utils.aoa_to_sheet(outputRows);
+            XLSX.utils.book_append_sheet(wb, wsOutput, "Daily Output Trend");
+
+            // 6. Daily Task Data
+            const taskData = {};
+            filteredTasks.forEach(t => {
+                const d = t.timestamp.split('T')[0];
+                if (!taskData[d]) taskData[d] = { total: 0, resolved: 0 };
+                taskData[d].total++;
+                if (t.status === 'Completed') taskData[d].resolved++;
+            });
+            const taskRows = [['Date', 'Total Tasks', 'Resolved Tasks']];
+            Object.keys(taskData).sort().forEach(d => taskRows.push([d, taskData[d].total, taskData[d].resolved]));
+            const wsTask = XLSX.utils.aoa_to_sheet(taskRows);
+            XLSX.utils.book_append_sheet(wb, wsTask, "Daily Task Trend");
+
+            XLSX.writeFile(wb, `Dashboard_Analytics_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        document.getElementById('apply-filter').addEventListener('click', renderDashboard);
+        document.getElementById('clear-filter').addEventListener('click', () => {
+            startInput.value = ''; endInput.value = ''; renderDashboard();
+        });
+        document.getElementById('export-dashboard').addEventListener('click', exportDashboard);
+
+        renderDashboard();
+    });
+  </script>
+</body>
+</html>
