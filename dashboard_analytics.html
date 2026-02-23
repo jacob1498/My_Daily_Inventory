@@ -132,7 +132,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         </button>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="Logo.jpg" alt="Logo" style="height: 32px; width: auto; border-radius: 4px;">
+            
             <h1>Analytics & Reports</h1>
         </div>
     </div>
@@ -158,16 +158,62 @@
         <button id="export-pdf" class="icon-btn" style="background: #e74c3c; color: white; padding: 6px 12px; margin-left: 10px;">Export PDF</button>
     </div>
 
-    <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <!-- Attendance Section -->
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin: 20px 0 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+        <h2 style="margin: 0; color: var(--accent); font-size: 18px;">Attendance Analytics</h2>
+        <button class="icon-btn toggle-section" title="Collapse" style="background:transparent; border:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+    </div>
+    <div class="section-content">
+    <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
         <div class="stat-card">
             <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
             <div class="stat-info">
                 <div class="stat-value" id="stat-total-attendance">0</div>
-                <div class="stat-label">Total Attendance Shifts</div>
+                <div class="stat-label">Attendance Rate</div>
+                <div id="stat-attendance-breakdown" style="margin-top:8px; border-top:1px solid #eee; padding-top:4px;"></div>
             </div>
         </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Top Attendance Users</h3>
+                <button class="icon-btn" onclick="showFullList('attendance', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-attendance-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e74c3c;">Bottom Attendance Users</h3>
+                <button class="icon-btn" onclick="showFullList('attendance', 'asc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="bottom-attendance-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e67e22;">Top Long Breaks (>40m)</h3>
+                <button class="icon-btn" onclick="showFullList('long-breaks', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-long-breaks-list" class="top-list"></ul>
+        </div>
+    </div>
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #3498db;">Daily Attendance Trend</h3>
+            <div class="chart-container">
+                <canvas id="attendance-trend-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Validation Section -->
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin: 30px 0 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+        <h2 style="margin: 0; color: var(--accent); font-size: 18px;">Validation & Task Analytics</h2>
+        <button class="icon-btn toggle-section" title="Collapse" style="background:transparent; border:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+    </div>
+    <div class="section-content">
+    <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
         <div class="stat-card">
             <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1); color: #f1c40f;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -183,88 +229,18 @@
             </div>
             <div class="stat-info">
                 <div class="stat-value" id="stat-completion-rate">0%</div>
-                <div class="stat-label">Task Completion Rate</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-            </div>
-            <div class="stat-info">
-                <div class="stat-value" id="stat-total-output">0</div>
-                <div class="stat-label">Total Items Counted</div>
+                <div class="stat-label">Resolved Completion Rate</div>
             </div>
         </div>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Top Attendance Users</h3>
-            <ul id="top-attendance-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Top Validators (Resolved)</h3>
-            <ul id="top-validators-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Top Cycle Counters (Shifts)</h3>
-            <ul id="top-counters-list" class="top-list"></ul>
-        </div>
-    </div>
-
-    
-
-    <div class="dashboard-grid">
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Attendance Users</h3>
-            <ul id="bottom-attendance-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Validators (Resolved)</h3>
-            <ul id="bottom-validators-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e74c3c;">Bottom Cycle Counters (Shifts)</h3>
-            <ul id="bottom-counters-list" class="top-list"></ul>
-        </div>
-    </div>
-
-    <div class="dashboard-grid">
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Top Items (Most Tasks)</h3>
-            <ul id="top-items-total-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #27ae60;">Top Items (Most Resolved)</h3>
-            <ul id="top-items-resolved-list" class="top-list"></ul>
-        </div>
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e74c3c;">Top Items (Most Unresolved)</h3>
-            <ul id="top-items-unresolved-list" class="top-list"></ul>
-        </div>
-    </div>
-
-
-
-    <div class="dashboard-grid">
-        <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e74c3c;">Top 5 Unresolved Items</h3>
-            <div class="chart-container">
-                <canvas id="top-unresolved-chart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-grid">
+    <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
             <h3 style="margin-top: 0; color: #3498db;">Validator Performance (Resolved vs Unresolved)</h3>
             <div class="chart-container">
                 <canvas id="validator-performance-chart"></canvas>
             </div>
         </div>
-    </div>
-
-    <div class="dashboard-grid">
         <div class="chart-card">
             <h3 style="margin-top: 0; color: #9b59b6;">Ops Validator Performance (Resolved vs Unresolved)</h3>
             <div class="chart-container">
@@ -275,15 +251,147 @@
 
     <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
+            <h3 style="margin-top: 0; color: #2752a7;">Daily Task Trend</h3>
+            <div class="chart-container">
+                <canvas id="daily-task-trend-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e67e22;">Findings Distribution</h3>
+            <div class="chart-container">
+                <canvas id="findings-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Top Validators (Resolved)</h3>
+                <button class="icon-btn" onclick="showFullList('validators', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-validators-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e74c3c;">Bottom Validators (Resolved)</h3>
+                <button class="icon-btn" onclick="showFullList('validators', 'asc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="bottom-validators-list" class="top-list"></ul>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Top Items (Most Tasks)</h3>
+                <button class="icon-btn" onclick="showFullList('items-total', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-items-total-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #27ae60;">Top Items (Most Resolved)</h3>
+                <button class="icon-btn" onclick="showFullList('items-resolved', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-items-resolved-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e74c3c;">Top Items (Most Unresolved)</h3>
+                <button class="icon-btn" onclick="showFullList('items-unresolved', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-items-unresolved-list" class="top-list"></ul>
+        </div>
+    </div>
+    </div>
+
+    <!-- Cycle Counting Section -->
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin: 30px 0 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+        <h2 style="margin: 0; color: var(--accent); font-size: 18px;">Cycle Counting Analytics</h2>
+        <button class="icon-btn toggle-section" title="Collapse" style="background:transparent; border:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+    </div>
+    <div class="section-content">
+    <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-total-output">0</div>
+                <div class="stat-label">Total Items Counted</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(230, 126, 34, 0.1); color: #e67e22;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-total-locations">0</div>
+                <div class="stat-label">Total Locations Counted</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
             <h3 style="margin-top: 0; color: #2752a7;">Daily Output Trend</h3>
             <div class="chart-container">
                 <canvas id="output-trend-chart"></canvas>
             </div>
         </div>
+    </div>
+
+    <div class="dashboard-grid">
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Daily Task Trend</h3>
-            <div class="chart-container">
-                <canvas id="daily-task-trend-chart"></canvas>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Top Cycle Counters (SKUs)</h3>
+                <button class="icon-btn" onclick="showFullList('counters', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-counters-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e74c3c;">Bottom Cycle Counters (SKUs)</h3>
+                <button class="icon-btn" onclick="showFullList('counters', 'asc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="bottom-counters-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Top Counters (Duration)</h3>
+                <button class="icon-btn" onclick="showFullList('duration', 'desc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="top-duration-list" class="top-list"></ul>
+        </div>
+        <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e74c3c;">Bottom Counters (Duration)</h3>
+                <button class="icon-btn" onclick="showFullList('duration', 'asc')" style="font-size:12px; padding:4px 8px; border:1px solid #ccc; background:#fff;">View All</button>
+            </div>
+            <ul id="bottom-duration-list" class="top-list"></ul>
+        </div>
+    </div>
+    </div>
+
+    <!-- Full List Modal -->
+    <div id="full-list-modal" class="modal hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:10000; display:none; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:500px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 id="full-list-title" style="margin:0; color:#2c3e50;">Full List</h3>
+                <button onclick="document.getElementById('full-list-modal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer; color:#666;">&times;</button>
+            </div>
+            <div style="flex:1; overflow-y:auto;">
+                <table id="full-list-table" style="width:100%; border-collapse:collapse; font-size:14px;">
+                    <thead>
+                        <tr style="background:#f9f9f9; text-align:left; position:sticky; top:0;">
+                            <th style="padding:8px; border-bottom:1px solid #eee;">Rank</th>
+                            <th style="padding:8px; border-bottom:1px solid #eee;">Name</th>
+                            <th style="padding:8px; border-bottom:1px solid #eee; text-align:right;">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -303,15 +411,19 @@
 
         function getData() {
             return {
-                attendance: JSON.parse(localStorage.getItem('ims_daily_attendance_v1') || '[]'),
+                attendance: [
+                    ...JSON.parse(localStorage.getItem('ims_daily_attendance_v1') || '[]'),
+                    ...JSON.parse(localStorage.getItem('ims_daily_counters_attendance_v1') || '[]')
+                ],
                 tasks: JSON.parse(localStorage.getItem('ims_validation_tasks_v1') || '[]'),
                 counters: JSON.parse(localStorage.getItem('ims_daily_counters_v1') || '[]'),
-                cycleCounts: JSON.parse(localStorage.getItem('ims_cycle_count_v1') || '[]')
+                cycleCounts: JSON.parse(localStorage.getItem('ims_cycle_count_v1') || '[]'),
+                timestamps: JSON.parse(localStorage.getItem('ims_counter_timestamps_v1') || '[]')
             };
         }
 
         function renderDashboard() {
-            const { attendance, tasks, counters, cycleCounts } = getData();
+            const { attendance, tasks, counters, cycleCounts, timestamps } = getData();
             const start = startInput.value;
             const end = endInput.value;
 
@@ -324,7 +436,65 @@
             const filteredCounters = counters.filter(c => (!start || c.date >= start) && (!end || c.date <= end));
 
             // Stats
-            document.getElementById('stat-total-attendance').textContent = filteredAtt.length;
+            // Calculate Attendance Percentage
+            // Calculate Attendance Percentage & Breakdown
+            const reqs = JSON.parse(localStorage.getItem('ims_att_requirements_v1') || '{}');
+            const shifts = ["1st Shift-(6am-2pm)", "2nd Shift-(2pm-10pm)", "3rd Shift-(10pm-6am)"];
+            const shiftStats = {
+                "1st Shift-(6am-2pm)": { req: 0, act: 0 },
+                "2nd Shift-(2pm-10pm)": { req: 0, act: 0 },
+                "3rd Shift-(10pm-6am)": { req: 0, act: 0 }
+            };
+
+            Object.entries(reqs).forEach(([key, val]) => {
+                const parts = key.split('|');
+                if (parts.length === 2) {
+                    const shift = parts[1];
+                    if (shiftStats[shift]) shiftStats[shift].req += (parseInt(val) || 0);
+                }
+            });
+
+            filteredAtt.forEach(a => {
+                if (shiftStats[a.shift]) shiftStats[a.shift].act++;
+            });
+
+            let days = 1;
+            if (start && end) {
+                const s = new Date(start);
+                const e = new Date(end);
+                days = Math.floor((e - s) / (1000 * 60 * 60 * 24)) + 1;
+                if (days < 1) days = 1;
+            }
+
+            const dailyReq = Object.values(shiftStats).reduce((a, b) => a + b.req, 0);
+            const totalReq = dailyReq * days;
+            const totalAct = filteredAtt.length;
+            const attPct = totalReq > 0 ? Math.round((totalAct / totalReq) * 100) : 0;
+            
+            document.getElementById('stat-total-attendance').textContent = attPct + '%';
+
+            let breakdownHtml = '';
+            shifts.forEach(shift => {
+                const shortName = shift.split(' ')[0];
+                const sReq = shiftStats[shift].req * days;
+                const sAct = shiftStats[shift].act;
+                const sPctVal = sReq > 0 ? Math.round((sAct / sReq) * 100) : 0;
+                const sPctDisplay = sReq > 0 ? sPctVal + '%' : '-';
+                let color = '#e74c3c';
+                if (sReq > 0) {
+                    if (sPctVal >= 100) color = '#2ecc71';
+                    else if (sPctVal >= 80) color = '#f1c40f';
+                } else { color = '#999'; }
+                
+                breakdownHtml += `<div style="font-size:11px; color:var(--muted); display:flex; justify-content:space-between; width:100%; margin-top:2px;">
+                    <span>${shortName}:</span>
+                    <span title="Actual / Target"><span style="color:#999; font-weight:normal; margin-right:4px;">${sAct}/${sReq}</span><span style="font-weight:bold; color:${color}">${sPctDisplay}</span></span>
+                </div>`;
+            });
+            
+            const breakdownEl = document.getElementById('stat-attendance-breakdown');
+            if(breakdownEl) breakdownEl.innerHTML = breakdownHtml;
+
             document.getElementById('stat-total-tasks').textContent = filteredTasks.length;
             
             const resolvedTasks = filteredTasks.filter(t => t.status === 'Completed').length;
@@ -333,13 +503,16 @@
 
             // Calculate Total Output from Daily Counters (Actuals)
             let totalOutput = 0;
+            let uniqueLocations = 0;
+            const locationSet = new Set();
+
             // Use actuals map from cycle counts if available, else hourlyActuals
-            const actualsMap = {};
             cycleCounts.forEach(c => {
                 const d = (c.createdDate || c.date || '').split('T')[0];
                 if ((!start || d >= start) && (!end || d <= end)) {
                     // Simple count of records in cycle count DB
                     totalOutput++;
+                    if(c.location) locationSet.add(c.location);
                 }
             });
             
@@ -352,6 +525,7 @@
                 });
             }
             document.getElementById('stat-total-output').textContent = totalOutput;
+            document.getElementById('stat-total-locations').textContent = locationSet.size;
 
             // Top Attendance
             const attCounts = {};
@@ -359,6 +533,21 @@
                 if(a.name) attCounts[a.name] = (attCounts[a.name] || 0) + 1;
             });
             renderTopList('top-attendance-list', attCounts, 'Shifts');
+
+            // Top Long Breaks (>40m)
+            const longBreakCounts = {};
+            filteredAtt.forEach(a => {
+                if (a.breakOut && a.breakIn && a.name) {
+                    const [h1, m1] = a.breakOut.split(':').map(Number);
+                    const [h2, m2] = a.breakIn.split(':').map(Number);
+                    if (!isNaN(h1) && !isNaN(m1) && !isNaN(h2) && !isNaN(m2)) {
+                        let minutes = (h2 * 60 + m2) - (h1 * 60 + m1);
+                        if (minutes < 0) minutes += 24 * 60;
+                        if (minutes > 40) longBreakCounts[a.name] = (longBreakCounts[a.name] || 0) + 1;
+                    }
+                }
+            });
+            renderTopList('top-long-breaks-list', longBreakCounts, 'Times');
 
             // Top Validators
             const valCounts = {};
@@ -369,14 +558,27 @@
             });
             renderTopList('top-validators-list', valCounts, 'Resolved');
 
-            // Top Cycle Counters (by Shift Count)
+            // Top Cycle Counters (by SKU Count)
             const ccCounts = {};
-            filteredAtt.forEach(a => {
-                if(a.name && (a.area === 'Cycle Counter' || a.jobDescription === 'Cycle Counter')) {
-                    ccCounts[a.name] = (ccCounts[a.name] || 0) + 1;
+            const userNames = {};
+            attendance.forEach(a => { if(a.userId && a.name) userNames[a.userId] = a.name; });
+
+            const filteredTimestamps = timestamps.filter(t => {
+                const d = t.timestamp.split('T')[0];
+                return (!start || d >= start) && (!end || d <= end);
+            });
+
+            filteredTimestamps.forEach(t => {
+                if (t.action === 'End' && t.skus) {
+                    const name = userNames[t.userId] || t.userId || 'Unknown';
+                    ccCounts[name] = (ccCounts[name] || 0) + (parseInt(t.skus) || 0);
                 }
             });
-            renderTopList('top-counters-list', ccCounts, 'Shifts');
+            renderTopList('top-counters-list', ccCounts, 'SKUs');
+
+            // Top Counters (by Duration)
+            const durationCounts = calculateDurations(filteredTimestamps, attendance);
+            renderTopList('top-duration-list', durationCounts, 'mins');
 
             // Top Items (SKU)
             const itemStats = {};
@@ -390,18 +592,20 @@
             renderTopItemList('top-items-total-list', itemStats, 'total');
             renderTopItemList('top-items-resolved-list', itemStats, 'resolved');
             renderTopItemList('top-items-unresolved-list', itemStats, 'unresolved');
-            renderTopUnresolvedChart(itemStats);
+            renderFindingsChart(filteredTasks);
             renderValidatorPerformanceChart(filteredTasks);
             renderOpsValidatorPerformanceChart(filteredTasks);
 
             // Bottom Lists
             renderBottomList('bottom-attendance-list', attCounts, 'Shifts');
             renderBottomList('bottom-validators-list', valCounts, 'Resolved');
-            renderBottomList('bottom-counters-list', ccCounts, 'Shifts');
+            renderBottomList('bottom-counters-list', ccCounts, 'SKUs');
+            renderBottomList('bottom-duration-list', durationCounts, 'mins');
 
             // Charts
-            renderOutputTrend(filteredCounters);
+            renderOutputTrend(filteredCounters, attendance);
             renderDailyTaskTrend(filteredTasks);
+            renderAttendanceTrend(filteredAtt);
         }
 
         function renderTopList(elementId, counts, suffix) {
@@ -419,6 +623,45 @@
                 li.innerHTML = `<div><span class="rank-badge">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
                 list.appendChild(li);
             });
+        }
+
+        function calculateDurations(timestamps, attendance) {
+            const userNames = {};
+            attendance.forEach(a => { if(a.userId && a.name) userNames[a.userId] = a.name; });
+            
+            const logsByUser = {};
+            timestamps.forEach(t => {
+                if(!logsByUser[t.userId]) logsByUser[t.userId] = [];
+                logsByUser[t.userId].push(t);
+            });
+            
+            const durations = {};
+            Object.keys(logsByUser).forEach(uid => {
+                const logs = logsByUser[uid].sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+                let totalMs = 0;
+                let sessionStart = null;
+                let breakStart = null;
+                let breakDed = 0;
+                
+                logs.forEach(l => {
+                    if(l.action === 'Start') { sessionStart = new Date(l.timestamp); breakDed = 0; }
+                    else if(l.action === 'Start Break') { breakStart = new Date(l.timestamp); }
+                    else if(l.action === 'End Break') { 
+                        if(breakStart) { breakDed += (new Date(l.timestamp) - breakStart); breakStart = null; }
+                    }
+                    else if(l.action === 'End') {
+                        if(sessionStart) {
+                            totalMs += (new Date(l.timestamp) - sessionStart) - breakDed;
+                            sessionStart = null;
+                        }
+                    }
+                });
+                if(totalMs > 0) {
+                    const name = userNames[uid] || uid;
+                    durations[name] = (durations[name] || 0) + Math.round(totalMs / 60000);
+                }
+            });
+            return durations;
         }
 
         function renderTopItemList(elementId, stats, metric) {
@@ -471,38 +714,46 @@
             const stats = {};
             tasks.forEach(t => {
                 if (t.validator && t.validator !== 'Unassigned') {
-                    if (!stats[t.validator]) stats[t.validator] = { resolved: 0, unresolved: 0 };
+                    if (!stats[t.validator]) stats[t.validator] = { total: 0, resolved: 0, unresolved: 0 };
+                    stats[t.validator].total++;
                     if (t.status === 'Completed') stats[t.validator].resolved++;
                     if (t.status === 'Unresolved') stats[t.validator].unresolved++;
                 }
             });
 
             const labels = Object.keys(stats).sort();
+            const totalData = labels.map(v => stats[v].total);
             const resolvedData = labels.map(v => stats[v].resolved);
             const unresolvedData = labels.map(v => stats[v].unresolved);
 
             if (validatorPerformanceChart) validatorPerformanceChart.destroy();
 
             validatorPerformanceChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
                         {
+                            label: 'Total Tasks',
+                            data: totalData,
+                            type: 'line',
+                            borderColor: '#3498db',
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            order: 1
+                        },
+                        {
                             label: 'Resolved',
                             data: resolvedData,
-                            borderColor: '#2ecc71',
-                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                            tension: 0.3,
-                            fill: true
+                            backgroundColor: '#2ecc71',
+                            order: 2
                         },
                         {
                             label: 'Unresolved',
                             data: unresolvedData,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            tension: 0.3,
-                            fill: true
+                            backgroundColor: '#e74c3c',
+                            order: 3
                         }
                     ]
                 },
@@ -524,13 +775,15 @@
             const stats = {};
             tasks.forEach(t => {
                 if (t.opsValidator) {
-                    if (!stats[t.opsValidator]) stats[t.opsValidator] = { resolved: 0, unresolved: 0 };
+                    if (!stats[t.opsValidator]) stats[t.opsValidator] = { total: 0, resolved: 0, unresolved: 0 };
+                    stats[t.opsValidator].total++;
                     if (t.status === 'Completed') stats[t.opsValidator].resolved++;
                     if (t.status === 'Unresolved') stats[t.opsValidator].unresolved++;
                 }
             });
 
             const labels = Object.keys(stats).sort();
+            const totalData = labels.map(v => stats[v].total);
             const resolvedData = labels.map(v => stats[v].resolved);
             const unresolvedData = labels.map(v => stats[v].unresolved);
 
@@ -542,16 +795,26 @@
                     labels: labels,
                     datasets: [
                         {
+                            label: 'Total Tasks',
+                            data: totalData,
+                            type: 'line',
+                            borderColor: '#3498db',
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            order: 1
+                        },
+                        {
                             label: 'Resolved',
                             data: resolvedData,
                             backgroundColor: '#2ecc71',
-                            borderRadius: 4
+                            order: 2
                         },
                         {
                             label: 'Unresolved',
                             data: unresolvedData,
                             backgroundColor: '#e74c3c',
-                            borderRadius: 4
+                            order: 3
                         }
                     ]
                 },
@@ -565,29 +828,36 @@
             });
         }
 
-        let topUnresolvedChart = null;
-        function renderTopUnresolvedChart(itemStats) {
-            const ctx = document.getElementById('top-unresolved-chart');
+        let findingsChart = null;
+        function renderFindingsChart(tasks) {
+            const ctx = document.getElementById('findings-chart');
             if (!ctx) return;
 
-            const sorted = Object.entries(itemStats)
-                .sort((a, b) => b[1].unresolved - a[1].unresolved)
-                .slice(0, 5);
-            
-            const labels = sorted.map(([sku]) => sku);
-            const data = sorted.map(([, d]) => d.unresolved);
-            const descriptions = sorted.map(([, d]) => d.desc);
+            const findingsCounts = {};
+            tasks.forEach(t => {
+                if (t.status === 'Completed' && t.findings) {
+                    // Split by semicolon in case of multiple findings
+                    const list = t.findings.split(';').map(s => s.trim()).filter(s => s);
+                    list.forEach(f => {
+                        findingsCounts[f] = (findingsCounts[f] || 0) + 1;
+                    });
+                }
+            });
 
-            if (topUnresolvedChart) topUnresolvedChart.destroy();
+            const sorted = Object.entries(findingsCounts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(s => s[0]);
+            const data = sorted.map(s => s[1]);
 
-            topUnresolvedChart = new Chart(ctx, {
+            if (findingsChart) findingsChart.destroy();
+
+            findingsChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Unresolved Tasks',
+                        label: 'Count',
                         data: data,
-                        backgroundColor: '#e74c3c',
+                        backgroundColor: '#e67e22',
                         borderRadius: 4
                     }]
                 },
@@ -595,16 +865,6 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                afterLabel: function(context) {
-                                    return descriptions[context.dataIndex] || '';
-                                }
-                            }
-                        }
-                    },
                     scales: {
                         x: { beginAtZero: true, ticks: { precision: 0 } }
                     }
@@ -612,20 +872,206 @@
             });
         }
 
+        window.showFullList = function(type, order) {
+            const start = startInput.value;
+            const end = endInput.value;
+            const { attendance, tasks, timestamps } = getData();
+            
+            let counts = {};
+            let title = '';
+            let suffix = '';
+
+            if (type === 'attendance') {
+                title = order === 'desc' ? 'Top Attendance Users (All)' : 'Bottom Attendance Users (All)';
+                suffix = 'Shifts';
+                const filteredAtt = attendance.filter(a => (!start || a.date >= start) && (!end || a.date <= end));
+                filteredAtt.forEach(a => {
+                    if(a.name) counts[a.name] = (counts[a.name] || 0) + 1;
+                });
+            } else if (type === 'long-breaks') {
+                title = 'Top Users with Long Breaks (>40m)';
+                suffix = 'Times';
+                const filteredAtt = attendance.filter(a => (!start || a.date >= start) && (!end || a.date <= end));
+                filteredAtt.forEach(a => {
+                    if (a.breakOut && a.breakIn && a.name) {
+                        const [h1, m1] = a.breakOut.split(':').map(Number);
+                        const [h2, m2] = a.breakIn.split(':').map(Number);
+                        if (!isNaN(h1) && !isNaN(m1) && !isNaN(h2) && !isNaN(m2)) {
+                            let minutes = (h2 * 60 + m2) - (h1 * 60 + m1);
+                            if (minutes < 0) minutes += 24 * 60;
+                            if (minutes > 40) counts[a.name] = (counts[a.name] || 0) + 1;
+                        }
+                    }
+                });
+            } else if (type === 'validators') {
+                title = order === 'desc' ? 'Top Validators (All)' : 'Bottom Validators (All)';
+                suffix = 'Resolved';
+                const filteredTasks = tasks.filter(t => {
+                    const d = t.timestamp.split('T')[0];
+                    return (!start || d >= start) && (!end || d <= end);
+                });
+                filteredTasks.forEach(t => {
+                    if(t.status === 'Completed' && t.validator && t.validator !== 'Unassigned') {
+                        counts[t.validator] = (counts[t.validator] || 0) + 1;
+                    }
+                });
+            } else if (type === 'counters') {
+                title = order === 'desc' ? 'Top Cycle Counters (All)' : 'Bottom Cycle Counters (All)';
+                suffix = 'SKUs';
+                const userNames = {};
+                attendance.forEach(a => { if(a.userId && a.name) userNames[a.userId] = a.name; });
+                const filteredTimestamps = timestamps.filter(t => {
+                    const d = t.timestamp.split('T')[0];
+                    return (!start || d >= start) && (!end || d <= end);
+                });
+                filteredTimestamps.forEach(t => {
+                    if (t.action === 'End' && t.skus) {
+                        const name = userNames[t.userId] || t.userId || 'Unknown';
+                        counts[name] = (counts[name] || 0) + (parseInt(t.skus) || 0);
+                    }
+                });
+            } else if (type === 'duration') {
+                title = order === 'desc' ? 'Top Counters by Duration (All)' : 'Bottom Counters by Duration (All)';
+                suffix = 'mins';
+                const filteredTimestamps = timestamps.filter(t => {
+                    const d = t.timestamp.split('T')[0];
+                    return (!start || d >= start) && (!end || d <= end);
+                });
+                counts = calculateDurations(filteredTimestamps, attendance);
+            } else if (type.startsWith('items-')) {
+                const filteredTasks = tasks.filter(t => {
+                    const d = t.timestamp.split('T')[0];
+                    return (!start || d >= start) && (!end || d <= end);
+                });
+                const itemStats = {};
+                filteredTasks.forEach(t => {
+                    const sku = t.sku || 'Unknown';
+                    if (!itemStats[sku]) itemStats[sku] = { total: 0, resolved: 0, unresolved: 0 };
+                    itemStats[sku].total++;
+                    if (t.status === 'Completed') itemStats[sku].resolved++;
+                    if (t.status === 'Unresolved') itemStats[sku].unresolved++;
+                });
+                if (type === 'items-total') {
+                    title = 'Top Items (Most Tasks)'; suffix = 'Tasks';
+                    Object.entries(itemStats).forEach(([sku, stats]) => counts[sku] = stats.total);
+                } else if (type === 'items-resolved') {
+                    title = 'Top Items (Most Resolved)'; suffix = 'Resolved';
+                    Object.entries(itemStats).forEach(([sku, stats]) => counts[sku] = stats.resolved);
+                } else if (type === 'items-unresolved') {
+                    title = 'Top Items (Most Unresolved)'; suffix = 'Unresolved';
+                    Object.entries(itemStats).forEach(([sku, stats]) => counts[sku] = stats.unresolved);
+                }
+            }
+
+            const sorted = Object.entries(counts).sort((a,b) => order === 'desc' ? b[1] - a[1] : a[1] - b[1]);
+            
+            const modal = document.getElementById('full-list-modal');
+            document.getElementById('full-list-title').textContent = title;
+            const tbody = document.querySelector('#full-list-table tbody');
+            tbody.innerHTML = '';
+            
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:10px; color:#999;">No data available</td></tr>';
+            } else {
+                sorted.forEach(([name, count], index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td style="padding:8px; border-bottom:1px solid #eee;">${index + 1}</td><td style="padding:8px; border-bottom:1px solid #eee;">${name}</td><td style="padding:8px; border-bottom:1px solid #eee; text-align:right;"><strong>${count}</strong> ${suffix}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+            modal.style.display = 'flex';
+        };
+
+        let attendanceTrendChart = null;
+        function renderAttendanceTrend(attendance) {
+            const ctx = document.getElementById('attendance-trend-chart');
+            if (!ctx) return;
+
+            // Calculate Daily Requirement
+            const reqs = JSON.parse(localStorage.getItem('ims_att_requirements_v1') || '{}');
+            let dailyReq = 0;
+            Object.values(reqs).forEach(val => dailyReq += (parseInt(val) || 0));
+
+            const dailyCounts = {};
+            attendance.forEach(a => {
+                if (a.date) {
+                    dailyCounts[a.date] = (dailyCounts[a.date] || 0) + 1;
+                }
+            });
+
+            const labels = Object.keys(dailyCounts).sort();
+            const data = labels.map(d => dailyReq > 0 ? Math.round((dailyCounts[d] / dailyReq) * 100) : 0);
+
+            if (attendanceTrendChart) attendanceTrendChart.destroy();
+
+            attendanceTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Attendance Rate (%)',
+                        data: data,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { callback: function(value) { return value + "%" } } 
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const date = labels[context.dataIndex];
+                                    const count = dailyCounts[date];
+                                    return `Rate: ${context.parsed.y}% (${count}/${dailyReq})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         let outputChart = null;
-        function renderOutputTrend(counters) {
+        function renderOutputTrend(counters, attendance) {
             const ctx = document.getElementById('output-trend-chart');
             const dailyData = {};
+            const dailyTargets = {};
             
             counters.forEach(c => {
-                if (!dailyData[c.date]) dailyData[c.date] = 0;
+                if (!dailyData[c.date]) { dailyData[c.date] = 0; dailyTargets[c.date] = 0; }
                 if (c.hourlyActuals) {
                     dailyData[c.date] += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
                 }
+
+                // Calculate Target
+                let target = 0;
+                if (c.hourlyTargets && Object.keys(c.hourlyTargets).length > 0) {
+                    target = Object.values(c.hourlyTargets).reduce((a, b) => a + (Number(b)||0), 0);
+                } else {
+                    const rate = Number(c.standardRate) || 0;
+                    if (rate > 0) {
+                        const shiftAtt = attendance.filter(a => a.date === c.date && a.shift === c.shift && a.status !== 'Temporary slide to Other task');
+                        target = shiftAtt.length * rate;
+                    } else {
+                        target = Number(c.targetOutput) || 0;
+                    }
+                }
+                dailyTargets[c.date] += target;
             });
 
             const labels = Object.keys(dailyData).sort();
             const data = labels.map(d => dailyData[d]);
+            const targetData = labels.map(d => dailyTargets[d]);
 
             if (outputChart) outputChart.destroy();
             outputChart = new Chart(ctx, {
@@ -638,6 +1084,14 @@
                         borderColor: '#3498db',
                         backgroundColor: 'rgba(52, 152, 219, 0.1)',
                         fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Total Target',
+                        data: targetData,
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'transparent',
+                        borderDash: [5, 5],
                         tension: 0.3
                     }]
                 },
@@ -652,36 +1106,44 @@
             
             tasks.forEach(t => {
                 const d = t.timestamp.split('T')[0];
-                if (!dailyData[d]) dailyData[d] = { total: 0, resolved: 0 };
+                if (!dailyData[d]) dailyData[d] = { total: 0, resolved: 0, unresolved: 0 };
                 dailyData[d].total++;
                 if (t.status === 'Completed') dailyData[d].resolved++;
+                if (t.status === 'Unresolved') dailyData[d].unresolved++;
             });
 
             const labels = Object.keys(dailyData).sort();
             const totalData = labels.map(d => dailyData[d].total);
             const resolvedData = labels.map(d => dailyData[d].resolved);
+            const unresolvedData = labels.map(d => dailyData[d].unresolved);
 
             if (taskTrendChart) taskTrendChart.destroy();
             taskTrendChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
                         {
                             label: 'Total Tasks',
                             data: totalData,
+                            type: 'line',
                             borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            fill: true,
-                            tension: 0.3
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            order: 1
                         },
                         {
                             label: 'Resolved',
                             data: resolvedData,
-                            borderColor: '#2ecc71',
-                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                            fill: true,
-                            tension: 0.3
+                            backgroundColor: '#2ecc71',
+                            order: 2
+                        },
+                        {
+                            label: 'Unresolved',
+                            data: unresolvedData,
+                            backgroundColor: '#e74c3c',
+                            order: 3
                         }
                     ]
                 },
@@ -815,6 +1277,19 @@
         });
         document.getElementById('export-dashboard').addEventListener('click', exportDashboard);
         document.getElementById('export-pdf').addEventListener('click', exportToPDF);
+
+        // Section Toggle Logic
+        document.querySelectorAll('.toggle-section').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.closest('.section-header').nextElementSibling;
+                content.classList.toggle('hidden');
+                const isHidden = content.classList.contains('hidden');
+                btn.innerHTML = isHidden 
+                    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' 
+                    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+                btn.title = isHidden ? 'Expand' : 'Collapse';
+            });
+        });
 
         renderDashboard();
     });
