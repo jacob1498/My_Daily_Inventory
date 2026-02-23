@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* Dark Mode Header */
     body.dark-mode header { background: #1a252f; border-bottom: 1px solid #2c3e50; }
@@ -41,10 +43,22 @@
       border-radius: 8px;
       border: 1px solid #eef2f6;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
-    .stat-value { font-size: 28px; font-weight: bold; color: var(--accent); }
-    .stat-label { font-size: 13px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-info { flex: 1; min-width: 0; }
+    .stat-value { font-size: 28px; font-weight: bold; color: var(--accent); line-height: 1.2; }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     
     .top-list { list-style: none; padding: 0; margin: 0; }
     .top-list li {
@@ -117,7 +131,10 @@
         <button onclick="window.location.href='homepage.html'" class="icon-btn" title="Back to Dashboard" style="border:none; background:transparent; font-size:16px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         </button>
-        <h1>Analytics & Reports</h1>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="Logo.jpg" alt="Logo" style="height: 32px; width: auto; border-radius: 4px;">
+            <h1>Analytics & Reports</h1>
+        </div>
     </div>
     <div style="display: flex; gap: 10px;">
         <button onclick="toggleTheme()" class="icon-btn" title="Toggle Theme" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border:none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -138,24 +155,45 @@
         <button id="apply-filter" class="icon-btn" style="background: #2752a7; color: white; padding: 6px 12px;">Apply</button>
         <button id="clear-filter" class="icon-btn" style="border: 1px solid #ccc; padding: 6px 12px;">Clear</button>
         <button id="export-dashboard" class="icon-btn" style="background: #27ae60; color: white; padding: 6px 12px; margin-left: auto;">Export Excel</button>
+        <button id="export-pdf" class="icon-btn" style="background: #e74c3c; color: white; padding: 6px 12px; margin-left: 10px;">Export PDF</button>
     </div>
 
     <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
         <div class="stat-card">
-            <div class="stat-value" id="stat-total-attendance">0</div>
-            <div class="stat-label">Total Attendance Shifts</div>
+            <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-total-attendance">0</div>
+                <div class="stat-label">Total Attendance Shifts</div>
+            </div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" id="stat-total-tasks">0</div>
-            <div class="stat-label">Validation Tasks</div>
+            <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1); color: #f1c40f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-total-tasks">0</div>
+                <div class="stat-label">Validation Tasks</div>
+            </div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" id="stat-completion-rate">0%</div>
-            <div class="stat-label">Task Completion Rate</div>
+            <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-completion-rate">0%</div>
+                <div class="stat-label">Task Completion Rate</div>
+            </div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" id="stat-total-output">0</div>
-            <div class="stat-label">Total Items Counted</div>
+            <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="stat-total-output">0</div>
+                <div class="stat-label">Total Items Counted</div>
+            </div>
         </div>
     </div>
 
@@ -213,6 +251,24 @@
             <h3 style="margin-top: 0; color: #e74c3c;">Top 5 Unresolved Items</h3>
             <div class="chart-container">
                 <canvas id="top-unresolved-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #3498db;">Validator Performance (Resolved vs Unresolved)</h3>
+            <div class="chart-container">
+                <canvas id="validator-performance-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #9b59b6;">Ops Validator Performance (Resolved vs Unresolved)</h3>
+            <div class="chart-container">
+                <canvas id="ops-validator-performance-chart"></canvas>
             </div>
         </div>
     </div>
@@ -335,6 +391,8 @@
             renderTopItemList('top-items-resolved-list', itemStats, 'resolved');
             renderTopItemList('top-items-unresolved-list', itemStats, 'unresolved');
             renderTopUnresolvedChart(itemStats);
+            renderValidatorPerformanceChart(filteredTasks);
+            renderOpsValidatorPerformanceChart(filteredTasks);
 
             // Bottom Lists
             renderBottomList('bottom-attendance-list', attCounts, 'Shifts');
@@ -402,6 +460,108 @@
                 const li = document.createElement('li');
                 li.innerHTML = `<div><span class="rank-badge" style="background:#eee; color:#555;">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
                 list.appendChild(li);
+            });
+        }
+
+        let validatorPerformanceChart = null;
+        function renderValidatorPerformanceChart(tasks) {
+            const ctx = document.getElementById('validator-performance-chart');
+            if (!ctx) return;
+
+            const stats = {};
+            tasks.forEach(t => {
+                if (t.validator && t.validator !== 'Unassigned') {
+                    if (!stats[t.validator]) stats[t.validator] = { resolved: 0, unresolved: 0 };
+                    if (t.status === 'Completed') stats[t.validator].resolved++;
+                    if (t.status === 'Unresolved') stats[t.validator].unresolved++;
+                }
+            });
+
+            const labels = Object.keys(stats).sort();
+            const resolvedData = labels.map(v => stats[v].resolved);
+            const unresolvedData = labels.map(v => stats[v].unresolved);
+
+            if (validatorPerformanceChart) validatorPerformanceChart.destroy();
+
+            validatorPerformanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Resolved',
+                            data: resolvedData,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Unresolved',
+                            data: unresolvedData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        }
+
+        let opsValidatorPerformanceChart = null;
+        function renderOpsValidatorPerformanceChart(tasks) {
+            const ctx = document.getElementById('ops-validator-performance-chart');
+            if (!ctx) return;
+
+            const stats = {};
+            tasks.forEach(t => {
+                if (t.opsValidator) {
+                    if (!stats[t.opsValidator]) stats[t.opsValidator] = { resolved: 0, unresolved: 0 };
+                    if (t.status === 'Completed') stats[t.opsValidator].resolved++;
+                    if (t.status === 'Unresolved') stats[t.opsValidator].unresolved++;
+                }
+            });
+
+            const labels = Object.keys(stats).sort();
+            const resolvedData = labels.map(v => stats[v].resolved);
+            const unresolvedData = labels.map(v => stats[v].unresolved);
+
+            if (opsValidatorPerformanceChart) opsValidatorPerformanceChart.destroy();
+
+            opsValidatorPerformanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Resolved',
+                            data: resolvedData,
+                            backgroundColor: '#2ecc71',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Unresolved',
+                            data: unresolvedData,
+                            backgroundColor: '#e74c3c',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
             });
         }
 
@@ -622,11 +782,39 @@
             XLSX.writeFile(wb, `Dashboard_Analytics_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
 
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.querySelector('main');
+            
+            // Show loading state
+            const originalCursor = document.body.style.cursor;
+            document.body.style.cursor = 'wait';
+            
+            try {
+                const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg') || '#f4f6f8' });
+                const imgData = canvas.toDataURL('image/png');
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Analytics_Dashboard_${new Date().toISOString().split('T')[0]}.pdf`);
+            } catch (err) {
+                console.error(err);
+                alert('Failed to export PDF.');
+            } finally {
+                document.body.style.cursor = originalCursor;
+            }
+        }
+
         document.getElementById('apply-filter').addEventListener('click', renderDashboard);
         document.getElementById('clear-filter').addEventListener('click', () => {
             startInput.value = ''; endInput.value = ''; renderDashboard();
         });
         document.getElementById('export-dashboard').addEventListener('click', exportDashboard);
+        document.getElementById('export-pdf').addEventListener('click', exportToPDF);
 
         renderDashboard();
     });
