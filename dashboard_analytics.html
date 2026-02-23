@@ -208,6 +208,14 @@
 
 
 
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h3 style="margin-top: 0; color: #e74c3c;">Top 5 Unresolved Items</h3>
+            <div class="chart-container">
+                <canvas id="top-unresolved-chart"></canvas>
+            </div>
+        </div>
+    </div>
 
     <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
@@ -326,6 +334,7 @@
             renderTopItemList('top-items-total-list', itemStats, 'total');
             renderTopItemList('top-items-resolved-list', itemStats, 'resolved');
             renderTopItemList('top-items-unresolved-list', itemStats, 'unresolved');
+            renderTopUnresolvedChart(itemStats);
 
             // Bottom Lists
             renderBottomList('bottom-attendance-list', attCounts, 'Shifts');
@@ -393,6 +402,53 @@
                 const li = document.createElement('li');
                 li.innerHTML = `<div><span class="rank-badge" style="background:#eee; color:#555;">${index + 1}</span> ${name}</div> <strong>${count} ${suffix}</strong>`;
                 list.appendChild(li);
+            });
+        }
+
+        let topUnresolvedChart = null;
+        function renderTopUnresolvedChart(itemStats) {
+            const ctx = document.getElementById('top-unresolved-chart');
+            if (!ctx) return;
+
+            const sorted = Object.entries(itemStats)
+                .sort((a, b) => b[1].unresolved - a[1].unresolved)
+                .slice(0, 5);
+            
+            const labels = sorted.map(([sku]) => sku);
+            const data = sorted.map(([, d]) => d.unresolved);
+            const descriptions = sorted.map(([, d]) => d.desc);
+
+            if (topUnresolvedChart) topUnresolvedChart.destroy();
+
+            topUnresolvedChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Unresolved Tasks',
+                        data: data,
+                        backgroundColor: '#e74c3c',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    return descriptions[context.dataIndex] || '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
             });
         }
 
