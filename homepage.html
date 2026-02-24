@@ -103,6 +103,9 @@
     .card-analytics .card-icon-wrapper {
         background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
     }
+    .card-validators .card-icon-wrapper {
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
 
     .card-icon {
       width: 80px;
@@ -167,6 +170,7 @@
     .dashboard-card:nth-child(1) { animation-delay: 0.15s; }
     .dashboard-card:nth-child(2) { animation-delay: 0.3s; }
     .dashboard-card:nth-child(3) { animation-delay: 0.45s; }
+    .dashboard-card:nth-child(4) { animation-delay: 0.60s; }
 
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(40px); }
@@ -199,6 +203,17 @@
     </div>
       
       <div class="dashboard-grid">
+        <div class="dashboard-card card-attendance" onclick="window.location.href='all_ic_attendance.html'">
+          <div class="card-icon-wrapper">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">All IC Attendance</div>
+            <div class="card-desc">Manage attendance for all IC roles and other job descriptions.</div>
+            <div class="card-action">Open Module &rarr;</div>
+          </div>
+        </div>
+
         <div class="dashboard-card card-daily" onclick="window.location.href='daily_cycle_count.html'">
           <div class="card-icon-wrapper">
             <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -210,13 +225,13 @@
           </div>
         </div>
 
-        <div class="dashboard-card card-attendance" onclick="window.location.href='all_ic_attendance.html'">
+        <div class="dashboard-card card-validators" onclick="sessionStorage.setItem('ims_open_validators_modal', 'true'); window.location.href='all_ic_attendance.html'">
           <div class="card-icon-wrapper">
-            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
           </div>
           <div class="card-content">
-            <div class="card-title">All IC Attendance</div>
-            <div class="card-desc">Manage attendance for all IC roles and other job descriptions.</div>
+            <div class="card-title">Validators View</div>
+            <div class="card-desc">Manage validation tasks, assignments, and resolution status.</div>
             <div class="card-action">Open Module &rarr;</div>
           </div>
         </div>
