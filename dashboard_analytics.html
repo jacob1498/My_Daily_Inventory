@@ -199,7 +199,12 @@
     </div>
     <div class="dashboard-grid">
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #3498db;">Daily Attendance Trend</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #3498db;">Daily Attendance Trend</h3>
+                <button class="icon-btn" onclick="openFullChart('attendance')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="attendance-trend-chart"></canvas>
             </div>
@@ -236,13 +241,23 @@
 
     <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #3498db;">Validator Performance (Resolved vs Unresolved)</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #3498db;">Validator Performance</h3>
+                <button class="icon-btn" onclick="openFullChart('validator')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="validator-performance-chart"></canvas>
             </div>
         </div>
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #9b59b6;">Ops Validator Performance (Resolved vs Unresolved)</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #9b59b6;">Ops Validator Performance</h3>
+                <button class="icon-btn" onclick="openFullChart('ops-validator')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="ops-validator-performance-chart"></canvas>
             </div>
@@ -251,13 +266,23 @@
 
     <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Daily Task Trend</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #2752a7;">Daily Task Trend</h3>
+                <button class="icon-btn" onclick="openFullChart('task-trend')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="daily-task-trend-chart"></canvas>
             </div>
         </div>
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #e67e22;">Findings Distribution</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; color: #e67e22;">Findings Distribution</h3>
+                <button class="icon-btn" onclick="openFullChart('findings')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="findings-chart"></canvas>
             </div>
@@ -335,7 +360,12 @@
 
     <div class="dashboard-grid">
         <div class="chart-card">
-            <h3 style="margin-top: 0; color: #2752a7;">Daily Output Trend</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin-top: 0; color: #2752a7;">Daily Output Trend</h3>
+                <button class="icon-btn" onclick="openFullChart('output-trend')" title="Full View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+            </div>
             <div class="chart-container">
                 <canvas id="output-trend-chart"></canvas>
             </div>
@@ -395,6 +425,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Full Chart Modal -->
+    <div id="full-chart-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="this.parentElement.classList.add('hidden')"></div>
+        <div class="modal-content" style="background:var(--card); padding:20px; border-radius:8px; width:90%; max-width:1200px; height:80vh; display:flex; flex-direction:column; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 id="full-chart-title" style="margin:0;">Full Chart View</h3>
+                <button class="icon-btn" onclick="document.getElementById('full-chart-modal').classList.add('hidden')">&times;</button>
+            </div>
+            <div style="flex:1; position:relative; min-height:0;">
+                <canvas id="full-chart-canvas"></canvas>
+            </div>
+        </div>
+    </div>
   </main>
 
   <script src="app.js"></script>
@@ -421,6 +465,9 @@
                 timestamps: JSON.parse(localStorage.getItem('ims_counter_timestamps_v1') || '[]')
             };
         }
+        
+        // Global variable for full chart instance
+        let fullChartInstance = null;
 
         function renderDashboard() {
             const { attendance, tasks, counters, cycleCounts, timestamps } = getData();
@@ -607,6 +654,214 @@
             renderDailyTaskTrend(filteredTasks);
             renderAttendanceTrend(filteredAtt);
         }
+
+        window.openFullChart = function(type) {
+            const modal = document.getElementById('full-chart-modal');
+            const titleEl = document.getElementById('full-chart-title');
+            const canvas = document.getElementById('full-chart-canvas');
+            
+            if (!modal || !canvas) return;
+            
+            // Get current filtered data
+            const { attendance, tasks, counters, cycleCounts } = getData();
+            const start = startInput.value;
+            const end = endInput.value;
+
+            const filteredAtt = attendance.filter(a => (!start || a.date >= start) && (!end || a.date <= end));
+            const filteredTasks = tasks.filter(t => {
+                const d = t.timestamp.split('T')[0];
+                return (!start || d >= start) && (!end || d <= end);
+            });
+            const filteredCounters = counters.filter(c => (!start || c.date >= start) && (!end || c.date <= end));
+            
+            modal.classList.remove('hidden');
+            
+            // Destroy previous instance
+            if (fullChartInstance) {
+                fullChartInstance.destroy();
+                fullChartInstance = null;
+            }
+            
+            // Render based on type
+            const ctx = canvas.getContext('2d');
+            let config = null;
+            
+            if (type === 'attendance') {
+                titleEl.textContent = 'Daily Attendance Trend';
+                const reqs = JSON.parse(localStorage.getItem('ims_att_requirements_v1') || '{}');
+                let dailyReq = 0;
+                Object.values(reqs).forEach(val => dailyReq += (parseInt(val) || 0));
+                const dailyCounts = {};
+                filteredAtt.forEach(a => { if (a.date) dailyCounts[a.date] = (dailyCounts[a.date] || 0) + 1; });
+                const labels = Object.keys(dailyCounts).sort();
+                const actualData = labels.map(d => dailyCounts[d]);
+                const reqData = labels.map(d => dailyReq);
+                
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Actual Attendance', data: actualData, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3 },
+                            { label: 'Required Attendance', data: reqData, borderColor: '#e74c3c', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, pointRadius: 0 }
+                        ]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        scales: { y: { beginAtZero: true, title: { display: true, text: 'Headcount' } } },
+                        plugins: { tooltip: { mode: 'index', intersect: false } }
+                    }
+                };
+            } else if (type === 'validator') {
+                titleEl.textContent = 'Validator Performance';
+                const stats = {};
+                filteredTasks.forEach(t => {
+                    if (t.validator && t.validator !== 'Unassigned') {
+                        if (!stats[t.validator]) stats[t.validator] = { total: 0, resolved: 0, unresolved: 0 };
+                        stats[t.validator].total++;
+                        if (t.status === 'Completed') stats[t.validator].resolved++;
+                        if (t.status === 'Unresolved') stats[t.validator].unresolved++;
+                    }
+                });
+                const labels = Object.keys(stats).sort();
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Total Tasks', data: labels.map(v => stats[v].total), type: 'line', borderColor: '#3498db', backgroundColor: 'transparent', tension: 0.3, borderWidth: 2, order: 1 },
+                            { label: 'Resolved', data: labels.map(v => stats[v].resolved), backgroundColor: '#2ecc71', order: 2 },
+                            { label: 'Unresolved', data: labels.map(v => stats[v].unresolved), backgroundColor: '#e74c3c', order: 3 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                };
+            } else if (type === 'ops-validator') {
+                titleEl.textContent = 'Ops Validator Performance';
+                const stats = {};
+                filteredTasks.forEach(t => {
+                    if (t.opsValidator) {
+                        if (!stats[t.opsValidator]) stats[t.opsValidator] = { total: 0, resolved: 0, unresolved: 0 };
+                        stats[t.opsValidator].total++;
+                        if (t.status === 'Completed') stats[t.opsValidator].resolved++;
+                        if (t.status === 'Unresolved') stats[t.opsValidator].unresolved++;
+                    }
+                });
+                const labels = Object.keys(stats).sort();
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Total Tasks', data: labels.map(v => stats[v].total), type: 'line', borderColor: '#3498db', backgroundColor: 'transparent', tension: 0.3, borderWidth: 2, order: 1 },
+                            { label: 'Resolved', data: labels.map(v => stats[v].resolved), backgroundColor: '#2ecc71', order: 2 },
+                            { label: 'Unresolved', data: labels.map(v => stats[v].unresolved), backgroundColor: '#e74c3c', order: 3 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                };
+            } else if (type === 'task-trend') {
+                titleEl.textContent = 'Daily Task Trend';
+                const dailyData = {};
+                filteredTasks.forEach(t => {
+                    const d = t.timestamp.split('T')[0];
+                    if (!dailyData[d]) dailyData[d] = { total: 0, resolved: 0, unresolved: 0 };
+                    dailyData[d].total++;
+                    if (t.status === 'Completed') dailyData[d].resolved++;
+                    if (t.status === 'Unresolved') dailyData[d].unresolved++;
+                });
+                const labels = Object.keys(dailyData).sort();
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Total Tasks', data: labels.map(d => dailyData[d].total), type: 'line', borderColor: '#3498db', backgroundColor: 'transparent', tension: 0.3, borderWidth: 2, order: 1 },
+                            { label: 'Resolved', data: labels.map(d => dailyData[d].resolved), backgroundColor: '#2ecc71', order: 2 },
+                            { label: 'Unresolved', data: labels.map(d => dailyData[d].unresolved), backgroundColor: '#e74c3c', order: 3 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                };
+            } else if (type === 'findings') {
+                titleEl.textContent = 'Findings Distribution';
+                const findingsCounts = {};
+                filteredTasks.forEach(t => {
+                    if (t.status === 'Completed' && t.findings) {
+                        const list = t.findings.split(';').map(s => s.trim()).filter(s => s);
+                        list.forEach(f => { findingsCounts[f] = (findingsCounts[f] || 0) + 1; });
+                    }
+                });
+                const sorted = Object.entries(findingsCounts).sort((a, b) => b[1] - a[1]);
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: sorted.map(s => s[0]),
+                        datasets: [{ label: 'Count', data: sorted.map(s => s[1]), backgroundColor: '#e67e22', borderRadius: 4 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { beginAtZero: true } } }
+                };
+            } else if (type === 'output-trend') {
+                titleEl.textContent = 'Daily Output Trend';
+                const dailyData = {};
+                const dailyTargets = {};
+                filteredCounters.forEach(c => {
+                    if (!dailyData[c.date]) { dailyData[c.date] = 0; dailyTargets[c.date] = 0; }
+                    if (c.hourlyActuals) dailyData[c.date] += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
+                    let target = 0;
+                    if (c.hourlyTargets && Object.keys(c.hourlyTargets).length > 0) target = Object.values(c.hourlyTargets).reduce((a, b) => a + (Number(b)||0), 0);
+                    else {
+                        const rate = Number(c.standardRate) || 0;
+                        if (rate > 0) {
+                            const shiftAtt = attendance.filter(a => a.date === c.date && a.shift === c.shift && a.status !== 'Temporary slide to Other task');
+                            target = shiftAtt.length * rate;
+                        } else target = Number(c.targetOutput) || 0;
+                    }
+                    dailyTargets[c.date] += target;
+                });
+                const labels = Object.keys(dailyData).sort();
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Total Output', data: labels.map(d => dailyData[d]), borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3 },
+                            { label: 'Total Target', data: labels.map(d => dailyTargets[d]), borderColor: '#e74c3c', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                };
+            } else if (type === 'output-trend') {
+                titleEl.textContent = 'Daily Output Trend';
+                const dailyData = {};
+                const dailyTargets = {};
+                filteredCounters.forEach(c => {
+                    if (!dailyData[c.date]) { dailyData[c.date] = 0; dailyTargets[c.date] = 0; }
+                    if (c.hourlyActuals) dailyData[c.date] += Object.values(c.hourlyActuals).reduce((a,b) => a + (Number(b)||0), 0);
+                    let target = 0;
+                    if (c.hourlyTargets && Object.keys(c.hourlyTargets).length > 0) target = Object.values(c.hourlyTargets).reduce((a, b) => a + (Number(b)||0), 0);
+                    else {
+                        const rate = Number(c.standardRate) || 0;
+                        if (rate > 0) {
+                            const shiftAtt = attendance.filter(a => a.date === c.date && a.shift === c.shift && a.status !== 'Temporary slide to Other task');
+                            target = shiftAtt.length * rate;
+                        } else target = Number(c.targetOutput) || 0;
+                    }
+                    dailyTargets[c.date] += target;
+                });
+                const labels = Object.keys(dailyData).sort();
+                config = {
+                    type: 'line',
+                    data: { labels: labels, datasets: [ { label: 'Total Output', data: labels.map(d => dailyData[d]), borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', fill: true, tension: 0.3 }, { label: 'Total Target', data: labels.map(d => dailyTargets[d]), borderColor: '#e74c3c', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3 } ] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                };
+            }
+            
+            if (config) {
+                fullChartInstance = new Chart(ctx, config);
+            }
+        };
 
         function renderTopList(elementId, counts, suffix) {
             const list = document.getElementById(elementId);
@@ -1059,7 +1314,8 @@
             });
 
             const labels = Object.keys(dailyCounts).sort();
-            const data = labels.map(d => dailyReq > 0 ? Math.round((dailyCounts[d] / dailyReq) * 100) : 0);
+            const actualData = labels.map(d => dailyCounts[d]);
+            const reqData = labels.map(d => dailyReq);
 
             if (attendanceTrendChart) attendanceTrendChart.destroy();
 
@@ -1068,12 +1324,21 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Attendance Rate (%)',
-                        data: data,
+                        label: 'Actual Attendance',
+                        data: actualData,
                         borderColor: '#3498db',
                         backgroundColor: 'rgba(52, 152, 219, 0.1)',
                         fill: true,
                         tension: 0.3
+                    },
+                    {
+                        label: 'Required Attendance',
+                        data: reqData,
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'transparent',
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        pointRadius: 0
                     }]
                 },
                 options: {
@@ -1081,19 +1346,14 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: { 
-                            beginAtZero: true, 
-                            ticks: { callback: function(value) { return value + "%" } } 
+                            beginAtZero: true,
+                            title: { display: true, text: 'Headcount' }
                         }
                     },
                     plugins: {
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const date = labels[context.dataIndex];
-                                    const count = dailyCounts[date];
-                                    return `Rate: ${context.parsed.y}% (${count}/${dailyReq})`;
-                                }
-                            }
+                            mode: 'index',
+                            intersect: false
                         }
                     }
                 }
