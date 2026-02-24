@@ -634,6 +634,9 @@
             <button id="print-att-btn" class="icon-btn" title="Print List">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             </button>
+            <button id="bulk-timeout-btn" class="icon-btn" title="Bulk Time Out" style="color:#34495e; display:none; margin-right:5px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </button>
             <button id="delete-selected-att-btn" class="icon-btn" title="Delete Selected" style="color:#d9534f; display:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
             </button>
@@ -3928,11 +3931,15 @@
         // Mass Delete for Attendance
         const selectAllAtt = document.getElementById('select-all-att');
         const deleteSelectedAttBtn = document.getElementById('delete-selected-att-btn');
+        const bulkTimeoutBtn = document.getElementById('bulk-timeout-btn');
 
         function updateAttendanceActionButtons() {
             const selectedCount = document.querySelectorAll('.att-row-checkbox:checked').length;
             if (deleteSelectedAttBtn) {
                 deleteSelectedAttBtn.style.display = selectedCount > 0 ? 'inline-flex' : 'none';
+            }
+            if (bulkTimeoutBtn) {
+                bulkTimeoutBtn.style.display = selectedCount > 0 ? 'inline-flex' : 'none';
             }
         }
 
@@ -3947,6 +3954,48 @@
             attendanceTableBody.addEventListener('change', (e) => {
                 if (e.target.classList.contains('att-row-checkbox')) {
                     updateAttendanceActionButtons();
+                }
+            });
+        }
+
+        if (bulkTimeoutBtn) {
+            bulkTimeoutBtn.addEventListener('click', () => {
+                const selectedIds = Array.from(document.querySelectorAll('.att-row-checkbox:checked')).map(cb => cb.dataset.id);
+                if (selectedIds.length === 0) return;
+
+                const now = new Date();
+                const defaultTime = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+                const timeOutVal = prompt("Enter Time Out (HH:MM):", defaultTime);
+                
+                if (timeOutVal !== null) {
+                    let data = getAttendanceData();
+                    const selectedSet = new Set(selectedIds);
+                    
+                    // Sync to All IC Attendance
+                    const allIcKey = 'ims_daily_attendance_v1';
+                    let allIcData = [];
+                    try { allIcData = JSON.parse(localStorage.getItem(allIcKey) || '[]'); } catch (err) { allIcData = []; }
+                    let allIcModified = false;
+
+                    data.forEach(item => {
+                        if (selectedSet.has(item.id)) {
+                            item.timeOut = timeOutVal;
+                            // Sync if exists in all ic attendance
+                            const allIcIdx = allIcData.findIndex(a => a.id === item.id || (a.userId === item.userId && a.date === item.date && a.shift === item.shift));
+                            if (allIcIdx > -1 && (allIcData[allIcIdx].area === 'Cycle Counter' || allIcData[allIcIdx].jobDescription === 'Cycle Counter')) {
+                                allIcData[allIcIdx].timeOut = timeOutVal;
+                                allIcModified = true;
+                            }
+                        }
+                    });
+
+                    saveAttendanceData(data);
+                    if (allIcModified) localStorage.setItem(allIcKey, JSON.stringify(allIcData));
+                    
+                    renderAttendanceTable();
+                    if(selectAllAtt) selectAllAtt.checked = false;
+                    updateAttendanceActionButtons();
+                    showToast(`Bulk timeout set for ${selectedIds.length} records.`);
                 }
             });
         }
