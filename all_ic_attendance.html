@@ -1592,8 +1592,10 @@
                     <div style="display:flex; gap:15px; flex:1;">
                         <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
                             <h4 style="margin:0 0 5px 0; color:#2752a7; font-size:13px;">Task Status</h4>
-                            <div style="position:relative; flex:1; min-height:0;">
-                                <canvas id="val-status-chart" style="width:100%; height:100%;"></canvas>
+                            <div style="flex:1; overflow-y:auto; border:1px solid #eee; border-radius:4px; background:#fff;">
+                                <table class="report-table" style="width:100%; font-size:11px;">
+                                    <tbody id="val-status-tbody"></tbody>
+                                </table>
                             </div>
                         </div>
                         <div style="width:1px; background:#eee;"></div>
@@ -4371,49 +4373,40 @@
             renderValAnalytics();
         }
 
-        let valStatusChart = null;
         function updateValStatusChart(resolvedCount, pendingCount, unresolvedCount, assignedCount) {
-            const ctx = document.getElementById('val-status-chart');
-            if (!ctx || typeof Chart === 'undefined') return;
+            const tbody = document.getElementById('val-status-tbody');
+            if (!tbody) return;
             
-            if (valStatusChart) valStatusChart.destroy();
-
-                valStatusChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Resolved', 'Pending', 'Assigned', 'Unresolved'],
-                        datasets: [{
-                            data: [resolvedCount, pendingCount, assignedCount, unresolvedCount],
-                            backgroundColor: ['#2e7d32', '#ef6c00', '#3498db', '#d9534f'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        layout: { padding: 20 },
-                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
-                        cutout: '75%',
-                        onHover: (event, chartElement) => {
-                            event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
-                        },
-                        onClick: (evt, elements, chart) => {
-                            if (elements.length > 0) {
-                                const i = elements[0].index;
-                                const label = chart.data.labels[i];
-                                let tabId = '';
-                                if (label === 'Resolved') tabId = 'tab-val-resolved';
-                                else if (label === 'Pending') tabId = 'tab-val-pending';
-                                else if (label === 'Assigned') tabId = 'tab-val-assigned';
-                                else if (label === 'Unresolved') tabId = 'tab-val-unresolved';
-                                
-                                if (tabId) {
-                                    const btn = document.querySelector(`button[onclick*="'${tabId}'"]`);
-                                    if (btn) btn.click();
-                                }
-                            }
-                        }
-                    }
-                });
+            const total = resolvedCount + pendingCount + unresolvedCount + assignedCount;
+            
+            const data = [
+                { label: 'Resolved', count: resolvedCount, color: '#2e7d32', key: 'resolved' },
+                { label: 'Pending', count: pendingCount, color: '#ef6c00', key: 'pending' },
+                { label: 'Assigned', count: assignedCount, color: '#3498db', key: 'assigned' },
+                { label: 'Unresolved', count: unresolvedCount, color: '#d9534f', key: 'unresolved' }
+            ];
+            
+            tbody.innerHTML = '';
+            
+            data.forEach(item => {
+                const pct = total > 0 ? Math.round((item.count / total) * 100) : 0;
+                const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = () => filterValDashboard(item.key);
+                tr.innerHTML = `
+                    <td style="padding:8px; display:flex; align-items:center;">
+                        <span style="width:12px; height:12px; background-color:${item.color}; display:inline-block; margin-right:8px; border-radius:2px;"></span>
+                        ${item.label}
+                    </td>
+                    <td style="padding:8px; text-align:right; font-weight:bold;">${item.count}</td>
+                    <td style="padding:8px; text-align:right; color:#999; font-size:10px;">${pct}%</td>
+                `;
+                // Add hover effect
+                tr.onmouseenter = () => tr.style.backgroundColor = '#f5f9ff';
+                tr.onmouseleave = () => tr.style.backgroundColor = 'transparent';
+                
+                tbody.appendChild(tr);
+            });
         }
 
         function renderValAnalytics() {
