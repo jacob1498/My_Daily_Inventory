@@ -254,9 +254,12 @@
         <div class="chart-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h3 style="margin:0; color: #9b59b6;">Ops Validator Performance</h3>
-                <button class="icon-btn" onclick="openFullChart('ops-validator')" title="Full View">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-                </button>
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <label style="font-size:11px; cursor:pointer; display:flex; align-items:center; color:#666;"><input type="checkbox" id="exclude-replen-all" style="margin-right:4px;"> Exclude Replen All</label>
+                    <button class="icon-btn" onclick="openFullChart('ops-validator')" title="Full View">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
+                </div>
             </div>
             <div class="chart-container">
                 <canvas id="ops-validator-performance-chart"></canvas>
@@ -740,8 +743,10 @@
             } else if (type === 'ops-validator') {
                 titleEl.textContent = 'Ops Validator Performance';
                 const stats = {};
+                const excludeReplen = document.getElementById('exclude-replen-all') && document.getElementById('exclude-replen-all').checked;
                 filteredTasks.forEach(t => {
                     if (t.opsValidator) {
+                        if (excludeReplen && t.opsValidator === 'Replen All') return;
                         if (!stats[t.opsValidator]) stats[t.opsValidator] = { total: 0, resolved: 0, unresolved: 0 };
                         stats[t.opsValidator].total++;
                         if (t.status === 'Completed') stats[t.opsValidator].resolved++;
@@ -1027,9 +1032,12 @@
             const ctx = document.getElementById('ops-validator-performance-chart');
             if (!ctx) return;
 
+            const excludeReplen = document.getElementById('exclude-replen-all') && document.getElementById('exclude-replen-all').checked;
+
             const stats = {};
             tasks.forEach(t => {
                 if (t.opsValidator) {
+                    if (excludeReplen && t.opsValidator === 'Replen All') return;
                     if (!stats[t.opsValidator]) stats[t.opsValidator] = { total: 0, resolved: 0, unresolved: 0 };
                     stats[t.opsValidator].total++;
                     if (t.status === 'Completed') stats[t.opsValidator].resolved++;
@@ -1594,6 +1602,7 @@
         document.getElementById('clear-filter').addEventListener('click', () => {
             startInput.value = ''; endInput.value = ''; renderDashboard();
         });
+        if(document.getElementById('exclude-replen-all')) document.getElementById('exclude-replen-all').addEventListener('change', renderDashboard);
         document.getElementById('export-dashboard').addEventListener('click', exportDashboard);
         document.getElementById('export-pdf').addEventListener('click', exportToPDF);
 
