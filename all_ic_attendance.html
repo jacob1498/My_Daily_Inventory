@@ -4407,6 +4407,21 @@
                 
                 tbody.appendChild(tr);
             });
+
+            // Add Total Row
+            const totalTr = document.createElement('tr');
+            totalTr.style.fontWeight = 'bold';
+            totalTr.style.backgroundColor = '#f9f9f9';
+            totalTr.style.borderTop = '1px solid #eee';
+            totalTr.style.cursor = 'pointer';
+            totalTr.onclick = () => filterValDashboard('total');
+            
+            totalTr.innerHTML = `
+                <td style="padding:8px; display:flex; align-items:center;"><span style="width:12px; height:12px; display:inline-block; margin-right:8px;"></span>Total</td>
+                <td style="padding:8px; text-align:right;">${total}</td>
+                <td style="padding:8px; text-align:right; font-size:10px;">100%</td>
+            `;
+            tbody.appendChild(totalTr);
         }
 
         function renderValAnalytics() {
