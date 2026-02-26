@@ -6670,6 +6670,8 @@
             
             const counters = getCountersData();
             const attendance = getAttendanceData();
+            let cycleCounts = [];
+            try { cycleCounts = JSON.parse(localStorage.getItem(STORAGE_KEY_CC) || '[]'); } catch(e){}
             
             // Filter by shift if selected in the timestamp modal
             const shiftFilter = document.getElementById('ts-shift-filter') ? document.getElementById('ts-shift-filter').value : '';
@@ -6717,6 +6719,33 @@
                     Object.keys(counter.hourlyActuals).forEach(label => {
                         if (hourlyData.hasOwnProperty(label)) {
                             hourlyData[label] += Number(counter.hourlyActuals[label]) || 0;
+                        }
+                    });
+                } else {
+                    // Fallback: Calculate from raw cycle counts if no manual actuals saved
+                    const dStr = counter.date;
+                    const sStr = counter.shift;
+                    const start = new Date(dStr);
+                    const end = new Date(dStr);
+                    
+                    if (sStr.includes('1st Shift')) {
+                        start.setHours(6,0,0,0); end.setHours(14,0,0,0);
+                    } else if (sStr.includes('2nd Shift')) {
+                        start.setHours(14,0,0,0); end.setHours(22,0,0,0);
+                    } else { // 3rd Shift
+                        start.setHours(22,0,0,0); 
+                        end.setDate(end.getDate() + 1); end.setHours(6,0,0,0);
+                    }
+                    
+                    cycleCounts.forEach(c => {
+                        const ts = c.createdDate || c.date;
+                        if (ts) {
+                            const d = new Date(ts);
+                            if (d >= start && d < end) {
+                                const h = d.getHours();
+                                const label = `${h}:00 - ${h+1}:00`;
+                                if (hourlyData.hasOwnProperty(label)) hourlyData[label]++;
+                            }
                         }
                     });
                 }
