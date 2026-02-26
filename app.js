@@ -2465,8 +2465,8 @@ function updateClock(){
   if(!el) return;
   const now = new Date();
   // Format: Mon, Dec 15 2026 — 14:05:32
-  const datePart = now.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-  const timePart = now.toLocaleTimeString(undefined, { hour12: false });
+  const datePart = now.toLocaleDateString('en-US', { timeZone: 'Asia/Manila', weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+  const timePart = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour12: false });
   el.textContent = `${datePart} — ${timePart}`;
 }
 
