@@ -6795,7 +6795,12 @@
             validators.forEach(v => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${v.name}</td>
+                    <td style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>${v.name}</span>
+                        <button class="icon-btn copy-ops-btn" data-name="${v.name}" title="Copy Name" style="padding:2px; border:none; background:transparent; color:#2752a7;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </td>
                     <td style="text-align:center;">
                         <button class="icon-btn edit-ops-validator-btn" data-id="${v.id}" title="Edit" style="padding:2px 6px;">✎</button>
                         <button class="icon-btn delete-ops-validator-btn" data-id="${v.id}" title="Delete" style="padding:2px 6px; color:#d9534f;">&times;</button>
@@ -6844,6 +6849,13 @@
             opsValidatorsTableBody.addEventListener('click', (e) => {
                 const btn = e.target.closest('button');
                 if (!btn) return;
+                
+                if (btn.classList.contains('copy-ops-btn')) {
+                    const name = btn.dataset.name;
+                    navigator.clipboard.writeText(name).then(() => showToast(`Copied: ${name}`));
+                    return;
+                }
+
                 const id = btn.dataset.id;
 
                 if (btn.classList.contains('edit-ops-validator-btn')) {
@@ -7108,4 +7120,3 @@
 </html>
             
             
-
