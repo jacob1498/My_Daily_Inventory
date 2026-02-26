@@ -3790,6 +3790,19 @@
 
             validators.forEach(v => renderRow(v, validatorsTbody));
             if (timeoutTbody) timeoutValidators.forEach(v => renderRow(v, timeoutTbody, true));
+            if (paginatedAvailable.length === 0) {
+                validatorsTbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#999; padding:10px;">No available validators</td></tr>';
+            } else {
+                paginatedAvailable.forEach(v => renderRow(v, validatorsTbody));
+            }
+
+            if (timeoutTbody) {
+                if (paginatedTimeout.length === 0) {
+                    timeoutTbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#999; padding:10px;">No timeout validators</td></tr>';
+                } else {
+                    paginatedTimeout.forEach(v => renderRow(v, timeoutTbody, true));
+                }
+            }
         }
 
         function updateValidatorDropdown(data) {
@@ -6125,7 +6138,7 @@
             // Update Clock
             function updateQuickClock() {
                 const el = document.getElementById('quick-widget-clock');
-                if(el) el.textContent = new Date().toLocaleString();
+                if(el) el.textContent = new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' });
             }
             setInterval(updateQuickClock, 1000);
             updateQuickClock();
@@ -6821,6 +6834,35 @@
                 nameInput.value = ''; idInput.value = '';
                 updateOpsValidatorDropdown();
             });
+        }
+
+        const opsValidatorsTableBody = document.querySelector('#ops-validators-table tbody');
+        if (opsValidatorsTableBody) {
+            opsValidatorsTableBody.addEventListener('click', (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const id = btn.dataset.id;
+
+                if (btn.classList.contains('edit-ops-validator-btn')) {
+                    const validators = getOpsValidators();
+                    const v = validators.find(item => item.id == id);
+                    if (v) {
+                        document.getElementById('ops-validator-name').value = v.name;
+                        document.getElementById('ops-validator-id').value = v.id;
+                    }
+                } else if (btn.classList.contains('delete-ops-validator-btn')) {
+                    if (confirm('Delete this validator?')) {
+                        let validators = getOpsValidators();
+                        validators = validators.filter(item => item.id != id);
+                        saveOpsValidators(validators);
+                        renderOpsValidators();
+                        updateOpsValidatorDropdown();
+                    }
+                }
+            });
+        }
+        if (document.getElementById('ops-validator-search')) {
+            document.getElementById('ops-validator-search').addEventListener('input', renderOpsValidators);
         }
 
         // Findings Master Logic
