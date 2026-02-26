@@ -5619,7 +5619,7 @@
             // Update Clock
             function updateQuickClock() {
                 const el = document.getElementById('quick-widget-clock');
-                if(el) el.textContent = new Date().toLocaleString();
+                if(el) el.textContent = new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' });
             }
             setInterval(updateQuickClock, 1000);
             updateQuickClock();
